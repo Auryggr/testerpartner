@@ -165,17 +165,25 @@
       color:white;
     }
 
-    .heroB-sphere {
+  .heroB-media {
+  display: flex;
+  justify-content: center;
+}
+
+.sphere-wrap {
   position: relative;
   width: 100%;
   max-width: 420px;
-  display: block;
-  border-radius: 50%;
-  filter:
-    drop-shadow(0 28px 50px rgba(0,0,0,.45));
 }
 
-.heroB-sphere::after {
+.sphere-wrap img {
+  width: 100%;
+  display: block;
+  border-radius: 50%;
+  filter: drop-shadow(0 28px 50px rgba(0,0,0,.45));
+}
+
+.sphere-wrap::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -189,6 +197,17 @@
     );
   pointer-events: none;
 }
+
+@media (max-width:900px) {
+  .heroB-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .heroB-media {
+    order: -1;
+  }
+}
+
 
 
 
@@ -232,8 +251,11 @@
     </div>
 
     <div class="heroB-media">
-        <img class="heroB-sphere" src="assets/img/hero_min.webp" alt="Decision paths illustration">
-      </div>      
+        <div class="sphere-wrap">
+          <img src="assets/img/hero_min.webp" alt="Decision paths illustration">
+        </div>
+      </div>
+          
   </div>
 </section>
 

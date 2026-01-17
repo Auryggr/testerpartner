@@ -13,11 +13,9 @@
       --bg:#ffffff;
       --soft:#fafafa;
       --accent:#3b82f6;
-      --dark:#0b1020;
     }
 
     * { box-sizing: border-box; }
-
     body {
       margin:0;
       font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
@@ -72,10 +70,9 @@
 
     .grid-2 { grid-template-columns:repeat(2,1fr); }
     .grid-3 { grid-template-columns:repeat(3,1fr); }
-    .grid-4 { grid-template-columns:repeat(4,1fr); }
 
     @media (max-width:900px) {
-      .grid-2,.grid-3,.grid-4 { grid-template-columns:1fr; }
+      .grid-2,.grid-3 { grid-template-columns:1fr; }
     }
 
     .card {
@@ -83,6 +80,13 @@
       border-radius:20px;
       padding:28px;
       background:white;
+    }
+
+    header {
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(800px 400px at 20% 10%, rgba(59,130,246,.15), transparent 60%),
+        radial-gradient(700px 300px at 90% 20%, rgba(16,185,129,.10), transparent 60%);
     }
 
     nav {
@@ -103,110 +107,16 @@
     nav a { margin-left:18px; font-weight:500; }
 
     footer {
-      background:var(--dark);
+      background:#0b1020;
       color:rgba(255,255,255,.85);
       padding:56px 0;
-    }
-
-    .heroB {
-      background:
-        radial-gradient(900px 500px at 20% 10%, rgba(59,130,246,0.18), transparent 60%),
-        radial-gradient(900px 500px at 85% 30%, rgba(16,185,129,0.12), transparent 60%),
-        var(--dark);
-      color:white;
-      min-height:70vh;
-      display:flex;
-      align-items:center;
-      padding:72px 0;
-    }
-
-    .heroB-inner {
-      width:100%;
-      max-width:1100px;
-      margin:0 auto;
-      padding:0 20px;
-      display:grid;
-      grid-template-columns:1.1fr 0.9fr;
-      gap:48px;
-      align-items:center;
-    }
-
-    .heroB-eyebrow {
-      opacity:.8;
-      margin:0 0 12px;
-      font-size:14px;
-      letter-spacing:.04em;
-      text-transform:uppercase;
-    }
-
-    .heroB-title {
-      margin:0 0 16px;
-      font-size:clamp(32px,4vw,44px);
-      line-height:1.1;
-      font-weight:700;
-    }
-
-    .heroB-description {
-      opacity:.85;
-      margin:0 0 28px;
-      font-size:18px;
-      max-width:520px;
-    }
-
-    .heroB-actions {
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
-    }
-
-    .heroB-actions .btn.outline {
-      background:transparent;
-      border-color:rgba(255,255,255,.25);
-      color:white;
-    }
-
-    .heroB-media {
-      display:flex;
-      justify-content:center;
-    }
-
-    .sphere-wrap {
-      position:relative;
-      width:100%;
-      max-width:420px;
-    }
-
-    .sphere-wrap img {
-      width:100%;
-      display:block;
-      border-radius:50%;
-      filter: drop-shadow(0 28px 50px rgba(0,0,0,.45));
-    }
-
-    .sphere-wrap::after {
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius:50%;
-      background:
-        radial-gradient(
-          120% 120% at 30% 25%,
-          rgba(255,255,255,.22),
-          rgba(0,0,0,.25) 55%,
-          rgba(0,0,0,.45) 100%
-        );
-      pointer-events:none;
-    }
-
-    @media (max-width:900px) {
-      .heroB-inner { grid-template-columns:1fr; }
-      .heroB-media { order:-1; }
     }
   </style>
 </head>
 
 <body>
 
+<!-- NAV -->
 <nav>
   <div class="container">
     <strong>TesterPartner</strong>
@@ -218,28 +128,32 @@
   </div>
 </nav>
 
-<section class="heroB">
-  <div class="heroB-inner">
+<!-- HERO -->
+<header>
+  <div class="container section grid grid-2">
     <div>
-      <p class="heroB-eyebrow">A/B testing under demand</p>
-      <h1 class="heroB-title">Ship experiments faster. Decide with confidence.</h1>
-      <p class="heroB-description">
-        We design, implement, and analyze experiments so your team can focus on growth — not setup.
+      <p class="muted">A/B testing under demand</p>
+      <h1>Ship experiments faster.<br>Decide with confidence.</h1>
+      <p class="muted">
+        We design, implement, and analyze experiments so your team can focus on growth —
+        not setup, debates, or dashboards.
       </p>
-      <div class="heroB-actions">
-        <a href="#pricing" class="btn primary">See plans</a>
-        <a href="#process" class="btn outline">How it works</a>
+      <div style="margin-top:24px">
+        <a class="btn primary" href="#pricing">See plans</a>
+        <a class="btn outline" href="#process" style="margin-left:12px">How it works</a>
       </div>
     </div>
 
-    <div class="heroB-media">
-      <div class="sphere-wrap">
-        <img src="assets/img/hero/hero_min.webp" alt="Decision paths illustration">
-      </div>
+    <div class="card">
+      <strong>What this replaces</strong>
+      <p class="muted">
+        Long discussions, unclear scope, stalled experimentation, and reports nobody reads.
+      </p>
     </div>
   </div>
-</section>
+</header>
 
+<!-- PROCESS PROOF -->
 <section class="section" id="process">
   <div class="container">
     <h2>Decisions, not dashboards</h2>
@@ -257,6 +171,7 @@
   </div>
 </section>
 
+<!-- SAMPLE REPORT -->
 <section class="section soft">
   <div class="container">
     <h2>Example experiment outcome</h2>
@@ -280,6 +195,7 @@
   </div>
 </section>
 
+<!-- WHAT YOU RECEIVE -->
 <section class="section">
   <div class="container">
     <h2>What you receive</h2>
@@ -296,6 +212,7 @@
   </div>
 </section>
 
+<!-- PRICING -->
 <section class="section soft" id="pricing">
   <div class="container">
     <h2>Starter vs Growth</h2>
@@ -327,6 +244,7 @@
   </div>
 </section>
 
+<!-- CONTACT -->
 <section class="section" id="contact">
   <div class="container grid grid-2">
     <div>
@@ -346,6 +264,7 @@
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   <div class="container">
     <strong>TesterPartner</strong>

@@ -255,15 +255,18 @@
       </p>
     </div>
 
-    <div class="card">
-      <input placeholder="Name" style="width:100%;padding:12px;margin-bottom:12px">
-      <input placeholder="Email" style="width:100%;padding:12px;margin-bottom:12px">
-      <input placeholder="Website URL" style="width:100%;padding:12px;margin-bottom:12px">
-      <textarea placeholder="What do you want to test?" style="width:100%;padding:12px"></textarea>
-      <a class="btn primary" style="margin-top:16px">Send message</a>
-    </div>
+    <form id="tp-form" class="card">
+      <input name="name" placeholder="Name" required style="width:100%;padding:12px;margin-bottom:12px">
+      <input name="email" type="email" placeholder="Email" required style="width:100%;padding:12px;margin-bottom:12px">
+      <input name="website" type="url" placeholder="Website URL" style="width:100%;padding:12px;margin-bottom:12px">
+      <textarea name="idea" placeholder="What do you want to test?" required style="width:100%;padding:12px"></textarea>
+
+      <button type="submit" class="btn primary" style="margin-top:16px">Send message</button>
+      <p id="form-status" class="muted" style="margin-top:12px"></p>
+    </form>
   </div>
 </section>
+
 
 <!-- FOOTER -->
 <footer>
@@ -274,34 +277,34 @@
 </footer>
 <script>
   const form = document.getElementById("tp-form");
-  const status = document.getElementById("form-status");
+  const statusEl = document.getElementById("form-status");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    status.textContent = "Sending…";
+    statusEl.textContent = "Sending…";
 
     const data = new FormData(form);
-
-    // Hidden fields
     data.append("source", "website");
     data.append("version", "v1");
 
-    const response = await fetch("https://tally.so/r/WO8YLj", {
-      method: "POST",
-      body: data,
-      headers: {
-        "Accept": "application/json"
-      }
-    });
+    try {
+      const res = await fetch("https://tally.so/r/WO8YLj", {
+        method: "POST",
+        body: data,
+        headers: { "Accept": "application/json" }
+      });
 
-    if (response.ok) {
-      form.reset();
-      status.textContent = "Thanks! We’ll contact you shortly.";
-    } else {
-      status.textContent = "Something went wrong. Please try again.";
+      if (res.ok) {
+        form.reset();
+        statusEl.textContent = "Thanks! We’ll contact you shortly.";
+      } else {
+        statusEl.textContent = "Couldn’t send. Please try again.";
+      }
+    } catch (err) {
+      statusEl.textContent = "Network error. Please try again.";
     }
   });
 </script>
+
 </body>
 </html>

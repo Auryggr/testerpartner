@@ -272,6 +272,36 @@
     <p class="muted">Productized A/B testing under demand.</p>
   </div>
 </footer>
+<script>
+  const form = document.getElementById("tp-form");
+  const status = document.getElementById("form-status");
 
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    status.textContent = "Sending…";
+
+    const data = new FormData(form);
+
+    // Hidden fields
+    data.append("source", "website");
+    data.append("version", "v1");
+
+    const response = await fetch("https://tally.so/r/WO8YLj", {
+      method: "POST",
+      body: data,
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    if (response.ok) {
+      form.reset();
+      status.textContent = "Thanks! We’ll contact you shortly.";
+    } else {
+      status.textContent = "Something went wrong. Please try again.";
+    }
+  });
+</script>
 </body>
 </html>

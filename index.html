@@ -246,75 +246,40 @@
 </section>
 
 <!-- CONTACT -->
-<section class="section" id="contact">
-  <div class="container grid grid-2">
-    
-    <!-- Left copy -->
-    <div>
-      <h2>Ready to launch an experiment?</h2>
-      <p class="muted">
-        Tell us what you want to test and we’ll guide the next step.
-      </p>
-    </div>
+<form id="tp-form" class="card">
+  <input name="name" placeholder="Name" required style="width:100%;padding:12px;margin-bottom:12px">
+  <input name="email" type="email" placeholder="Email" required style="width:100%;padding:12px;margin-bottom:12px">
+  <input name="website" type="url" placeholder="Website URL" style="width:100%;padding:12px;margin-bottom:12px">
+  <textarea name="idea" placeholder="What do you want to test?" required style="width:100%;padding:12px"></textarea>
 
-    <!-- Contact Form -->
-    <form
-      class="card"
-      action="https://tally.so/r/WO8YLj"
-      method="POST"
-    >
+  <button type="submit" class="btn primary" style="margin-top:16px">Send message</button>
+  <p id="form-status" class="muted" style="margin-top:12px"></p>
+</form>
 
-      <!-- Hidden tracking -->
-      <input type="hidden" name="source" value="website">
-      <input type="hidden" name="version" value="v1">
+<script>
+  const form = document.getElementById("tp-form");
+  const statusEl = document.getElementById("form-status");
 
-      <!-- Fields -->
-      <input
-        name="name"
-        placeholder="Name"
-        required
-        style="width:100%;padding:12px;margin-bottom:12px"
-      >
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    statusEl.textContent = "Sending…";
 
-      <input
-        name="email"
-        type="email"
-        placeholder="Email"
-        required
-        style="width:100%;padding:12px;margin-bottom:12px"
-      >
+    const data = new FormData(form);
+    data.append("source", "website");
+    data.append("version", "v1");
 
-      <input
-        name="website"
-        type="url"
-        placeholder="Website URL"
-        style="width:100%;padding:12px;margin-bottom:12px"
-      >
+    const res = await fetch("/api/lead", { method: "POST", body: data });
+    const json = await res.json().catch(() => ({}));
 
-      <textarea
-        name="idea"
-        placeholder="What do you want to test?"
-        required
-        style="width:100%;padding:12px"
-      ></textarea>
+    if (res.ok && json.ok) {
+      form.reset();
+      statusEl.textContent = "Thanks! We’ll contact you shortly.";
+    } else {
+      statusEl.textContent = "Couldn’t send. Please try again.";
+    }
+  });
+</script>
 
-      <!-- Submit -->
-      <button
-        type="submit"
-        class="btn primary"
-        style="margin-top:16px"
-      >
-        Send message
-      </button>
-
-      <p class="muted" style="margin-top:12px;font-size:14px">
-        We usually reply within 24 hours.
-      </p>
-
-    </form>
-
-  </div>
-</section>
 
 
 <!-- FOOTER -->

@@ -293,7 +293,7 @@
     data.append("source", "website");
     data.append("version", "v1");
 
-    const res = await fetch("/api/lead", { method: "POST", body: data });
+    const res = await fetch("https://tp-lead-proxy.aurysdesign.workers.dev/", { method: "POST", body: data });
     const json = await res.json().catch(() => ({}));
 
     if (res.ok && json.ok) {

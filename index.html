@@ -246,16 +246,41 @@
 </section>
 
 <!-- CONTACT -->
-<form id="tp-form" class="card">
-  <input name="name" placeholder="Name" required style="width:100%;padding:12px;margin-bottom:12px">
-  <input name="email" type="email" placeholder="Email" required style="width:100%;padding:12px;margin-bottom:12px">
-  <input name="website" type="url" placeholder="Website URL" style="width:100%;padding:12px;margin-bottom:12px">
-  <textarea name="idea" placeholder="What do you want to test?" required style="width:100%;padding:12px"></textarea>
+<section class="section" id="contact">
+  <div class="container grid grid-2">
+    
+    <!-- Left copy -->
+    <div>
+      <h2>Ready to launch an experiment?</h2>
+      <p class="muted">
+        Tell us what you want to test and we’ll guide the next step.
+      </p>
+    </div>
 
-  <button type="submit" class="btn primary" style="margin-top:16px">Send message</button>
-  <p id="form-status" class="muted" style="margin-top:12px"></p>
-</form>
+    <!-- Contact Form -->
+    <form id="tp-form" class="card">
+      <input name="name" placeholder="Name" required style="width:100%;padding:12px;margin-bottom:12px">
+      <input name="email" type="email" placeholder="Email" required style="width:100%;padding:12px;margin-bottom:12px">
+      <input name="website" type="url" placeholder="Website URL" style="width:100%;padding:12px;margin-bottom:12px">
+      <textarea name="idea" placeholder="What do you want to test?" required style="width:100%;padding:12px"></textarea>
+    
+      <button type="submit" class="btn primary" style="margin-top:16px">Send message</button>
+      <p id="form-status" class="muted" style="margin-top:12px"></p>
+    </form>
 
+    
+
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <strong>TesterPartner</strong>
+    <p class="muted">Productized A/B testing under demand.</p>
+  </div>
+</footer>
 <script>
   const form = document.getElementById("tp-form");
   const statusEl = document.getElementById("form-status");
@@ -279,16 +304,5 @@
     }
   });
 </script>
-
-
-
-<!-- FOOTER -->
-<footer>
-  <div class="container">
-    <strong>TesterPartner</strong>
-    <p class="muted">Productized A/B testing under demand.</p>
-  </div>
-</footer>
-
 </body>
 </html>

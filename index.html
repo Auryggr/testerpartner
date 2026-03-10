@@ -98,17 +98,48 @@ position:sticky;
 top:0;
 background:white;
 border-bottom:1px solid var(--line);
-z-index:10;
+z-index:20;
 }
 
-nav .container{
+.nav-wrap{
 display:flex;
 align-items:center;
 justify-content:space-between;
 height:64px;
+position:relative;
 }
 
-nav a{margin-left:18px;font-weight:500}
+.nav-links{
+display:flex;
+align-items:center;
+}
+
+.nav-links a{
+margin-left:18px;
+font-weight:500;
+}
+
+.nav-toggle{
+display:none;
+width:44px;
+height:44px;
+border:1px solid var(--line);
+border-radius:12px;
+background:white;
+padding:0;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+gap:5px;
+}
+
+.nav-toggle span{
+display:block;
+width:18px;
+height:2px;
+background:var(--ink);
+border-radius:999px;
+}
 
 footer{
 background:#0b1020;
@@ -366,6 +397,35 @@ box-shadow:0 12px 30px rgba(59,130,246,.28);
 .pricing-card-popular{
 transform:none;
 }
+
+.nav-toggle{
+display:flex;
+}
+
+.nav-links{
+display:none;
+position:absolute;
+top:64px;
+right:20px;
+left:20px;
+background:white;
+border:1px solid var(--line);
+border-radius:18px;
+padding:16px;
+flex-direction:column;
+align-items:flex-start;
+gap:12px;
+box-shadow:0 16px 40px rgba(0,0,0,.08);
+}
+
+.nav-links a{
+margin-left:0;
+width:100%;
+}
+
+.nav-links.is-open{
+display:flex;
+}
 }
 </style>
 </head>
@@ -373,9 +433,16 @@ transform:none;
 <body class="ab-hero-highlight">
 
 <nav>
-<div class="container">
+<div class="container nav-wrap">
 <strong>TesterPartner</strong>
-<div>
+
+<button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+<span></span>
+<span></span>
+<span></span>
+</button>
+
+<div class="nav-links" id="nav-links">
 <a href="#process">Process</a>
 <a href="#pricing">Pricing</a>
 <a href="#contact">Contact</a>
@@ -464,6 +531,11 @@ one clear question — and end with a recommendation.
 <div class="card">✔ One primary metric</div>
 <div class="card">✔ Feasibility before build</div>
 <div class="card">✔ Clear recommendation</div>
+</div>
+
+<div style="margin-top:40px">
+<a class="btn primary" href="#contact">Start an experiment</a>
+<a class="btn tertiary" href="#pricing" style="margin-left:12px">See pricing</a>
 </div>
 </div>
 
@@ -576,9 +648,9 @@ Review the kind of concise, decision-ready output you’ll receive.
 <section class="section" id="contact">
 <div class="container grid grid-2">
 <div>
-<h2>Ready to launch an experiment?</h2>
+<h2>Start with a quick feasibility check</h2>
 <p class="muted">
-Tell us what you want to test and we’ll guide the next step.
+Tell us what you want to test and we’ll confirm the best next step.
 </p>
 </div>
 
@@ -590,7 +662,7 @@ height="420"
 frameborder="0"
 marginheight="0"
 marginwidth="0"
-title="TesterPartner Contact Form">
+title="TesterPartner Technical Feasibility Check">
 </iframe>
 </div>
 </div>
@@ -658,6 +730,21 @@ title="Two Week Follow-up Form">
 </footer>
 
 <script>
+const navToggle = document.getElementById("nav-toggle");
+const navLinks = document.getElementById("nav-links");
+
+navToggle.addEventListener("click", () => {
+  const isOpen = navLinks.classList.toggle("is-open");
+  navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+
+navLinks.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => {
+    navLinks.classList.remove("is-open");
+    navToggle.setAttribute("aria-expanded", "false");
+  });
+});
+
 const openSampleReport = document.getElementById("open-sample-report");
 const closeSampleReport = document.getElementById("close-sample-report");
 const sampleReportModal = document.getElementById("sample-report-modal");

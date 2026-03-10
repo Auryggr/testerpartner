@@ -14,6 +14,8 @@
 --soft:#fafafa;
 --accent:#3b82f6;
 --dark:#0b1020;
+--dark-line:rgba(255,255,255,.14);
+--dark-muted:rgba(255,255,255,.72);
 }
 
 *{box-sizing:border-box}
@@ -176,6 +178,36 @@ min-height:420px;
 background:transparent;
 }
 
+.soft-cta-section{
+border-top:1px solid var(--line);
+}
+
+.soft-cta-card{
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+gap:24px;
+flex-wrap:wrap;
+}
+
+.soft-cta-copy{
+max-width:720px;
+}
+
+.soft-cta-copy p{
+margin:0;
+}
+
+.soft-cta-title{
+margin:0 0 8px;
+}
+
+.pricing-note{
+margin-top:10px;
+font-size:14px;
+color:var(--muted);
+}
+
 .modal{
 position:fixed;
 inset:0;
@@ -236,18 +268,80 @@ overflow:hidden;
 display:block;
 width:100%;
 border:0;
-/*min-height:280px;*/
 background:transparent;
 }
 
 body.modal-open{
 overflow:hidden;
 }
-.dDgwqi {color:white!important;}
+
+.dDgwqi{color:white!important}
+
+body.ab-hero-highlight header{
+background:
+radial-gradient(900px 500px at 20% 10%, rgba(59,130,246,.18), transparent 60%),
+radial-gradient(900px 500px at 85% 30%, rgba(16,185,129,.12), transparent 60%),
+var(--dark);
+border-bottom:1px solid var(--dark-line);
+}
+
+body.ab-hero-highlight header h1,
+body.ab-hero-highlight header strong{
+color:white;
+}
+
+body.ab-hero-highlight header .muted{
+color:var(--dark-muted);
+}
+
+body.ab-hero-highlight header .card{
+background:rgba(255,255,255,.06);
+border-color:var(--dark-line);
+color:white;
+}
+
+body.ab-hero-highlight header .replaces-list{
+color:var(--dark-muted);
+}
+
+body.ab-hero-highlight header .btn.outline{
+background:transparent;
+border-color:rgba(255,255,255,.22);
+color:white;
+}
+
+body.ab-deliverables-highlight #deliverables{
+background:
+radial-gradient(900px 500px at 20% 10%, rgba(59,130,246,.18), transparent 60%),
+radial-gradient(900px 500px at 85% 30%, rgba(16,185,129,.12), transparent 60%),
+var(--dark);
+border-top:1px solid var(--dark-line);
+border-bottom:1px solid var(--dark-line);
+}
+
+body.ab-deliverables-highlight #deliverables h2,
+body.ab-deliverables-highlight #deliverables .muted,
+body.ab-deliverables-highlight #deliverables .btn.tertiary{
+color:white;
+}
+
+body.ab-deliverables-highlight #deliverables .muted{
+color:var(--dark-muted);
+}
+
+body.ab-deliverables-highlight #deliverables .card{
+background:rgba(255,255,255,.06);
+border-color:var(--dark-line);
+color:white;
+}
+
+body.ab-deliverables-highlight #deliverables .btn.primary{
+box-shadow:0 12px 30px rgba(59,130,246,.28);
+}
 </style>
 </head>
 
-<body>
+<body class="ab-hero-highlight">
 
 <nav>
 <div class="container">
@@ -288,8 +382,8 @@ not setup, debates, or dashboards.
 <li>Tests nobody implements</li>
 </ul>
 <div class="sample-cta-group">
-  <a href="#deliverables" class="btn tertiary">What you receive</a>
-  </div>
+<a href="#deliverables" class="btn tertiary">What you receive</a>
+</div>
 </div>
 </div>
 
@@ -363,8 +457,9 @@ Review the kind of concise, decision-ready output you’ll receive.
 <div class="card">✔ Written summary</div>
 <div class="card">✔ Clear recommendation</div>
 </div>
+
 <div style="margin-top:40px;text-align:center">
-  <a class="btn primary" href="#contact">Start an experiment</a>
+<a class="btn primary" href="#contact">Start an experiment</a>
 </div>
 </div>
 </section>
@@ -378,22 +473,26 @@ Review the kind of concise, decision-ready output you’ll receive.
 <div class="card">
 <h3>Starter</h3>
 <p class="muted">Fast validation, low friction.</p>
+<p><strong>Starting from $490</strong></p>
 <ul class="muted">
 <li>1 experiment</li>
 <li>Simple visual or copy changes</li>
 <li>Clear go / no-go decision</li>
 </ul>
+<p class="pricing-note">Final scope confirmed after feasibility check.</p>
 <a class="btn primary" href="#contact">Start Starter</a>
 </div>
 
 <div class="card">
 <h3>Growth</h3>
 <p class="muted">Iteration and structural flexibility.</p>
+<p><strong>Starting from $1,200</strong></p>
 <ul class="muted">
 <li>2–3 experiments</li>
 <li>Visual & layout changes</li>
 <li>Roadmap of next tests</li>
 </ul>
+<p class="pricing-note">Final scope confirmed after feasibility check.</p>
 <a class="btn primary" href="#contact">Start Growth</a>
 </div>
 </div>
@@ -423,6 +522,22 @@ title="TesterPartner Contact Form">
 </div>
 </section>
 
+<section class="section soft soft-cta-section" id="not-sure-yet">
+<div class="container">
+<div class="card soft-cta-card">
+<div class="soft-cta-copy">
+<h3 class="soft-cta-title">I’m not sure yet</h3>
+<p class="muted">
+The first step to make a change in your current situation is to accept it, and it’s okay not to be sure.
+</p>
+</div>
+<div>
+<button type="button" class="btn tertiary" id="open-follow-up">Let’s see where I am in 2 weeks</button>
+</div>
+</div>
+</div>
+</section>
+
 <div class="modal" id="sample-report-modal" aria-hidden="true">
 <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="sample-report-title">
 <button type="button" class="modal-close" id="close-sample-report" aria-label="Close">×</button>
@@ -442,6 +557,25 @@ title="Sample Report Access Form">
 </div>
 </div>
 
+<div class="modal" id="follow-up-modal" aria-hidden="true">
+<div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="follow-up-title">
+<button type="button" class="modal-close" id="close-follow-up" aria-label="Close">×</button>
+<h3 class="modal-title" id="follow-up-title">Get a gentle follow-up in 2 weeks</h3>
+
+<div class="modal-embed">
+<iframe
+src="https://tally.so/embed/YOUR_FOLLOW_UP_FORM_ID?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+width="100%"
+height="180"
+frameborder="0"
+marginheight="0"
+marginwidth="0"
+title="Two Week Follow-up Form">
+</iframe>
+</div>
+</div>
+</div>
+
 <footer>
 <div class="container">
 <strong>TesterPartner</strong>
@@ -454,30 +588,46 @@ const openSampleReport = document.getElementById("open-sample-report");
 const closeSampleReport = document.getElementById("close-sample-report");
 const sampleReportModal = document.getElementById("sample-report-modal");
 
-function openModal() {
-  sampleReportModal.classList.add("is-open");
+const openFollowUp = document.getElementById("open-follow-up");
+const closeFollowUp = document.getElementById("close-follow-up");
+const followUpModal = document.getElementById("follow-up-modal");
+
+function openModal(modal) {
+  modal.classList.add("is-open");
   document.body.classList.add("modal-open");
-  sampleReportModal.setAttribute("aria-hidden", "false");
+  modal.setAttribute("aria-hidden", "false");
 }
 
-function closeModal() {
-  sampleReportModal.classList.remove("is-open");
+function closeModal(modal) {
+  modal.classList.remove("is-open");
   document.body.classList.remove("modal-open");
-  sampleReportModal.setAttribute("aria-hidden", "true");
+  modal.setAttribute("aria-hidden", "true");
 }
 
-openSampleReport.addEventListener("click", openModal);
-closeSampleReport.addEventListener("click", closeModal);
+openSampleReport.addEventListener("click", () => openModal(sampleReportModal));
+closeSampleReport.addEventListener("click", () => closeModal(sampleReportModal));
+
+openFollowUp.addEventListener("click", () => openModal(followUpModal));
+closeFollowUp.addEventListener("click", () => closeModal(followUpModal));
 
 sampleReportModal.addEventListener("click", (e) => {
   if (e.target === sampleReportModal) {
-    closeModal();
+    closeModal(sampleReportModal);
+  }
+});
+
+followUpModal.addEventListener("click", (e) => {
+  if (e.target === followUpModal) {
+    closeModal(followUpModal);
   }
 });
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && sampleReportModal.classList.contains("is-open")) {
-    closeModal();
+    closeModal(sampleReportModal);
+  }
+  if (e.key === "Escape" && followUpModal.classList.contains("is-open")) {
+    closeModal(followUpModal);
   }
 });
 </script>

@@ -598,28 +598,32 @@ Roll out Variant B and reuse the pattern across similar pages.</p>
 <div class="card">
 <h3>Starter</h3>
 <p class="muted">Fast validation, low friction.</p>
-<p><strong>Starting from $490</strong></p>
+<p><strong>Starting from $429</strong></p>
 <ul class="muted">
 <li>1 validation experiment</li>
 <li>Simple visual or copy changes</li>
 <li>Decision-ready recommendation</li>
 </ul>
 <p class="pricing-note">Final scope confirmed after feasibility check.</p>
-<a class="btn primary" href="YOUR_STARTER_PAYMENT_LINK" target="_blank" rel="noopener">Start Starter</a>
+<button class="btn primary" onclick="checkoutStarter()">
+  Start Starter
+  </button>
 </div>
 
 <div class="card pricing-card-popular">
 <div class="pricing-badge">Most popular</div>
 <h3>Growth</h3>
 <p class="muted">Iteration and structural flexibility.</p>
-<p><strong>Starting from $1,200</strong></p>
+<p><strong>Starting from $1,199</strong></p>
 <ul class="muted">
 <li>2–3 validation experiments</li>
 <li>Visual & layout changes</li>
 <li>Experiment roadmap</li>
 </ul>
 <p class="pricing-note">Final scope confirmed after feasibility check.</p>
-<a class="btn primary" href="YOUR_GROWTH_PAYMENT_LINK" target="_blank" rel="noopener">Start Growth</a>
+<button class="btn primary" onclick="checkoutGrowth()">
+  Start Growth
+  </button>
 </div>
 
 <div class="card">
@@ -633,7 +637,9 @@ Roll out Variant B and reuse the pattern across similar pages.</p>
 <li>Expanded roadmap</li>
 </ul>
 <p class="pricing-note">Best for teams ready to build a true experimentation habit.</p>
-<a class="btn primary" href="YOUR_SCALE_PAYMENT_LINK" target="_blank" rel="noopener">Start Scale</a>
+<button class="btn primary" onclick="checkoutScale()">
+  Start Scale
+  </button>
 </div>
 </div>
 </div>
@@ -786,6 +792,40 @@ document.addEventListener("keydown", (e) => {
     closeModal(followUpModal);
   }
 });
+
+function checkoutStarter(){
+  Paddle.Checkout.open({
+    items: [
+      {
+        priceId: "pri_STARTER123",
+        quantity: 1
+      }
+    ]
+  });
+}
+
+function checkoutGrowth(){
+  Paddle.Checkout.open({
+    items: [
+      {
+        priceId: "pri_GROWTH123",
+        quantity: 1
+      }
+    ]
+  });
+}
+
+function checkoutScale(){
+  Paddle.Checkout.open({
+    items: [
+      {
+        priceId: "pri_SCALE123",
+        quantity: 1
+      }
+    ]
+  });
+}
+
 </script>
 
 </body>

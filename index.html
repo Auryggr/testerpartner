@@ -264,6 +264,8 @@
       <input name="website" type="url" placeholder="URL" style="width:100%;padding:12px;margin-bottom:12px">
       <textarea name="idea" placeholder="What do you want to test?" required style="width:100%;padding:12px"></textarea>
     
+      <input type="hidden" name="plan" id="tp-plan" value="Not sure">
+    
       <button type="submit" class="btn primary" style="margin-top:16px">Send message</button>
       <p id="form-status" class="muted" style="margin-top:12px"></p>
     </form>
@@ -284,16 +286,22 @@
 <script>
   const form = document.getElementById("tp-form");
   const statusEl = document.getElementById("form-status");
+  const planEl = document.getElementById("tp-plan");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     statusEl.textContent = "Sending…";
 
     const data = new FormData(form);
-    data.append("source", "website");
-    data.append("version", "v1");
+    data.set("source", "website");
+    data.set("version", "v1");
+    data.set("plan", planEl ? planEl.value : "Not sure");
 
-    const res = await fetch("https://tp-lead-proxy.aurysdesign.workers.dev/", { method: "POST", body: data });
+    const res = await fetch("https://tp-lead-proxy.aurysdesign.workers.dev/", {
+      method: "POST",
+      body: data
+    });
+
     const json = await res.json().catch(() => ({}));
 
     if (res.ok && json.ok) {

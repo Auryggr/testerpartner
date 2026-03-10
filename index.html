@@ -124,6 +124,28 @@
   background: transparent;
 }
 .gFMgdW{ display:none!important;}
+.sample-report-card {
+  margin-top:20px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px 24px;
+  background:white;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.sample-report-text {
+  margin:6px 0 0;
+}
+
+@media (max-width:900px) {
+  .sample-report-card {
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}
   </style>
 </head>
 
@@ -167,45 +189,56 @@
   </div>
 </header>
 
-<!-- PROCESS PROOF -->
-<section class="section" id="process">
-  <div class="container">
-    <h2>Decisions, not dashboards</h2>
-    <p class="muted">
-      We don’t optimize for vanity metrics. Every experiment is designed to answer
-      one clear question — and end with a recommendation.
-    </p>
+<section class="section soft" id="process">
+  <div class="container grid grid-2">
 
-    <div class="grid grid-4" style="margin-top:48px">
-      <div class="card">✔ Clear hypothesis</div>
-      <div class="card">✔ One primary metric</div>
-      <div class="card">✔ Feasibility before build</div>
-      <div class="card">✔ Clear recommendation</div>
+    <div>
+      <h2>Decisions, not dashboards</h2>
+      <p class="muted">
+        We don’t optimize for vanity metrics. Every experiment is designed to answer
+        one clear question — and end with a recommendation.
+      </p>
+
+      <div class="grid grid-2" style="margin-top:32px">
+        <div class="card">✔ Clear hypothesis</div>
+        <div class="card">✔ One primary metric</div>
+        <div class="card">✔ Feasibility before build</div>
+        <div class="card">✔ Clear recommendation</div>
+      </div>
     </div>
-  </div>
-</section>
 
-<!-- SAMPLE REPORT -->
-<section class="section soft">
-  <div class="container">
-    <h2>Example experiment outcome</h2>
-    <p class="muted">This is what a finished experiment looks like.</p>
+    <div>
+      <h3 style="margin-top:0">What this looks like in practice</h3>
+      <p class="muted">A finished experiment should end in a decision, not a debate.</p>
 
-    <div class="card" style="max-width:720px;margin-top:32px">
-      <p><strong>Experiment goal</strong><br>Increase clicks on primary CTA</p>
-      <p><strong>Hypothesis</strong><br>
-        If we clarify CTA copy and improve visual hierarchy, clicks will increase.
-      </p>
-      <p><strong>Variants</strong><br>
-        Control vs Variant B (copy + hierarchy)
-      </p>
-      <p><strong>Result</strong><br>
-        Variant B outperformed the control.
-      </p>
-      <p><strong>Recommendation</strong><br>
-        Roll out Variant B and reuse the pattern across similar pages.
-      </p>
+      <div class="card" style="margin-top:20px">
+        <p><strong>Experiment goal</strong><br>
+        Increase clicks on primary CTA</p>
+
+        <p><strong>Hypothesis</strong><br>
+        If we clarify CTA copy and improve visual hierarchy, clicks will increase.</p>
+
+        <p><strong>Variants</strong><br>
+        Control vs Variant B (copy + hierarchy)</p>
+
+        <p><strong>Result</strong><br>
+        Variant B outperformed the control.</p>
+
+        <p><strong>Recommendation</strong><br>
+        Roll out Variant B and reuse the pattern across similar pages.</p>
+      </div>
+
+      <div class="sample-report-card">
+        <div>
+          <strong>Want to see a sample report?</strong>
+          <p class="muted sample-report-text">
+            Review the kind of concise, decision-ready output you’ll receive.
+          </p>
+        </div>
+        <a href="#" class="btn primary">View sample report</a>
+      </div>
     </div>
+
   </div>
 </section>
 

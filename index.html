@@ -1,356 +1,485 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TesterPartner — A/B testing under demand</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TesterPartner — A/B testing under demand</title>
 
-  <style>
-    :root {
-      --ink:#111111;
-      --muted:#6b7280;
-      --line:#e5e7eb;
-      --bg:#ffffff;
-      --soft:#fafafa;
-      --accent:#3b82f6;
-    }
-
-    * { box-sizing: border-box; }
-    body {
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
-      color:var(--ink);
-      background:var(--bg);
-      line-height:1.55;
-    }
-
-    a { color:inherit; text-decoration:none; }
-    h1,h2,h3 { letter-spacing:-0.04em; }
-
-    .container {
-      max-width:1100px;
-      margin:0 auto;
-      padding:0 20px;
-    }
-
-    .section {
-      padding:88px 0;
-    }
-
-    .section.soft {
-      background:var(--soft);
-      border-top:1px solid var(--line);
-      border-bottom:1px solid var(--line);
-    }
-
-    .muted { color:var(--muted); }
-
-    .btn {
-      display:inline-block;
-      padding:14px 22px;
-      border-radius:12px;
-      font-weight:600;
-      border:1px solid var(--line);
-    }
-
-    .btn.primary {
-      background:var(--accent);
-      color:white;
-      border-color:var(--accent);
-    }
-
-    .btn.outline {
-      background:white;
-    }
-
-    .grid {
-      display:grid;
-      gap:32px;
-    }
-
-    .grid-2 { grid-template-columns:repeat(2,1fr); }
-    .grid-3 { grid-template-columns:repeat(3,1fr); }
-
-    @media (max-width:900px) {
-      .grid-2,.grid-3 { grid-template-columns:1fr; }
-    }
-
-    .card {
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:28px;
-      background:white;
-    }
-
-    header {
-      border-bottom:1px solid var(--line);
-      background:
-        radial-gradient(800px 400px at 20% 10%, rgba(59,130,246,.15), transparent 60%),
-        radial-gradient(700px 300px at 90% 20%, rgba(16,185,129,.10), transparent 60%);
-    }
-
-    nav {
-      position:sticky;
-      top:0;
-      background:white;
-      border-bottom:1px solid var(--line);
-      z-index:10;
-    }
-
-    nav .container {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      height:64px;
-    }
-
-    nav a { margin-left:18px; font-weight:500; }
-
-    footer {
-      background:#0b1020;
-      color:rgba(255,255,255,.85);
-      padding:56px 0;
-    }
-    .tally-card {
-  padding: 0;
-  overflow: hidden;
+<style>
+:root{
+--ink:#111111;
+--muted:#6b7280;
+--line:#e5e7eb;
+--bg:#ffffff;
+--soft:#fafafa;
+--accent:#3b82f6;
+--dark:#0b1020;
 }
 
-.tally-card iframe {
-  display: block;
-  width: 100%;
-  border: 0;
-  min-height: 420px;
-  background: transparent;
-}
-.dDbLsu{ display:none!important;}
-.sample-report-card {
-  margin-top:20px;
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:20px 24px;
-  background:white;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+color:var(--ink);
+background:var(--bg);
+line-height:1.55;
 }
 
-.sample-report-text {
-  margin:6px 0 0;
+a{text-decoration:none;color:inherit}
+h1,h2,h3{letter-spacing:-0.04em}
+
+.container{
+max-width:1100px;
+margin:0 auto;
+padding:0 20px;
 }
 
-@media (max-width:900px) {
-  .sample-report-card {
-    flex-direction:column;
-    align-items:flex-start;
-  }
+.section{padding:88px 0}
+
+.section.soft{
+background:var(--soft);
+border-top:1px solid var(--line);
+border-bottom:1px solid var(--line);
 }
-  </style>
+
+.muted{color:var(--muted)}
+
+.btn{
+display:inline-block;
+padding:14px 22px;
+border-radius:12px;
+font-weight:600;
+border:1px solid var(--line);
+cursor:pointer;
+font:inherit;
+}
+
+.btn.primary{
+background:var(--accent);
+color:white;
+border-color:var(--accent);
+}
+
+.btn.outline{background:white}
+
+.btn.tertiary{
+background:transparent;
+border:1px solid var(--line);
+color:var(--muted);
+}
+
+.grid{display:grid;gap:32px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+
+@media(max-width:900px){
+.grid-2,.grid-3{grid-template-columns:1fr}
+}
+
+.card{
+border:1px solid var(--line);
+border-radius:20px;
+padding:28px;
+background:white;
+}
+
+header{
+border-bottom:1px solid var(--line);
+background:
+radial-gradient(800px 400px at 20% 10%,rgba(59,130,246,.15),transparent 60%),
+radial-gradient(700px 300px at 90% 20%,rgba(16,185,129,.10),transparent 60%);
+}
+
+nav{
+position:sticky;
+top:0;
+background:white;
+border-bottom:1px solid var(--line);
+z-index:10;
+}
+
+nav .container{
+display:flex;
+align-items:center;
+justify-content:space-between;
+height:64px;
+}
+
+nav a{margin-left:18px;font-weight:500}
+
+footer{
+background:#0b1020;
+color:rgba(255,255,255,.85);
+padding:56px 0;
+}
+
+.principles-list{
+display:flex;
+flex-direction:column;
+gap:18px;
+margin-top:32px;
+}
+
+.replaces-list{
+margin-top:12px;
+padding-left:18px;
+color:var(--muted);
+}
+
+.replaces-list li{
+text-decoration:line-through;
+opacity:.7;
+margin-bottom:6px;
+}
+
+.sample-report-card{
+margin-top:20px;
+border:1px solid var(--line);
+border-radius:20px;
+padding:20px 24px;
+background:white;
+display:flex;
+align-items:flex-start;
+justify-content:space-between;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.sample-report-content{
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+gap:12px;
+}
+
+.sample-report-text{
+margin:0;
+}
+
+.sample-cta-group{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+}
+
+.tally-card{
+padding:0;
+overflow:hidden;
+}
+
+.tally-card iframe{
+display:block;
+width:100%;
+border:0;
+min-height:420px;
+background:transparent;
+}
+
+.modal{
+position:fixed;
+inset:0;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:rgba(0,0,0,.55);
+z-index:1000;
+}
+
+.modal.is-open{
+display:flex;
+}
+
+.modal-panel{
+width:100%;
+max-width:560px;
+background:white;
+border-radius:24px;
+border:1px solid var(--line);
+padding:24px;
+position:relative;
+box-shadow:0 20px 60px rgba(0,0,0,.2);
+}
+
+.modal-close{
+position:absolute;
+top:14px;
+right:14px;
+width:40px;
+height:40px;
+border-radius:999px;
+border:1px solid var(--line);
+background:white;
+font-size:20px;
+line-height:1;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+}
+
+.modal-title{
+margin:0 40px 8px 0;
+font-size:24px;
+line-height:1.2;
+}
+
+.modal-embed{
+margin-top:20px;
+border:1px solid var(--line);
+border-radius:18px;
+overflow:hidden;
+}
+
+.modal-embed iframe{
+display:block;
+width:100%;
+border:0;
+min-height:280px;
+background:transparent;
+}
+
+body.modal-open{
+overflow:hidden;
+}
+</style>
 </head>
 
 <body>
 
-<!-- NAV -->
 <nav>
-  <div class="container">
-    <strong>TesterPartner</strong>
-    <div>
-      <a href="#process">Process</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#contact">Contact</a>
-    </div>
-  </div>
+<div class="container">
+<strong>TesterPartner</strong>
+<div>
+<a href="#process">Process</a>
+<a href="#pricing">Pricing</a>
+<a href="#contact">Contact</a>
+</div>
+</div>
 </nav>
 
-<!-- HERO -->
 <header>
-  <div class="container section grid grid-2">
-    <div class="container">
-      <p class="muted">A/B testing under demand</p>
-      <h1>Ship experiments faster.<br>Decide with confidence.</h1>
-      <p class="muted">
-        We design, implement, and analyze experiments so your team can focus on growth —
-        not setup, debates, or dashboards.
-      </p>
-      <div style="margin-top:24px">
-        <a class="btn primary" href="#pricing">See plans</a>
-        <a class="btn outline" href="#process" style="margin-left:12px">How it works</a>
-      </div>
-    </div>
-    <div class="container">
-    <div class="card">
-      <strong>What this replaces</strong>
-      <p class="muted">
-        Long discussions, unclear scope, stalled experimentation, and reports nobody reads.
-      </p>
-    </div>
-  </div>
-  </div>
+<div class="container section grid grid-2">
+
+<div class="container">
+<p class="muted">A/B testing under demand</p>
+<h1>Ship experiments faster.<br>Decide with confidence.</h1>
+
+<p class="muted">
+We design, implement, and analyze experiments so your team can focus on growth —
+not setup, debates, or dashboards.
+</p>
+
+<div style="margin-top:24px">
+<a class="btn primary" href="#pricing">See plans</a>
+<a class="btn outline" href="#process" style="margin-left:12px">How it works</a>
+</div>
+</div>
+
+<div class="container">
+<div class="card">
+<strong>What this replaces</strong>
+<ul class="replaces-list">
+<li>Endless dashboards</li>
+<li>Debates about metrics</li>
+<li>Experiments without conclusions</li>
+<li>Tests nobody implements</li>
+</ul>
+</div>
+</div>
+
+</div>
 </header>
 
 <section class="section soft" id="process">
-  <div class="container grid grid-2">
+<div class="container grid grid-2">
 
-    <div>
-      <h2>Decisions, not dashboards</h2>
-      <p class="muted">
-        We don’t optimize for vanity metrics. Every experiment is designed to answer
-        one clear question — and end with a recommendation.
-      </p>
+<div>
+<h2>Decisions, not dashboards</h2>
 
-      <div class="grid grid-2" style="margin-top:32px">
-        <div class="card">✔ Clear hypothesis</div>
-        <div class="card">✔ One primary metric</div>
-        <div class="card">✔ Feasibility before build</div>
-        <div class="card">✔ Clear recommendation</div>
-      </div>
-    </div>
+<p class="muted">
+We don’t optimize for vanity metrics. Every experiment is designed to answer
+one clear question — and end with a recommendation.
+</p>
 
-    <div>
-      <h3 style="margin-top:0">What this looks like in practice</h3>
-      <p class="muted">A finished experiment should end in a decision, not a debate.</p>
+<div class="principles-list">
+<div class="card">✔ Clear hypothesis</div>
+<div class="card">✔ One primary metric</div>
+<div class="card">✔ Feasibility before build</div>
+<div class="card">✔ Clear recommendation</div>
+</div>
+</div>
 
-      <div class="card" style="margin-top:20px">
-        <p><strong>Experiment goal</strong><br>
-        Increase clicks on primary CTA</p>
+<div>
+<h3 style="margin-top:0">What this looks like in practice</h3>
 
-        <p><strong>Hypothesis</strong><br>
-        If we clarify CTA copy and improve visual hierarchy, clicks will increase.</p>
+<p class="muted">A finished experiment should end in a decision, not a debate.</p>
 
-        <p><strong>Variants</strong><br>
-        Control vs Variant B (copy + hierarchy)</p>
+<div class="card" style="margin-top:20px">
+<p><strong>Experiment goal</strong><br>
+Increase clicks on primary CTA</p>
 
-        <p><strong>Result</strong><br>
-        Variant B outperformed the control.</p>
+<p><strong>Hypothesis</strong><br>
+If we clarify CTA copy and improve visual hierarchy, clicks will increase.</p>
 
-        <p><strong>Recommendation</strong><br>
-        Roll out Variant B and reuse the pattern across similar pages.</p>
-      </div>
+<p><strong>Variants</strong><br>
+Control vs Variant B (copy + hierarchy)</p>
 
-      <div class="sample-report-card">
-        <div>
-          <strong>Want to see a sample report?</strong>
-          <p class="muted sample-report-text">
-            Review the kind of concise, decision-ready output you’ll receive.
-          </p>
-        </div>
-        <a href="#" class="btn primary">View sample report</a>
-      </div>
-    </div>
+<p><strong>Result</strong><br>
+Variant B outperformed the control.</p>
 
-  </div>
+<p><strong>Recommendation</strong><br>
+Roll out Variant B and reuse the pattern across similar pages.</p>
+</div>
+
+<div class="sample-report-card">
+<div class="sample-report-content">
+<strong>Want to see a sample report?</strong>
+<button type="button" class="btn primary" id="open-sample-report">View sample report</button>
+<p class="muted sample-report-text">
+Review the kind of concise, decision-ready output you’ll receive.
+</p>
+</div>
+
+<div class="sample-cta-group">
+<a href="#deliverables" class="btn tertiary">What you receive</a>
+</div>
+</div>
+
+</div>
+
+</div>
 </section>
 
-<!-- WHAT YOU RECEIVE -->
-<section class="section">
-  <div class="container">
-    <h2>What you receive</h2>
-    <p class="muted">Every engagement includes the same core deliverables.</p>
+<section class="section" id="deliverables">
+<div class="container">
+<h2>What you receive</h2>
+<p class="muted">Every engagement includes the same core deliverables.</p>
 
-    <div class="grid grid-3" style="margin-top:40px">
-      <div class="card">✔ Hypothesis definition</div>
-      <div class="card">✔ Testable variants</div>
-      <div class="card">✔ Live implementation</div>
-      <div class="card">✔ Monitoring & QA</div>
-      <div class="card">✔ Written summary</div>
-      <div class="card">✔ Clear recommendation</div>
-    </div>
-  </div>
+<div class="grid grid-3" style="margin-top:40px">
+<div class="card">✔ Hypothesis definition</div>
+<div class="card">✔ Testable variants</div>
+<div class="card">✔ Live implementation</div>
+<div class="card">✔ Monitoring & QA</div>
+<div class="card">✔ Written summary</div>
+<div class="card">✔ Clear recommendation</div>
+</div>
+</div>
 </section>
 
-<!-- PRICING -->
 <section class="section soft" id="pricing">
-  <div class="container">
-    <h2>Starter vs Growth</h2>
-    <p class="muted">Start fast or iterate deeper.</p>
+<div class="container">
+<h2>Starter vs Growth</h2>
+<p class="muted">Start fast or iterate deeper.</p>
 
-    <div class="grid grid-2" style="margin-top:40px">
-      <div class="card">
-        <h3>Starter</h3>
-        <p class="muted">Fast validation, low friction.</p>
-        <ul class="muted">
-          <li>1 experiment</li>
-          <li>Simple visual or copy changes</li>
-          <li>Clear go / no-go decision</li>
-        </ul>
-        <a class="btn primary" href="#contact">Start Starter</a>
-      </div>
+<div class="grid grid-2" style="margin-top:40px">
+<div class="card">
+<h3>Starter</h3>
+<p class="muted">Fast validation, low friction.</p>
+<ul class="muted">
+<li>1 experiment</li>
+<li>Simple visual or copy changes</li>
+<li>Clear go / no-go decision</li>
+</ul>
+<a class="btn primary" href="#contact">Start Starter</a>
+</div>
 
-      <div class="card">
-        <h3>Growth</h3>
-        <p class="muted">Iteration and structural flexibility.</p>
-        <ul class="muted">
-          <li>2–3 experiments</li>
-          <li>Visual & layout changes</li>
-          <li>Roadmap of next tests</li>
-        </ul>
-        <a class="btn primary" href="#contact">Start Growth</a>
-      </div>
-    </div>
-  </div>
+<div class="card">
+<h3>Growth</h3>
+<p class="muted">Iteration and structural flexibility.</p>
+<ul class="muted">
+<li>2–3 experiments</li>
+<li>Visual & layout changes</li>
+<li>Roadmap of next tests</li>
+</ul>
+<a class="btn primary" href="#contact">Start Growth</a>
+</div>
+</div>
+</div>
 </section>
 
-<!-- CONTACT -->
 <section class="section" id="contact">
-  <div class="container grid grid-2">
-    <div>
-      <h2>Ready to launch an experiment?</h2>
-      <p class="muted">
-        Tell us what you want to test and we’ll guide the next step.
-      </p>
-    </div>
+<div class="container grid grid-2">
+<div>
+<h2>Ready to launch an experiment?</h2>
+<p class="muted">
+Tell us what you want to test and we’ll guide the next step.
+</p>
+</div>
 
-    <div class="card tally-card">
-      <iframe
-        src="https://tally.so/r/WO8YLj?transparentBackground=1&hideTitle=1"
-        width="100%"
-        height="420"
-        frameborder="0"
-        marginheight="0"
-        marginwidth="0"
-        title="TesterPartner Contact Form">
-      </iframe>
-    </div>
-  </div>3
+<div class="card tally-card">
+<iframe
+src="https://tally.so/r/WO8YLj?transparentBackground=1&hideTitle=1"
+width="100%"
+height="420"
+frameborder="0"
+marginheight="0"
+marginwidth="0"
+title="TesterPartner Contact Form">
+</iframe>
+</div>
+</div>
 </section>
 
+<div class="modal" id="sample-report-modal" aria-hidden="true">
+<div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="sample-report-title">
+<button type="button" class="modal-close" id="close-sample-report" aria-label="Close">×</button>
+<h3 class="modal-title" id="sample-report-title">Review the kind of concise, decision-ready output you’ll receive.</h3>
 
-<!-- FOOTER -->
+<div class="modal-embed">
+<iframe
+src="https://tally.so/r/YOUR_SAMPLE_REPORT_FORM_ID?transparentBackground=1&hideTitle=1"
+width="100%"
+height="280"
+frameborder="0"
+marginheight="0"
+marginwidth="0"
+title="Sample Report Access Form">
+</iframe>
+</div>
+</div>
+</div>
+
 <footer>
-  <div class="container">
-    <strong>TesterPartner</strong>
-    <p class="muted">Productized A/B testing under demand.</p>
-  </div>
+<div class="container">
+<strong>TesterPartner</strong>
+<p class="muted">Productized A/B testing under demand.</p>
+</div>
 </footer>
+
 <script>
-  const form = document.getElementById("tp-form");
-  const statusEl = document.getElementById("form-status");
-  const planEl = document.getElementById("tp-plan");
+const openSampleReport = document.getElementById("open-sample-report");
+const closeSampleReport = document.getElementById("close-sample-report");
+const sampleReportModal = document.getElementById("sample-report-modal");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    statusEl.textContent = "Sending…";
+function openModal() {
+  sampleReportModal.classList.add("is-open");
+  document.body.classList.add("modal-open");
+  sampleReportModal.setAttribute("aria-hidden", "false");
+}
 
-    const data = new FormData(form);
-    data.set("source", "website");
-    data.set("version", "v1");
-    data.set("plan", planEl ? planEl.value : "Not sure");
+function closeModal() {
+  sampleReportModal.classList.remove("is-open");
+  document.body.classList.remove("modal-open");
+  sampleReportModal.setAttribute("aria-hidden", "true");
+}
 
-    const res = await fetch("https://tp-lead-proxy.aurysdesign.workers.dev/", {
-      method: "POST",
-      body: data
-    });
+openSampleReport.addEventListener("click", openModal);
+closeSampleReport.addEventListener("click", closeModal);
 
-    const json = await res.json().catch(() => ({}));
+sampleReportModal.addEventListener("click", (e) => {
+  if (e.target === sampleReportModal) {
+    closeModal();
+  }
+});
 
-    if (res.ok && json.ok) {
-      form.reset();
-      statusEl.textContent = "Thanks! We’ll contact you shortly.";
-    } else {
-      statusEl.textContent = "Couldn’t send. Please try again.";
-    }
-  });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && sampleReportModal.classList.contains("is-open")) {
+    closeModal();
+  }
+});
 </script>
+
 </body>
 </html>

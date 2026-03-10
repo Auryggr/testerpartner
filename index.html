@@ -208,6 +208,29 @@ font-size:14px;
 color:var(--muted);
 }
 
+.pricing-intro{
+margin-top:12px;
+}
+
+.pricing-card-popular{
+border:2px solid var(--accent);
+transform:scale(1.03);
+box-shadow:0 16px 40px rgba(0,0,0,.08);
+position:relative;
+}
+
+.pricing-badge{
+position:absolute;
+top:-12px;
+left:20px;
+background:var(--accent);
+color:white;
+font-size:12px;
+padding:6px 10px;
+border-radius:999px;
+font-weight:600;
+}
+
 .modal{
 position:fixed;
 inset:0;
@@ -338,6 +361,12 @@ color:white;
 body.ab-deliverables-highlight #deliverables .btn.primary{
 box-shadow:0 12px 30px rgba(59,130,246,.28);
 }
+
+@media(max-width:900px){
+.pricing-card-popular{
+transform:none;
+}
+}
 </style>
 </head>
 
@@ -389,6 +418,35 @@ not setup, debates, or dashboards.
 
 </div>
 </header>
+
+<section class="section">
+<div class="container">
+<div class="card">
+<h2>Who this is for</h2>
+
+<div class="grid grid-2" style="margin-top:24px">
+<div>
+<strong>Great fit if</strong>
+<ul class="muted">
+<li>You have live traffic and real questions</li>
+<li>You want to validate ideas before scaling them</li>
+<li>You need decisions, not more opinions</li>
+</ul>
+</div>
+
+<div>
+<strong>Probably not yet if</strong>
+<ul class="muted">
+<li>You don’t have enough traffic yet</li>
+<li>You only want design feedback</li>
+<li>You need a full redesign instead of experiments</li>
+</ul>
+</div>
+</div>
+
+</div>
+</div>
+</section>
 
 <section class="section soft" id="process">
 <div class="container grid grid-2">
@@ -460,59 +518,60 @@ Review the kind of concise, decision-ready output you’ll receive.
 
 <div style="margin-top:40px;text-align:center">
 <a class="btn primary" href="#contact">Start an experiment</a>
+<a class="btn tertiary" href="#process" style="margin-left:12px">See how it works</a>
 </div>
 </div>
 </section>
 
 <section class="section soft" id="pricing">
-  <div class="container">
-  <h2>Choose your experimentation capacity</h2>
-  <p class="muted">Start fast or iterate deeper.</p>
-  
-  <div class="grid grid-2" style="margin-top:40px">
-  
-  <div class="card">
-  <h3>Starter</h3>
-  <p class="muted">Fast validation, low friction.</p>
-  
-  <p><strong>Starting from $490</strong></p>
-  
-  <ul class="muted">
-  <li>1 validation experiment</li>
-  <li>Simple visual or copy changes</li>
-  <li>Decision-ready recommendation</li>
-  </ul>
-  
-  <p class="pricing-note">
-  Final scope confirmed after feasibility check.
-  </p>
-  
-  <a class="btn primary" href="#contact">Start Starter</a>
-  </div>
-  
-  
-  <div class="card">
-  <h3>Growth</h3>
-  <p class="muted">Iteration and structural flexibility.</p>
-  
-  <p><strong>Starting from $1,200</strong></p>
-  
-  <ul class="muted">
-  <li>2–3 validation experiments</li>
-  <li>Visual & layout changes</li>
-  <li>Experiment roadmap</li>
-  </ul>
-  
-  <p class="pricing-note">
-  Final scope confirmed after feasibility check.
-  </p>
-  
-  <a class="btn primary" href="#contact">Start Growth</a>
-  </div>
-  
-  </div>
-  </div>
-  </section>
+<div class="container">
+<h2>Choose your experimentation capacity</h2>
+<p class="muted pricing-intro">Most teams start with Growth to run multiple validation experiments.</p>
+
+<div class="grid grid-3" style="margin-top:40px">
+<div class="card">
+<h3>Starter</h3>
+<p class="muted">Fast validation, low friction.</p>
+<p><strong>Starting from $490</strong></p>
+<ul class="muted">
+<li>1 validation experiment</li>
+<li>Simple visual or copy changes</li>
+<li>Decision-ready recommendation</li>
+</ul>
+<p class="pricing-note">Final scope confirmed after feasibility check.</p>
+<a class="btn primary" href="#contact">Start Starter</a>
+</div>
+
+<div class="card pricing-card-popular">
+<div class="pricing-badge">Most popular</div>
+<h3>Growth</h3>
+<p class="muted">Iteration and structural flexibility.</p>
+<p><strong>Starting from $1,200</strong></p>
+<ul class="muted">
+<li>2–3 validation experiments</li>
+<li>Visual & layout changes</li>
+<li>Experiment roadmap</li>
+</ul>
+<p class="pricing-note">Final scope confirmed after feasibility check.</p>
+<a class="btn primary" href="#contact">Start Growth</a>
+</div>
+
+<div class="card">
+<h3>Scale</h3>
+<p class="muted">Continuous experimentation for committed teams.</p>
+<p><strong>Starting from $2,900</strong></p>
+<ul class="muted">
+<li>6+ validation experiments</li>
+<li>Continuous optimization</li>
+<li>Priority implementation</li>
+<li>Expanded roadmap</li>
+</ul>
+<p class="pricing-note">Best for teams ready to build a true experimentation habit.</p>
+<a class="btn primary" href="#contact">Start Scale</a>
+</div>
+</div>
+</div>
+</section>
 
 <section class="section" id="contact">
 <div class="container grid grid-2">
@@ -543,11 +602,11 @@ title="TesterPartner Contact Form">
 <div class="soft-cta-copy">
 <h3 class="soft-cta-title">I’m not sure yet</h3>
 <p class="muted">
-  It’s okay not to be ready. The first step toward change is noticing where you are now.
+It’s okay not to be ready. The first step toward change is noticing where you are now.
 </p>
 </div>
 <div>
-<button type="button" class="btn tertiary" id="open-follow-up">Send me a gentle check-in in 2 weeks</button>
+<button type="button" class="btn tertiary" id="open-follow-up">Let’s see where I am in 2 weeks</button>
 </div>
 </div>
 </div>

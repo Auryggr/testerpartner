@@ -301,7 +301,20 @@ align-items:center;
 justify-content:center;
 cursor:pointer;
 }
-
+.modal-right-bottom{
+position:absolute;
+bottom:40px;
+right:26px;
+width:60px;
+height:60px;
+border-radius:999px;
+background:white;
+font-size:20px;
+line-height:1;
+display:flex;
+align-items:center;
+justify-content:center;
+}
 .modal-title{
 margin:0 40px 8px 0;
 font-size:24px;
@@ -690,6 +703,7 @@ It’s okay not to be ready. The first step toward change is noticing where you 
 <div class="modal" id="sample-report-modal" aria-hidden="true">
 <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="sample-report-title">
 <button type="button" class="modal-close" id="close-sample-report" aria-label="Close">×</button>
+<div class="modal-right-bottom"></div>
 <h3 class="modal-title" id="sample-report-title">Want to see a sample report?</h3>
 <p class="modal-subtitle">Review the kind of concise, decision-ready output you’ll receive.</p>
 

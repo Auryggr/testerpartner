@@ -194,13 +194,14 @@ color:var(--accent);
 .tally-card{
 padding:0;
 overflow:hidden;
+height: 850px;
 }
 
 .tally-card iframe{
 display:block;
 width:100%;
 border:0;
-min-height:420px;
+min-height:850px;
 background:transparent;
 }
 
@@ -730,68 +731,23 @@ title="Two Week Follow-up Form">
 </div>
 </footer>
 
+<!-- Paddle Checkout -->
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+
 <script>
-const navToggle = document.getElementById("nav-toggle");
-const navLinks = document.getElementById("nav-links");
+/* -----------------------------
+Paddle Initialization
+----------------------------- */
 
-navToggle.addEventListener("click", () => {
-  const isOpen = navLinks.classList.toggle("is-open");
-  navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+Paddle.Environment.set("sandbox"); // REMOVE when switching to live
+
+Paddle.Initialize({
+  token: "YOUR_CLIENT_TOKEN"
 });
 
-navLinks.querySelectorAll("a").forEach(link => {
-  link.addEventListener("click", () => {
-    navLinks.classList.remove("is-open");
-    navToggle.setAttribute("aria-expanded", "false");
-  });
-});
-
-const openSampleReport = document.getElementById("open-sample-report");
-const closeSampleReport = document.getElementById("close-sample-report");
-const sampleReportModal = document.getElementById("sample-report-modal");
-
-const openFollowUp = document.getElementById("open-follow-up");
-const closeFollowUp = document.getElementById("close-follow-up");
-const followUpModal = document.getElementById("follow-up-modal");
-
-function openModal(modal) {
-  modal.classList.add("is-open");
-  document.body.classList.add("modal-open");
-  modal.setAttribute("aria-hidden", "false");
-}
-
-function closeModal(modal) {
-  modal.classList.remove("is-open");
-  document.body.classList.remove("modal-open");
-  modal.setAttribute("aria-hidden", "true");
-}
-
-openSampleReport.addEventListener("click", () => openModal(sampleReportModal));
-closeSampleReport.addEventListener("click", () => closeModal(sampleReportModal));
-
-openFollowUp.addEventListener("click", () => openModal(followUpModal));
-closeFollowUp.addEventListener("click", () => closeModal(followUpModal));
-
-sampleReportModal.addEventListener("click", (e) => {
-  if (e.target === sampleReportModal) {
-    closeModal(sampleReportModal);
-  }
-});
-
-followUpModal.addEventListener("click", (e) => {
-  if (e.target === followUpModal) {
-    closeModal(followUpModal);
-  }
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && sampleReportModal.classList.contains("is-open")) {
-    closeModal(sampleReportModal);
-  }
-  if (e.key === "Escape" && followUpModal.classList.contains("is-open")) {
-    closeModal(followUpModal);
-  }
-});
+/* -----------------------------
+Checkout Functions
+----------------------------- */
 
 function checkoutStarter(){
   Paddle.Checkout.open({
@@ -826,7 +782,71 @@ function checkoutScale(){
   });
 }
 
+/* -----------------------------
+Navigation (mobile menu)
+----------------------------- */
+
+const navToggle = document.getElementById("nav-toggle");
+const navLinks = document.getElementById("nav-links");
+
+navToggle.addEventListener("click", () => {
+  const isOpen = navLinks.classList.toggle("is-open");
+  navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+
+navLinks.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => {
+    navLinks.classList.remove("is-open");
+    navToggle.setAttribute("aria-expanded", "false");
+  });
+});
+
+/* -----------------------------
+Modals
+----------------------------- */
+
+const openSampleReport = document.getElementById("open-sample-report");
+const closeSampleReport = document.getElementById("close-sample-report");
+const sampleReportModal = document.getElementById("sample-report-modal");
+
+const openFollowUp = document.getElementById("open-follow-up");
+const closeFollowUp = document.getElementById("close-follow-up");
+const followUpModal = document.getElementById("follow-up-modal");
+
+function openModal(modal) {
+  modal.classList.add("is-open");
+  document.body.classList.add("modal-open");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeModal(modal) {
+  modal.classList.remove("is-open");
+  document.body.classList.remove("modal-open");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+openSampleReport.addEventListener("click", () => openModal(sampleReportModal));
+closeSampleReport.addEventListener("click", () => closeModal(sampleReportModal));
+
+openFollowUp.addEventListener("click", () => openModal(followUpModal));
+closeFollowUp.addEventListener("click", () => closeModal(followUpModal));
+
+sampleReportModal.addEventListener("click", (e) => {
+  if (e.target === sampleReportModal) closeModal(sampleReportModal);
+});
+
+followUpModal.addEventListener("click", (e) => {
+  if (e.target === followUpModal) closeModal(followUpModal);
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    if (sampleReportModal.classList.contains("is-open")) closeModal(sampleReportModal);
+    if (followUpModal.classList.contains("is-open")) closeModal(followUpModal);
+  }
+});
 </script>
 
 </body>
+
 </html>

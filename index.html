@@ -198,6 +198,71 @@
   padding:60px 0;
   border-top:1px solid var(--border);
   }
+
+  .work-models{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;
+    margin-top:50px;
+}
+
+.model{
+    display:flex;
+    flex-direction:column;
+}
+
+.feature-list{
+    list-style:none;
+    margin:24px 0;
+    padding:0;
+}
+
+.feature-list li{
+    color:var(--muted);
+    margin-bottom:10px;
+}
+
+.card-btn{
+    width:100%;
+    text-align:center;
+    margin-top:auto;
+}
+
+.status{
+    display:inline-block;
+    padding:8px 12px;
+    border-radius:999px;
+    font-size:.8rem;
+    font-weight:700;
+    margin-bottom:18px;
+}
+
+.status-live{
+    background:rgba(52,211,153,.15);
+    border:1px solid rgba(52,211,153,.25);
+    color:#34D399;
+}
+
+.status-soon{
+    background:rgba(244,162,97,.15);
+    border:1px solid rgba(244,162,97,.25);
+    color:#F4A261;
+}
+
+.waitlist-note{
+    margin-top:12px;
+    font-size:.85rem;
+    color:var(--muted);
+    text-align:center;
+}
+
+@media(max-width:900px){
+
+    .work-models{
+        grid-template-columns:1fr;
+    }
+
+}
   
   @media(max-width:900px){
   
@@ -259,81 +324,121 @@ See the roadmap
 
 <section class="section" id="path">
 
-<div class="container">
+  <div class="container">
 
-<h2>Choose your path</h2>
+      <h2 class="section-title">
+          Choose your path
+      </h2>
 
-<p>
-Start with a single decision today.
-Explore additional ways to work together as they become available.
-</p>
+      <p class="section-subtitle">
+          Start with a single decision today.
+          Explore additional ways to work together as they become available.
+      </p>
 
-<div class="grid3">
+      <div class="work-models">
 
-<div class="card">
+          <!-- AVAILABLE NOW -->
 
-<h3>AVAILABLE NOW</h3>
+          <div class="card model">
 
-<h4>Experimentation Session</h4>
+              <div class="status status-live">
+                  AVAILABLE NOW
+              </div>
 
-<p>
-Bring your toughest decision.
-Leave with a test.
-</p>
+              <h3>
+                  Experimentation Session
+              </h3>
 
-<ul>
-<li>60 minutes</li>
-<li>1–2 people</li>
-<li>Clear hypothesis</li>
-<li>Recommended experiment</li>
-<li>Action plan</li>
-</ul>
+              <p>
+                  Bring your toughest decision.
+                  Leave with a test.
+              </p>
 
-</div>
+              <ul class="feature-list">
+                  <li>✓ 60 minutes</li>
+                  <li>✓ 1–2 people</li>
+                  <li>✓ Clear hypothesis</li>
+                  <li>✓ Recommended experiment</li>
+                  <li>✓ Action plan</li>
+              </ul>
 
-<div class="card">
+              <a href="#book-session" class="btn btn-primary card-btn">
+                  Book an Experimentation Session
+              </a>
 
-<h3>COMING SOON</h3>
+          </div>
 
-<h4>Experimentation Workshop</h4>
+          <!-- COMING SOON -->
 
-<p>
-For teams seeking alignment.
-</p>
+          <div class="card model">
 
-<ul>
-<li>90 minutes</li>
-<li>2–8 participants</li>
-<li>Shared prioritization</li>
-<li>Team alignment</li>
-<li>Experiment roadmap</li>
-</ul>
+              <div class="status status-soon">
+                  COMING SOON
+              </div>
 
-</div>
+              <h3>
+                  Experimentation Workshop
+              </h3>
 
-<div class="card">
+              <p>
+                  For teams seeking alignment.
+              </p>
 
-<h3>COMING SOON</h3>
+              <ul class="feature-list">
+                  <li>✓ 90 minutes</li>
+                  <li>✓ 2–8 participants</li>
+                  <li>✓ Shared prioritization</li>
+                  <li>✓ Team alignment</li>
+                  <li>✓ Experiment roadmap</li>
+              </ul>
 
-<h4>Experimentation Circle</h4>
+              <a href="#waitlist" class="btn btn-secondary card-btn">
+                  Join the Waitlist
+              </a>
 
-<p>
-Bring a decision.
-Learn from other companies.
-</p>
+              <p class="waitlist-note">
+                  Founding members receive early access pricing.
+              </p>
 
-<ul>
-<li>Peer learning</li>
-<li>Cross-company insights</li>
-<li>Facilitated discussion</li>
-<li>Collective intelligence</li>
-</ul>
+          </div>
 
-</div>
+          <!-- COMING SOON -->
 
-</div>
+          <div class="card model">
 
-</div>
+              <div class="status status-soon">
+                  COMING SOON
+              </div>
+
+              <h3>
+                  Experimentation Circle
+              </h3>
+
+              <p>
+                  Bring a decision.
+                  Learn from other companies.
+              </p>
+
+              <ul class="feature-list">
+                  <li>✓ Peer learning</li>
+                  <li>✓ Cross-company insights</li>
+                  <li>✓ Facilitated discussion</li>
+                  <li>✓ Collective intelligence</li>
+              </ul>
+
+              <a href="#waitlist" class="btn btn-secondary card-btn">
+                  Join the Waitlist
+              </a>
+
+              <p class="waitlist-note">
+                  Founding members receive early access pricing.
+              </p>
+
+          </div>
+
+      </div>
+
+  </div>
 
 </section>
 

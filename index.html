@@ -1,871 +1,166 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TesterPartner — A/B testing under demand</title>
-
-<style>
-:root{
---ink:#111111;
---muted:#6b7280;
---line:#e5e7eb;
---bg:#ffffff;
---soft:#fafafa;
---accent:#3b82f6;
---dark:#0b1020;
---dark-line:rgba(255,255,255,.14);
---dark-muted:rgba(255,255,255,.72);
-}
-
-*{box-sizing:border-box}
-
-body{
-margin:0;
-font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
-color:var(--ink);
-background:var(--bg);
-line-height:1.55;
-}
-
-a{text-decoration:none;color:inherit}
-h1,h2,h3{letter-spacing:-0.04em}
-
-.container{
-max-width:1100px;
-margin:0 auto;
-padding:0 20px;
-}
-
-.section{padding:88px 0}
-
-.section.soft{
-background:var(--soft);
-border-top:1px solid var(--line);
-border-bottom:1px solid var(--line);
-}
-
-.muted{color:var(--muted)}
-
-.btn{
-display:inline-block;
-padding:14px 22px;
-border-radius:12px;
-font-weight:600;
-border:1px solid var(--line);
-cursor:pointer;
-font:inherit;
-}
-
-.btn.primary{
-background:var(--accent);
-color:white;
-border-color:var(--accent);
-}
-
-.btn.outline{background:white}
-
-.btn.tertiary{
-background:transparent;
-border:1px solid var(--line);
-color:var(--muted);
-}
-
-.grid{display:grid;gap:32px}
-.grid-2{grid-template-columns:repeat(2,1fr)}
-.grid-3{grid-template-columns:repeat(3,1fr)}
-
-@media(max-width:900px){
-.grid-2,.grid-3{grid-template-columns:1fr}
-}
-
-.card{
-border:1px solid var(--line);
-border-radius:20px;
-padding:28px;
-background:white;
-}
-
-header{
-border-bottom:1px solid var(--line);
-background:
-radial-gradient(800px 400px at 20% 10%,rgba(59,130,246,.15),transparent 60%),
-radial-gradient(700px 300px at 90% 20%,rgba(16,185,129,.10),transparent 60%);
-}
-
-nav{
-position:sticky;
-top:0;
-background:white;
-border-bottom:1px solid var(--line);
-z-index:20;
-}
-
-.nav-wrap{
-display:flex;
-align-items:center;
-justify-content:space-between;
-height:64px;
-position:relative;
-}
-
-.nav-links{
-display:flex;
-align-items:center;
-}
-
-.nav-links a{
-margin-left:18px;
-font-weight:500;
-}
-
-.nav-toggle{
-display:none;
-width:44px;
-height:44px;
-border:1px solid var(--line);
-border-radius:12px;
-background:white;
-padding:0;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-gap:5px;
-}
-
-.nav-toggle span{
-display:block;
-width:18px;
-height:2px;
-background:var(--ink);
-border-radius:999px;
-}
-
-footer{
-background:#0b1020;
-color:rgba(255,255,255,.85);
-padding:56px 0;
-}
-
-.principles-list{
-display:flex;
-flex-direction:column;
-gap:18px;
-margin-top:32px;
-}
-
-.replaces-list{
-margin-top:12px;
-padding-left:18px;
-color:var(--muted);
-}
-
-.replaces-list li{
-text-decoration:line-through;
-opacity:.7;
-margin-bottom:6px;
-}
-
-.example-card-footer{
-margin-top:24px;
-display:flex;
-justify-content:center;
-}
-
-.icon-plus{
-width:48px;
-height:48px;
-border-radius:999px;
-border:1px solid var(--line);
-background:white;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:28px;
-line-height:1;
-cursor:pointer;
-}
-
-.icon-plus:hover{
-border-color:var(--accent);
-color:var(--accent);
-}
-
-.tally-card{
-padding:0;
-overflow:hidden;
-height: 800px;
-}
-
-.tally-card iframe{
-display:block;
-width:100%;
-border:0;
-min-height:850px;
-background:transparent;
-}
-
-.soft-cta-section{
-border-top:1px solid var(--line);
-}
-
-.soft-cta-card{
-display:flex;
-align-items:flex-start;
-justify-content:space-between;
-gap:24px;
-flex-wrap:wrap;
-}
-
-.soft-cta-copy{
-max-width:720px;
-}
-
-.soft-cta-copy p{
-margin:0;
-}
-
-.soft-cta-title{
-margin:0 0 8px;
-}
-
-.pricing-note{
-margin-top:10px;
-font-size:14px;
-color:var(--muted);
-}
-
-.pricing-intro{
-margin-top:12px;
-}
-
-.pricing-card-popular{
-border:2px solid var(--accent);
-transform:scale(1.03);
-box-shadow:0 16px 40px rgba(0,0,0,.08);
-position:relative;
-}
-
-.pricing-badge{
-position:absolute;
-top:-12px;
-left:20px;
-background:var(--accent);
-color:white;
-font-size:12px;
-padding:6px 10px;
-border-radius:999px;
-font-weight:600;
-}
-
-.modal{
-position:fixed;
-inset:0;
-display:none;
-align-items:center;
-justify-content:center;
-padding:20px;
-background:rgba(0,0,0,.55);
-z-index:1000;
-}
-
-.modal.is-open{
-display:flex;
-}
-
-.modal-panel{
-/*width:100%;*/
-max-width:560px;
-background:white;
-border-radius:24px;
-border:1px solid var(--line);
-padding:24px;
-position:relative;
-box-shadow:0 20px 60px rgba(0,0,0,.2);
-height: 450px;
-}
-
-.modal-close{
-position:absolute;
-top:14px;
-right:14px;
-width:40px;
-height:40px;
-border-radius:999px;
-border:1px solid var(--line);
-background:white;
-font-size:20px;
-line-height:1;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-}
-.modal-title{
-margin:0 40px 8px 0;
-font-size:24px;
-line-height:1.2;
-}
-
-.modal-subtitle{
-margin:0;
-color:var(--muted);
-}
-
-.modal-embed{
-margin-top:20px;
-border:1px solid var(--line);
-border-radius:18px;
-overflow:hidden;
-}
-
-.modal-embed iframe{
-display:block;
-width:100%;
-border:0;
-background:transparent;
-height: 300px;
-}
-
-body.modal-open{
-overflow:hidden;
-}
-
-.dDgwqi{color:white!important}
-
-body.ab-hero-highlight header{
-background:
-radial-gradient(900px 500px at 20% 10%, rgba(59,130,246,.18), transparent 60%),
-radial-gradient(900px 500px at 85% 30%, rgba(16,185,129,.12), transparent 60%),
-var(--dark);
-border-bottom:1px solid var(--dark-line);
-}
-
-body.ab-hero-highlight header h1,
-body.ab-hero-highlight header strong{
-color:white;
-}
-
-body.ab-hero-highlight header .muted{
-color:var(--dark-muted);
-}
-
-body.ab-hero-highlight header .card{
-background:rgba(255,255,255,.06);
-border-color:var(--dark-line);
-color:white;
-}
-
-body.ab-hero-highlight header .replaces-list{
-color:var(--dark-muted);
-}
-
-body.ab-hero-highlight header .btn.outline{
-background:transparent;
-border-color:rgba(255,255,255,.22);
-color:white;
-}
-
-body.ab-deliverables-highlight #deliverables{
-background:
-radial-gradient(900px 500px at 20% 10%, rgba(59,130,246,.18), transparent 60%),
-radial-gradient(900px 500px at 85% 30%, rgba(16,185,129,.12), transparent 60%),
-var(--dark);
-border-top:1px solid var(--dark-line);
-border-bottom:1px solid var(--dark-line);
-}
-
-body.ab-deliverables-highlight #deliverables h2,
-body.ab-deliverables-highlight #deliverables .muted,
-body.ab-deliverables-highlight #deliverables .btn.tertiary{
-color:white;
-}
-
-body.ab-deliverables-highlight #deliverables .muted{
-color:var(--dark-muted);
-}
-
-body.ab-deliverables-highlight #deliverables .card{
-background:rgba(255,255,255,.06);
-border-color:var(--dark-line);
-color:white;
-}
-
-body.ab-deliverables-highlight #deliverables .btn.primary{
-box-shadow:0 12px 30px rgba(59,130,246,.28);
-}
-@media(min-width:576px){
-  .modal-right-bottom{
-position:absolute;
-bottom:70px;
-right:30px;
-width:80px;
-height:60px;
-border-radius:999px;
-background:white;
-font-size:20px;
-line-height:1;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-[data-sentry-component="FormBlocks"]{width: 70%;}
-}
-
-@media(max-width:900px){
-.pricing-card-popular{
-transform:none;
-}
-
-.nav-toggle{
-display:flex;
-}
-
-.nav-links{
-display:none;
-position:absolute;
-top:64px;
-right:20px;
-left:20px;
-background:white;
-border:1px solid var(--line);
-border-radius:18px;
-padding:16px;
-flex-direction:column;
-align-items:flex-start;
-gap:12px;
-box-shadow:0 16px 40px rgba(0,0,0,.08);
-}
-
-.nav-links a{
-margin-left:0;
-width:100%;
-}
-
-.nav-links.is-open{
-display:flex;
-}
-}
-</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TesterPartner</title>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
+<body>
 
-<body class="ab-hero-highlight">
-
-<nav>
-<div class="container nav-wrap">
-<strong>TesterPartner</strong>
-
-<button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
-<span></span>
-<span></span>
-<span></span>
-</button>
-
-<div class="nav-links" id="nav-links">
-<a href="#process">Process</a>
-<a href="#pricing">Pricing</a>
-<a href="#contact">Contact</a>
-</div>
-</div>
-</nav>
+<div class="background"></div>
 
 <header>
-<div class="container section grid grid-2">
-
-<div class="container">
-<p class="muted">A/B testing under demand</p>
-<h1>Replace guesswork.<br>Decide with confidence.</h1>
-
-<p class="muted">
-We design, implement, and analyze experiments so your team can focus on growth —
-not setup, debates, or dashboards.
-</p>
-
-<div style="margin-top:24px">
-<a class="btn primary" href="#pricing">See plans</a>
-<a class="btn outline" href="#process" style="margin-left:12px">How it works</a>
-</div>
-</div>
-
-<div class="container">
-<div class="card">
-<strong>What this replaces</strong>
-<ul class="replaces-list">
-<li>Endless dashboards</li>
-<li>Debates about metrics</li>
-<li>Experiments without conclusions</li>
-<li>Tests nobody implements</li>
-</ul>
-<div class="sample-cta-group">
-<a href="#deliverables" class="btn tertiary">What you receive</a>
-</div>
-</div>
-</div>
-
+<div class="container nav">
+<div class="logo">Tester<span>Partner</span></div>
 </div>
 </header>
 
-<section class="section">
+<section class="hero">
 <div class="container">
-<div class="card">
-<h2>Who this is for</h2>
 
-<div class="grid grid-2" style="margin-top:24px">
-<div>
-<strong>Great fit if</strong>
-<ul class="muted">
-<li>You have live traffic and real questions</li>
-<li>You want to validate ideas before scaling them</li>
-<li>You need decisions, not more opinions</li>
-</ul>
+<div class="badge">
+AVAILABLE NOW · Experimentation Session
 </div>
 
-<div>
-<strong>Probably not yet if</strong>
-<ul class="muted">
-<li>You don’t have enough traffic yet</li>
-<li>You only want design feedback</li>
-<li>You need a full redesign instead of experiments</li>
-</ul>
-</div>
-</div>
+<h1>
+Bring your toughest decision.<br>
+Leave with a test.
+</h1>
 
-</div>
-</div>
-</section>
+<p>
+Most teams don't need more opinions.
+They need clarity.
 
-<section class="section soft" id="process">
-<div class="container grid grid-2">
-
-<div>
-<h2>Decisions, not dashboards</h2>
-
-<p class="muted">
-We don’t optimize for vanity metrics. Every experiment is designed to answer
-one clear question — and end with a recommendation.
+In 60 minutes we'll help you transform uncertainty into a clear hypothesis, experiment and next step.
 </p>
 
-<div class="principles-list">
-<div class="card">✔ Clear hypothesis</div>
-<div class="card">✔ One primary metric</div>
-<div class="card">✔ Feasibility before build</div>
-<div class="card">✔ Clear recommendation</div>
-</div>
+<div class="hero-cta">
+<a href="#book" class="btn btn-primary">
+Book an Experimentation Session
+</a>
 
-<div style="margin-top:40px">
-<a class="btn primary" href="#contact">Start an experiment</a>
-<a class="btn tertiary" href="#pricing" style="margin-left:12px">See pricing</a>
-</div>
-</div>
-
-<div>
-<h3 style="margin-top:8%">What this looks like in practice</h3>
-
-<div class="card" style="margin-top:20px">
-<p><strong>Experiment goal</strong><br>
-Increase clicks on primary CTA</p>
-
-<p><strong>Hypothesis</strong><br>
-If we clarify CTA copy and improve visual hierarchy, clicks will increase.</p>
-
-<p><strong>Variants</strong><br>
-Control vs Variant B (copy + hierarchy)</p>
-
-<p><strong>Result</strong><br>
-Variant B outperformed the control.</p>
-
-<p><strong>Recommendation</strong><br>
-Roll out Variant B and reuse the pattern across similar pages.</p>
-
-<div class="example-card-footer">
-<button type="button" class="icon-plus" id="open-sample-report" aria-label="Open sample report">+</button>
-</div>
-</div>
-
+<a href="#path" class="btn btn-secondary">
+See the roadmap
+</a>
 </div>
 
 </div>
 </section>
 
-<section class="section" id="deliverables">
+<section class="section" id="path">
+
 <div class="container">
-<h2>What you receive</h2>
-<p class="muted">Every engagement includes the same core deliverables.</p>
 
-<div class="grid grid-3" style="margin-top:40px">
-<div class="card">✔ Hypothesis definition</div>
-<div class="card">✔ Testable variants</div>
-<div class="card">✔ Live implementation</div>
-<div class="card">✔ Monitoring & QA</div>
-<div class="card">✔ Written summary</div>
-<div class="card">✔ Clear recommendation</div>
-</div>
+<h2>Choose your path</h2>
 
-<div style="margin-top:40px;text-align:center">
-<a class="btn primary" href="#contact">Start an experiment</a>
-<a class="btn tertiary" href="#process" style="margin-left:12px">See how it works</a>
-</div>
-</div>
-</section>
+<p>
+Start with a single decision today.
+Explore additional ways to work together as they become available.
+</p>
 
-<section class="section soft" id="pricing">
-<div class="container">
-<h2>Experimentation works best as a cycle, not a one-off test.</h2>
-<p class="muted pricing-intro">Most teams start with Growth to run multiple validation experiments.</p>
+<div class="grid3">
 
-<div class="grid grid-3" style="margin-top:40px">
 <div class="card">
-<h3>Starter</h3>
-<p class="muted">Fast validation, low friction.</p>
-<p><strong>Starting from $429</strong></p>
-<ul class="muted">
-<li>1 validation experiment</li>
-<li>Simple visual or copy changes</li>
-<li>Decision-ready recommendation</li>
+
+<h3>AVAILABLE NOW</h3>
+
+<h4>Experimentation Session</h4>
+
+<p>
+Bring your toughest decision.
+Leave with a test.
+</p>
+
+<ul>
+<li>60 minutes</li>
+<li>1–2 people</li>
+<li>Clear hypothesis</li>
+<li>Recommended experiment</li>
+<li>Action plan</li>
 </ul>
-<p class="pricing-note">Final scope confirmed after feasibility check.</p>
-<button class="btn primary" onclick="checkoutStarter()">
-  Start Starter
-  </button>
+
 </div>
 
-<div class="card pricing-card-popular">
-<div class="pricing-badge">Most popular</div>
-<h3>Growth</h3>
-<p class="muted">Iteration and structural flexibility.</p>
-<p><strong>Starting from $1,199</strong></p>
-<ul class="muted">
-<li>2–3 validation experiments</li>
-<li>Visual & layout changes</li>
+<div class="card">
+
+<h3>COMING SOON</h3>
+
+<h4>Experimentation Workshop</h4>
+
+<p>
+For teams seeking alignment.
+</p>
+
+<ul>
+<li>90 minutes</li>
+<li>2–8 participants</li>
+<li>Shared prioritization</li>
+<li>Team alignment</li>
 <li>Experiment roadmap</li>
 </ul>
-<p class="pricing-note">Final scope confirmed after feasibility check.</p>
-<button class="btn primary" onclick="checkoutGrowth()">
-  Start Growth
-  </button>
+
 </div>
 
 <div class="card">
-<h3>Scale</h3>
-<p class="muted">Continuous experimentation for committed teams.</p>
-<p><strong>Starting from $2,900</strong></p>
-<ul class="muted">
-<li>6+ validation experiments</li>
-<li>Continuous optimization</li>
-<li>Priority implementation</li>
-<li>Expanded roadmap</li>
+
+<h3>COMING SOON</h3>
+
+<h4>Experimentation Circle</h4>
+
+<p>
+Bring a decision.
+Learn from other companies.
+</p>
+
+<ul>
+<li>Peer learning</li>
+<li>Cross-company insights</li>
+<li>Facilitated discussion</li>
+<li>Collective intelligence</li>
 </ul>
-<p class="pricing-note">Best for teams ready to build a true experimentation habit.</p>
-<button class="btn primary" onclick="checkoutScale()">
-  Start Scale
-  </button>
+
 </div>
+
 </div>
+
 </div>
+
 </section>
 
-<section class="section" id="contact">
-<div class="container grid grid-2">
-<div>
-<h2>Start with a quick feasibility check</h2>
-<p class="muted">
-Tell us what you want to test and we’ll confirm the best next step.
-</p>
-</div>
+<section class="cta" id="book">
 
-<div class="card tally-card">
-<iframe
-src="https://tally.so/r/WO8YLj?transparentBackground=1&hideTitle=1"
-width="100%"
-height="420"
-frameborder="0"
-marginheight="0"
-marginwidth="0"
-title="TesterPartner Technical Feasibility Check">
-</iframe>
-</div>
-</div>
-</section>
-
-<section class="section soft soft-cta-section" id="not-sure-yet">
 <div class="container">
-<div class="card soft-cta-card">
-<div class="soft-cta-copy">
-<h3 class="soft-cta-title">I’m not sure yet</h3>
-<p class="muted">
-It’s okay not to be ready. The first step toward change is noticing where you are now.
+
+<div class="cta-card">
+
+<h2>
+You already have opinions.<br>
+Let's get evidence.
+</h2>
+
+<p>
+Book an Experimentation Session and leave with a test.
 </p>
+
+<a href="#" class="btn btn-primary">
+Book an Experimentation Session
+</a>
+
 </div>
-<div>
-<button type="button" class="btn tertiary" id="open-follow-up">Let’s see where I am in 2 weeks</button>
+
 </div>
-</div>
-</div>
+
 </section>
-
-<div class="modal" id="sample-report-modal" aria-hidden="true">
-<div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="sample-report-title">
-<button type="button" class="modal-close" id="close-sample-report" aria-label="Close">×</button>
-<div class="modal-right-bottom"></div>
-<h3 class="modal-title" id="sample-report-title">Want to see a sample report?</h3>
-<p class="modal-subtitle">Review the kind of concise, decision-ready output you’ll receive.</p>
-
-<div class="modal-embed">
-<iframe
-src="https://tally.so/embed/aQxZ7y?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
-width="100%"
-height="180"
-frameborder="0"
-marginheight="0"
-marginwidth="0"
-title="Sample Report Access Form">
-</iframe>
-</div>
-</div>
-</div>
-
-<div class="modal" id="follow-up-modal" aria-hidden="true">
-<div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="follow-up-title">
-<button type="button" class="modal-close" id="close-follow-up" aria-label="Close">×</button>
-<h3 class="modal-title" id="follow-up-title">Get a gentle follow-up in 2 weeks</h3>
-
-<div class="modal-embed">
-<iframe
-src="https://tally.so/embed/YOUR_FOLLOW_UP_FORM_ID?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
-width="100%"
-height="180"
-frameborder="0"
-marginheight="0"
-marginwidth="0"
-title="Two Week Follow-up Form">
-</iframe>
-</div>
-</div>
-</div>
 
 <footer>
 <div class="container">
-<strong>TesterPartner</strong>
-<p class="muted">Productized A/B testing under demand.</p>
+<div class="logo">
+Tester<span>Partner</span>
+</div>
 </div>
 </footer>
 
-<!-- Paddle Checkout -->
-<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
-
-<script>
-/* -----------------------------
-Paddle Initialization
------------------------------ */
-
-Paddle.Environment.set("sandbox"); 
-
-Paddle.Initialize({
-  token: "pro_01kkcyz5k4grntsejvpakrd5d6"
-});
-
-/* -----------------------------
-Checkout Functions
------------------------------ */
-
-function checkoutStarter(){
-  Paddle.Checkout.open({
-    items: [
-      {
-        priceId: "pri_01kkcz3g0jcwxrtwnn53mdqry9",
-        quantity: 1
-      }
-    ]
-  });
-}
-
-function checkoutGrowth(){
-  Paddle.Checkout.open({
-    items: [
-      {
-        priceId: "pri_01kkcz6hngt5xn2wq1g965mjq2",
-        quantity: 1
-      }
-    ]
-  });
-}
-
-function checkoutScale(){
-  Paddle.Checkout.open({
-    items: [
-      {
-        priceId: "pri_01kkczatyjbf6fh26c8f0askey",
-        quantity: 1
-      }
-    ]
-  });
-}
-
-/* -----------------------------
-Navigation (mobile menu)
------------------------------ */
-
-const navToggle = document.getElementById("nav-toggle");
-const navLinks = document.getElementById("nav-links");
-
-navToggle.addEventListener("click", () => {
-  const isOpen = navLinks.classList.toggle("is-open");
-  navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-});
-
-navLinks.querySelectorAll("a").forEach(link => {
-  link.addEventListener("click", () => {
-    navLinks.classList.remove("is-open");
-    navToggle.setAttribute("aria-expanded", "false");
-  });
-});
-
-/* -----------------------------
-Modals
------------------------------ */
-
-const openSampleReport = document.getElementById("open-sample-report");
-const closeSampleReport = document.getElementById("close-sample-report");
-const sampleReportModal = document.getElementById("sample-report-modal");
-
-const openFollowUp = document.getElementById("open-follow-up");
-const closeFollowUp = document.getElementById("close-follow-up");
-const followUpModal = document.getElementById("follow-up-modal");
-
-function openModal(modal) {
-  modal.classList.add("is-open");
-  document.body.classList.add("modal-open");
-  modal.setAttribute("aria-hidden", "false");
-}
-
-function closeModal(modal) {
-  modal.classList.remove("is-open");
-  document.body.classList.remove("modal-open");
-  modal.setAttribute("aria-hidden", "true");
-}
-
-openSampleReport.addEventListener("click", () => openModal(sampleReportModal));
-closeSampleReport.addEventListener("click", () => closeModal(sampleReportModal));
-
-openFollowUp.addEventListener("click", () => openModal(followUpModal));
-closeFollowUp.addEventListener("click", () => closeModal(followUpModal));
-
-sampleReportModal.addEventListener("click", (e) => {
-  if (e.target === sampleReportModal) closeModal(sampleReportModal);
-});
-
-followUpModal.addEventListener("click", (e) => {
-  if (e.target === followUpModal) closeModal(followUpModal);
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    if (sampleReportModal.classList.contains("is-open")) closeModal(sampleReportModal);
-    if (followUpModal.classList.contains("is-open")) closeModal(followUpModal);
-  }
-});
-</script>
-
 </body>
-
 </html>

@@ -438,75 +438,38 @@ footer {
 }
 
 .launch-card{
+    background:
+    linear-gradient(
+        135deg,
+        rgba(244,162,97,.22),
+        rgba(255,196,120,.16)
+    );
 
-background:
-linear-gradient(
-    135deg,
-    rgba(244,162,97,.18),
-    rgba(255,214,102,.10)
-);
-
-border:1px solid rgba(244,162,97,.25);
-
-position:relative;
-
-overflow:hidden;
-}
-
-.launch-card::before{
-
-content:'';
-
-position:absolute;
-
-width:200px;
-height:200px;
-
-top:-80px;
-right:-80px;
-
-border-radius:50%;
-
-background:
-radial-gradient(
-    circle,
-    rgba(255,255,255,.08),
-    transparent 70%
-);
-}
-
-.launch-flow{
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-gap:20px;
-
-margin-top:20px;
+    border:1px solid rgba(244,162,97,.30);
 }
 
 .launch-big{
-
-font-size:2.5rem;
-
-font-weight:900;
+    font-size:3rem;
+    font-weight:900;
+    line-height:1;
+    color:#fff;
 }
 
 .launch-label{
-
-color:var(--muted);
+    margin-top:6px;
+    color:rgba(255,255,255,.9);
+    font-weight:600;
 }
 
 .launch-arrow{
+    font-size:2.5rem;
+    color:#0B1020;
+    font-weight:900;
+}
 
-font-size:2rem;
-
-color:var(--clay);
-
-animation:pulseArrow 2s infinite;
+.roadmap-soon{
+    color:#A07A5C;
+    font-weight:600;
 }
 
 @keyframes pulseArrow{
@@ -609,25 +572,25 @@ animation:pulseArrow 2s infinite;
 
       <div class="decision-dashboard">
 
-        <div class="dashboard-header">
+          <div class="dashboard-header">
 
-          <div>
-      
-              <div class="dashboard-title">
-                  Today at TesterPartner
+              <div>
+
+                  <div class="dashboard-title">
+                      Today at TesterPartner
+                  </div>
+
+                  <div class="dashboard-subtitle">
+                      Live updates, opportunities and milestones.
+                  </div>
+
               </div>
-      
-              <div class="dashboard-subtitle">
-                  Live updates, opportunities and milestones.
+
+              <div class="dashboard-live">
+                  ● LIVE
               </div>
-      
+
           </div>
-      
-          <div class="dashboard-live">
-              ● LIVE
-          </div>
-      
-      </div>
 
           <div class="dashboard-grid">
 
@@ -635,37 +598,43 @@ animation:pulseArrow 2s infinite;
 
               <div class="dashboard-card launch-card">
 
-                <div class="launch-header">
-                    🎉 Launch Offer
-                </div>
-            
-                <div class="launch-flow">
-            
-                    <div class="launch-step">
-                        <div class="launch-big">
-                            5 Free
-                        </div>
-                        <div class="launch-label">
-                            Founding Spots
-                        </div>
-                    </div>
-            
-                    <div class="launch-arrow">
-                        →
-                    </div>
-            
-                    <div class="launch-step">
-                        <div class="launch-big">
-                            $0
-                        </div>
-                        <div class="launch-label">
-                            Current Price
-                        </div>
-                    </div>
-            
-                </div>
-            
-            </div>
+                  <div class="dashboard-label">
+                      🎉 Launch Offer
+                  </div>
+
+                  <div class="launch-flow">
+
+                      <div class="launch-step">
+
+                          <div class="launch-big">
+                              5 Founding
+                          </div>
+
+                          <div class="launch-label">
+                              Spots
+                          </div>
+
+                      </div>
+
+                      <div class="launch-arrow">
+                          →
+                      </div>
+
+                      <div class="launch-step">
+
+                          <div class="launch-big">
+                              Join
+                          </div>
+
+                          <div class="launch-label">
+                              Free
+                          </div>
+
+                      </div>
+
+                  </div>
+
+              </div>
 
               <!-- Next Price -->
 
@@ -717,11 +686,11 @@ animation:pulseArrow 2s infinite;
                           ✓ Session Live
                       </span>
 
-                      <span>
+                      <span class="roadmap-soon">
                           Workshop Coming Soon
                       </span>
 
-                      <span>
+                      <span class="roadmap-soon">
                           Circle Coming Soon
                       </span>
 
@@ -743,22 +712,36 @@ animation:pulseArrow 2s infinite;
                           5 Free
                       </span>
 
-                      <span class="arrow">
-                          →
-                      </span>
+                      <span class="arrow">→</span>
 
                       <span>
                           $49
                       </span>
 
-                      <span class="arrow">
-                          →
-                      </span>
+                      <span class="arrow">→</span>
 
                       <span>
                           $149
                       </span>
 
+                  </div>
+
+              </div>
+
+              <!-- Milestone -->
+
+              <div class="dashboard-card">
+
+                  <div class="dashboard-label">
+                      Current Goal
+                  </div>
+
+                  <div class="dashboard-value">
+                      5
+                  </div>
+
+                  <div class="dashboard-description">
+                      Founding Members
                   </div>
 
               </div>
@@ -774,9 +757,7 @@ animation:pulseArrow 2s infinite;
                   </strong>
 
                   <p>
-                      Help shape TesterPartner,
-                      receive lifetime founding pricing,
-                      and get priority access to future Workshops and Circles.
+                      Help shape TesterPartner, receive lifetime founding pricing, and get priority access to future Workshops and Circles.
                   </p>
 
               </div>
@@ -788,10 +769,7 @@ animation:pulseArrow 2s infinite;
                   </strong>
 
                   <p>
-                      A clear hypothesis,
-                      a recommended experiment,
-                      success metrics,
-                      and a practical next step.
+                      A clear hypothesis, a recommended experiment, success metrics, and a practical next step.
                   </p>
 
               </div>

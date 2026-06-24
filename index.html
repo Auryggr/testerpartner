@@ -386,6 +386,73 @@ footer {
   flex-direction: column;
   gap: 8px;
 }
+.decision-carousel-card{
+    position:relative;
+    overflow:hidden;
+}
+
+.decision-carousel{
+    position:relative;
+    min-height:180px;
+    margin-top:24px;
+}
+
+.decision-slide{
+    display:none;
+    animation:fadeSlide .5s ease;
+}
+
+.decision-slide.active{
+    display:block;
+}
+
+.decision-problem{
+    font-size:1.35rem;
+    font-weight:700;
+    color:var(--text);
+    line-height:1.4;
+}
+
+.decision-arrow{
+    margin:20px 0;
+    font-size:1.6rem;
+    color:var(--clay);
+}
+
+.decision-question{
+    color:var(--muted);
+    line-height:1.8;
+    font-size:1rem;
+}
+
+.carousel-dots{
+    display:flex;
+    gap:8px;
+    margin-top:24px;
+}
+
+.dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:rgba(255,255,255,.15);
+    transition:.3s;
+}
+
+.dot.active{
+    background:var(--clay);
+}
+
+@keyframes fadeSlide{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
 
 .roadmap-live {
   color: #34D399;
@@ -1039,21 +1106,114 @@ document
 
       <div class="deliverables">
 
-          <div class="card deliverable-card">
+        <div class="card decision-carousel-card">
 
-              <h3>
-                  What You'll Leave With
-              </h3>
-
-              <ul>
-                  <li>✓ Clear Hypothesis</li>
-                  <li>✓ Recommended Experiment</li>
-                  <li>✓ Success Metrics</li>
-                  <li>✓ Priority Assessment</li>
-                  <li>✓ Action Plan</li>
-              </ul>
-
+          <h3>
+              Bring a Decision Like This
+          </h3>
+      
+          <div class="decision-carousel">
+      
+              <div class="decision-slide active">
+      
+                  <div class="decision-problem">
+                      "We think we need a redesign."
+                  </div>
+      
+                  <div class="decision-arrow">
+                      ↓
+                  </div>
+      
+                  <div class="decision-question">
+                      Do we actually need a redesign,
+                      or should we test trust signals first?
+                  </div>
+      
+              </div>
+      
+              <div class="decision-slide">
+      
+                  <div class="decision-problem">
+                      "Our Meta ads aren't working."
+                  </div>
+      
+                  <div class="decision-arrow">
+                      ↓
+                  </div>
+      
+                  <div class="decision-question">
+                      Is it the audience,
+                      the offer,
+                      or the message?
+                  </div>
+      
+              </div>
+      
+              <div class="decision-slide">
+      
+                  <div class="decision-problem">
+                      "We should lower prices."
+                  </div>
+      
+                  <div class="decision-arrow">
+                      ↓
+                  </div>
+      
+                  <div class="decision-question">
+                      Do customers really think we're expensive,
+                      or do they not understand the value?
+                  </div>
+      
+              </div>
+      
+              <div class="decision-slide">
+      
+                  <div class="decision-problem">
+                      "We need a new homepage."
+                  </div>
+      
+                  <div class="decision-arrow">
+                      ↓
+                  </div>
+      
+                  <div class="decision-question">
+                      What evidence supports that decision?
+                  </div>
+      
+              </div>
+      
+              <div class="decision-slide">
+      
+                  <div class="decision-problem">
+                      "We need more leads."
+                  </div>
+      
+                  <div class="decision-arrow">
+                      ↓
+                  </div>
+      
+                  <div class="decision-question">
+                      Where is the biggest constraint:
+                      traffic,
+                      messaging,
+                      or conversion?
+                  </div>
+      
+              </div>
+      
           </div>
+      
+          <div class="carousel-dots">
+      
+              <span class="dot active"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+      
+          </div>
+      
+      </div>
 
           <div class="card deliverable-card">
 
@@ -1232,4 +1392,39 @@ Tester<span>Partner</span>
 </footer>
 
 </body>
+<script>
+
+  const slides =
+  document.querySelectorAll('.decision-slide');
+  
+  const dots =
+  document.querySelectorAll('.dot');
+  
+  let currentSlide = 0;
+  
+  setInterval(() => {
+  
+      slides[currentSlide]
+          .classList
+          .remove('active');
+  
+      dots[currentSlide]
+          .classList
+          .remove('active');
+  
+      currentSlide =
+          (currentSlide + 1)
+          % slides.length;
+  
+      slides[currentSlide]
+          .classList
+          .add('active');
+  
+      dots[currentSlide]
+          .classList
+          .add('active');
+  
+  }, 5000);
+  
+  </script>
 </html>

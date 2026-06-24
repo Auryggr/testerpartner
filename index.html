@@ -1340,33 +1340,33 @@ Tester<span>Partner</span>
 </body>
 <script>
 
-  const slides =
+  const decisionSlides =
   document.querySelectorAll('.decision-slide');
   
-  const dots =
+  const decisionDots =
   document.querySelectorAll('.dot');
   
-  let currentSlide = 0;
+  let decisionIndex = 0;
   
   setInterval(() => {
   
-      slides[currentSlide]
+      decisionSlides[decisionIndex]
           .classList
           .remove('active');
   
-      dots[currentSlide]
+      decisionDots[decisionIndex]
           .classList
           .remove('active');
   
-      currentSlide =
-          (currentSlide + 1)
-          % slides.length;
+      decisionIndex =
+          (decisionIndex + 1)
+          % decisionSlides.length;
   
-      slides[currentSlide]
+      decisionSlides[decisionIndex]
           .classList
           .add('active');
   
-      dots[currentSlide]
+      decisionDots[decisionIndex]
           .classList
           .add('active');
   

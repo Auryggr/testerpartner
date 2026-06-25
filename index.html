@@ -1598,4 +1598,28 @@ Tester<span>Partner</span>
   }, 5000);
   
   </script>
+  <script>
+
+    const heroQuestions =
+    document.querySelectorAll('.hero-question');
+    
+    let heroIndex = 0;
+    
+    setInterval(() => {
+    
+        heroQuestions[heroIndex]
+            .classList
+            .remove('active');
+    
+        heroIndex =
+            (heroIndex + 1)
+            % heroQuestions.length;
+    
+        heroQuestions[heroIndex]
+            .classList
+            .add('active');
+    
+    }, 5000);
+    
+    </script>
 </html>

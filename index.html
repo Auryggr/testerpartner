@@ -846,11 +846,12 @@ to{
               </div>
 
               <a
-  href="https://google.com"
+  href="https://cal.com/aurys/30min"
   target="_blank"
-  rel="noopener">
+  rel="noopener"
+  class="btn btn-primary">
 
-  TEST BUTTON
+  Book an Experimentation Session
 
 </a>
 
@@ -1562,28 +1563,19 @@ Tester<span>Partner</span>
 </div>
 </div>
 </footer>
+
 <script>
-  (function (C, A, L) {
-    let p = function (a, ar) { a.q.push(ar); };
-    let d = C.document;
-    C.Cal = C.Cal || function () {
-      let cal = C.Cal;
-      let ar = arguments;
+  document
+  .getElementById('book-session-btn')
+  .addEventListener('click', function(e){
   
-      if (!cal.loaded) {
-        cal.ns = {};
-        cal.q = cal.q || [];
-        d.head.appendChild(
-          d.createElement("script")
-        ).src = A;
-        cal.loaded = true;
-      }
+      e.preventDefault();
   
-      p(cal, ar);
-    };
-  })(window, "https://app.cal.com/embed/embed.js", "init");
+      Cal('open', {
+          calLink: 'aurys/30min'
+      });
   
-  Cal("init");
+  });
   </script>
 
 </body>

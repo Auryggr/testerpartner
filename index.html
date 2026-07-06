@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <style>
+/* ====================== ROOT & RESET ====================== */
 :root {
   --bg: #0B1020;
   --text: #F8FAFC;
@@ -30,86 +31,10 @@ body {
   overflow-x: hidden;
 }
 
-.background {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-}
-
-.background::before {
-  content: '';
-  position: absolute;
-  inset: -20%;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(125,211,252,.20), transparent 25%),
-    radial-gradient(circle at 80% 40%, rgba(244,162,97,.16), transparent 25%),
-    radial-gradient(circle at 50% 80%, rgba(125,211,252,.12), transparent 35%);
-  animation: gradientMove 18s ease-in-out infinite alternate;
-}
-
-@keyframes gradientMove {
-  from { transform: scale(1); }
-  to { transform: scale(1.15) translate(-2%, 2%); }
-}
-
+/* ====================== GLOBAL / UTILITIES ====================== */
 .container {
   width: min(1200px, 92%);
   margin: auto;
-}
-
-header {
-  position: sticky;
-  top: 0;
-  background: rgba(11,16,32,.75);
-  backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--border);
-}
-
-.nav {
-  padding: 24px 0;
-}
-
-.logo {
-  font-size: 1.8rem;
-  font-weight: 900;
-}
-
-.logo span {
-  color: var(--clay);
-}
-
-.hero,
-.section,
-.cta {
-  padding: 100px 0;
-}
-
-.badge {
-  display: inline-block;
-  padding: 10px 18px;
-  border-radius: 999px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  font-weight: 700;
-}
-
-.hero h1 {
-  font-size: clamp(4rem, 9vw, 8rem);
-  line-height: .9;
-  margin: 24px 0;
-}
-
-.hero p {
-  max-width: 760px;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.hero-cta {
-  display: flex;
-  gap: 16px;
-  margin-top: 30px;
-  flex-wrap: wrap;
 }
 
 .btn {
@@ -132,6 +57,161 @@ header {
   margin-top: 43.5px;
 }
 
+/* ====================== BACKGROUND ====================== */
+.background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.background::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(125,211,252,.20), transparent 25%),
+    radial-gradient(circle at 80% 40%, rgba(244,162,97,.16), transparent 25%),
+    radial-gradient(circle at 50% 80%, rgba(125,211,252,.12), transparent 35%);
+  animation: gradientMove 18s ease-in-out infinite alternate;
+}
+
+@keyframes gradientMove {
+  from { transform: scale(1); }
+  to { transform: scale(1.15) translate(-2%, 2%); }
+}
+
+/* ====================== HEADER ====================== */
+header {
+  position: sticky;
+  top: 0;
+  background: rgba(11,16,32,.75);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav {
+  padding: 24px 0;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+
+.logo span {
+  color: var(--clay);
+}
+
+/* ====================== HERO ====================== */
+.hero,
+.section,
+.cta {
+  padding: 100px 0;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 56px;
+  margin-bottom: 36px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+
+.hero-question {
+  display: none;
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--text);
+  animation: fadeHero .45s ease;
+}
+
+.hero-question.active {
+  display: block;
+}
+
+.hero h1 {
+  font-size: clamp(4rem, 9vw, 8rem);
+  line-height: .9;
+  margin: 24px 0;
+}
+
+.hero-secondary {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  margin-bottom: 24px;
+  color: var(--text);
+}
+
+.hero-description {
+  max-width: 760px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+/* ====================== BADGE / STATUS ====================== */
+.badge {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  font-weight: 700;
+}
+
+.cta-status,
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 700;
+  width: fit-content;
+  background: rgba(52,211,153,.10);
+  border: 1px solid rgba(52,211,153,.25);
+  color: #34D399;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34D399;
+  animation: statusPulse 2s infinite;
+}
+
+.status-live {
+  background: rgba(52,211,153,.15);
+  border: 1px solid rgba(52,211,153,.25);
+  color: #34D399;
+}
+
+.status-soon {
+  background: rgba(125,211,252,.08);
+  border: 1px solid rgba(125,211,252,.18);
+  color: #7DD3FC;
+}
+
+.waitlist-note {
+  margin-top: 12px;
+  font-size: .85rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ====================== CARDS & COMPONENTS ====================== */
 .card {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -158,52 +238,11 @@ header {
   padding-left: 20px;
 }
 
-.cta-card {
-  background: linear-gradient(135deg, rgba(125,211,252,.14), rgba(244,162,97,.14));
-  border: 1px solid var(--border);
-  border-radius: 40px;
-  padding: 80px;
-  text-align: center;
-}
-
-.cta-card h2 {
-  font-size: clamp(3rem, 7vw, 6rem);
-  line-height: .95;
-  margin-bottom: 24px;
-}
-
-.cta-card p {
-  color: var(--muted);
-  margin-bottom: 30px;
-}
-
-footer {
-  padding: 60px 0;
-  border-top: 1px solid var(--border);
-}
-
-/* Work Models */
-.work-models {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 50px;
-}
-
-.model {
+.cta-wrapper {
   display: flex;
   flex-direction: column;
-}
-
-.feature-list {
-  list-style: none;
-  margin: 24px 0;
-  padding: 0;
-}
-
-.feature-list li {
-  color: var(--muted);
-  margin-bottom: 10px;
+  align-items: center;
+  gap: 10px;
 }
 
 .card-btn {
@@ -212,45 +251,304 @@ footer {
   margin-top: auto;
 }
 
-.status {
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: .8rem;
-  font-weight: 700;
-  margin-bottom: 18px;
+/* ====================== MODAL ====================== */
+.booking-modal {
+  border: none;
+  padding: 0;
+  border-radius: 28px;
+  background: #141b2d;
+  color: white;
+  width: min(760px, 92vw);
 }
 
-.status-live {
-  background: rgba(52,211,153,.15);
-  border: 1px solid rgba(52,211,153,.25);
-  color: #34D399;
+.booking-modal::backdrop {
+  background: rgba(0,0,0,.72);
+  backdrop-filter: blur(8px);
 }
 
-.status-soon {
-  background:rgba(125,211,252,.08);
-    border:1px solid rgba(125,211,252,.18);
-    color:#7DD3FC;
+.booking-content {
+  position: relative;
+  padding: 48px;
 }
 
-.waitlist-note {
-  margin-top: 12px;
-  font-size: .85rem;
+.modal-close {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.modal-icon {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+.booking-content h2 {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+}
+
+.modal-subtitle {
   color: var(--muted);
-  text-align: center;
+  line-height: 1.7;
+  margin-bottom: 36px;
 }
 
-.hero-secondary {
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
+.booking-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-bottom: 36px;
+}
+
+.booking-card {
+  padding: 22px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+}
+
+.booking-card strong {
+  display: block;
+  font-size: 1.5rem;
+  margin-bottom: 6px;
+}
+
+.booking-card span {
+  color: var(--muted);
+}
+
+.testing-guarantee {
+  padding: 28px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(52,211,153,.12), rgba(125,211,252,.06));
+  border: 1px solid rgba(52,211,153,.25);
+  margin-bottom: 34px;
+}
+
+.testing-guarantee h3 {
+  margin-bottom: 14px;
+}
+
+.testing-guarantee p {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 18px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* ====================== DASHBOARD ====================== */
+.dashboard-section {
+  padding: 0 0 100px;
+}
+
+.decision-dashboard {
+  padding: 32px;
+  border-radius: 32px;
+  background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(125,211,252,.05));
+  border: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 24px;
+}
+
+.dashboard-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.dashboard-subtitle {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+.dashboard-live {
+  color: #34D399;
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.dashboard-card {
+  padding: 20px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+.launch-card {
+  background: #F4A261;
+  border: 1px solid rgba(244,162,97,.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.launch-header {
+  max-width: 150px;
+  padding: 5px 10px;
+  border: 2px solid rgb(80, 53, 44, .4);
+  border-radius: 20px;
+}
+
+.launch-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.launch-big {
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.launch-label {
+  color: #0B1020;
+}
+
+.launch-arrow {
+  font-size: 2rem;
+  color: #0B1020;
+  animation: pulseArrow 2s infinite;
+}
+
+.dashboard-footer {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.dashboard-toggle {
+  cursor: pointer;
+}
+
+.dashboard-details {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height .5s ease, opacity .35s ease;
+}
+
+.dashboard-details.active {
+  max-height: 1200px;
+  opacity: 1;
+  margin-top: 30px;
+}
+
+.dashboard-label {
+  color: var(--muted);
+  font-size: .85rem;
+  margin-bottom: 10px;
+}
+
+.dashboard-value {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.dashboard-description {
+  color: var(--muted);
+}
+
+.dashboard-roadmap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.roadmap-live {
+  color: #34D399;
+  font-weight: 700;
+}
+
+.pricing-mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-weight: 700;
+}
+
+.pricing-mini .current {
+  color: var(--clay);
+}
+
+.pricing-mini .arrow {
+  color: var(--muted);
+}
+
+/* ====================== CAROUSEL ====================== */
+.decision-carousel-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.decision-carousel {
+  position: relative;
+  min-height: 100px;
+  margin-top: 24px;
+}
+
+.decision-slide {
+  display: none;
+  animation: fadeSlide .5s ease;
+}
+
+.decision-slide.active {
+  display: block;
+}
+
+.decision-question {
+  font-size: 1.5rem;
+  line-height: 1.45;
+  font-weight: 700;
   color: var(--text);
+  max-width: 520px;
 }
 
-.hero-description {
-  max-width: 760px;
+.carousel-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
 }
 
-/* Process */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  transition: .3s;
+}
+
+.dot.active {
+  background: var(--clay);
+}
+
+/* ====================== PROCESS & DELIVERABLES ====================== */
 .process-grid {
   margin-top: 50px;
   display: grid;
@@ -313,442 +611,80 @@ footer {
   color: var(--muted);
 }
 
-/* Dashboard */
-.dashboard-section {
-  padding: 0 0 100px;
+/* ====================== WORK MODELS ====================== */
+.work-models {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 50px;
 }
 
-.decision-dashboard {
-  padding: 32px;
-  border-radius: 32px;
-  background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(125,211,252,.05));
-  border: 1px solid var(--border);
-  backdrop-filter: blur(20px);
-}
-
-.dashboard-header {
+.model {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+}
+
+.feature-list {
+  list-style: none;
+  margin: 24px 0;
+  padding: 0;
+}
+
+.feature-list li {
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+/* ====================== CTA ====================== */
+.cta-card {
+  background: linear-gradient(135deg, rgba(125,211,252,.14), rgba(244,162,97,.14));
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  padding: 80px;
+  text-align: center;
+}
+
+.cta-card h2 {
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: .95;
   margin-bottom: 24px;
 }
 
-.dashboard-title {
-  font-size: 1.2rem;
-  font-weight: 800;
-}
-.dashboard-subtitle{
-    margin-top:6px;
-    color:var(--muted);
-    font-size:.9rem;
-}
-
-.dashboard-live {
-  color: #34D399;
-  font-size: .85rem;
-  font-weight: 700;
-}
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.dashboard-card {
-  padding: 20px;
-  border-radius: 20px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.06);
-}
-
-.dashboard-card.highlight {
-  border-color: rgba(244,162,97,.35);
-  background: linear-gradient(135deg, rgba(244,162,97,.08), rgba(244,162,97,.03));
-}
-
-.dashboard-label {
+.cta-card p {
   color: var(--muted);
-  font-size: .85rem;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
-.dashboard-value {
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 6px;
+/* ====================== FOOTER ====================== */
+footer {
+  padding: 60px 0;
+  border-top: 1px solid var(--border);
 }
 
-.dashboard-description {
-  color: var(--muted);
+/* ====================== ANIMATIONS ====================== */
+@keyframes statusPulse {
+  0% { box-shadow: 0 0 0 0 rgba(52,211,153,.5); }
+  70% { box-shadow: 0 0 0 8px rgba(52,211,153,0); }
+  100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
 }
 
-.dashboard-roadmap {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.decision-carousel-card{
-    position:relative;
-    overflow:hidden;
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.decision-carousel{
-    position:relative;
-    min-height:100px;
-    margin-top:24px;
+@keyframes fadeHero {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.decision-slide{
-    display:none;
-    animation:fadeSlide .5s ease;
+@keyframes pulseArrow {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+  100% { transform: translateX(0); }
 }
 
-.decision-slide.active{
-    display:block;
-}
-
-.decision-problem{
-    font-size:1.35rem;
-    font-weight:700;
-    color:var(--text);
-    line-height:1.4;
-}
-
-.decision-arrow{
-    margin:20px 0;
-    font-size:1.6rem;
-    color:var(--clay);
-}
-
-
-.decision-question{
-    font-size:1.5rem;
-    line-height:1.45;
-    font-weight:700;
-    color:var(--text);
-    max-width:520px;
-}
-
-.carousel-dots{
-    display:flex;
-    gap:8px;
-    margin-top:24px;
-}
-
-.dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:rgba(255,255,255,.15);
-    transition:.3s;
-}
-
-.dot.active{
-    background:var(--clay);
-}
-
-.cta-wrapper{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:10px;
-}
-
-.cta-status{
-
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-
-    padding:8px 14px;
-
-    border-radius:999px;
-
-    background:rgba(52,211,153,.10);
-
-    border:1px solid rgba(52,211,153,.25);
-
-    color:#34D399;
-
-    font-size:.75rem;
-
-    font-weight:700;
-
-    width:fit-content;
-
-}
-
-.status-dot{
-
-    width:8px;
-    height:8px;
-
-    border-radius:50%;
-
-    background:#34D399;
-
-    animation:statusPulse 2s infinite;
-
-}
-
-@keyframes statusPulse{
-
-    0%{
-        box-shadow:0 0 0 0 rgba(52,211,153,.5);
-    }
-
-    70%{
-        box-shadow:0 0 0 8px rgba(52,211,153,0);
-    }
-
-    100%{
-        box-shadow:0 0 0 0 rgba(52,211,153,0);
-    }
-
-}
-
-@keyframes fadeSlide{
-    from{
-        opacity:0;
-        transform:translateY(8px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-.roadmap-live {
-  color: #34D399;
-  font-weight: 700;
-}
-
-.pricing-mini {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  font-weight: 700;
-}
-
-.pricing-mini .current {
-  color: var(--clay);
-}
-
-.pricing-mini .arrow {
-  color: var(--muted);
-}
-
-.dashboard-insights {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.insight-item {
-  padding: 20px;
-  border-radius: 20px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.06);
-}
-
-.insight-item strong {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.insight-item p {
-  color: var(--muted);
-}
-
-.dashboard-footer {
-  margin-top: 24px;
-  display: flex;
-  justify-content: center;
-}
-
-.dashboard-details{
-    max-height:0;
-    overflow:hidden;
-    opacity:0;
-    transition:
-        max-height .5s ease,
-        opacity .35s ease;
-}
-
-.dashboard-details.active{
-    max-height:1200px;
-    opacity:1;
-    margin-top:30px;
-}
-
-.dashboard-footer{
-    display:flex;
-    justify-content:center;
-    gap:16px;
-    margin-top:32px;
-    flex-wrap:wrap;
-}
-
-.dashboard-toggle{
-    cursor:pointer;
-}
-
-.launch-card{
-
-background: #F4A261;
-
-border:1px solid rgba(244,162,97,.25);
-
-position:relative;
-
-overflow:hidden;
-}
-.launch-header{
-    max-width: 150px;
-    padding: 5px 10px;
-    border: 2px solid rgb(80, 53, 44, .4);
-    border-radius: 20px;
-}
-
-.launch-card::before{
-
-content:'';
-
-position:absolute;
-
-width:200px;
-height:200px;
-
-top:-80px;
-right:-80px;
-
-border-radius:50%;
-
-background:
-radial-gradient(
-    circle,
-    rgba(255,255,255,.08),
-    transparent 70%
-);
-}
-
-.launch-flow{
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-gap:10px;
-
-margin-top:20px;
-}
-
-.launch-big{
-
-font-size:2rem;
-
-font-weight:900;
-}
-
-.launch-label{
-
-color:#0B1020;
-}
-
-.launch-arrow{
-
-font-size:2rem;
-
-color:#0B1020;
-
-animation:pulseArrow 2s infinite;
-}
-.hero-badge{
-
-display:inline-flex;
-
-align-items:center;
-
-position:relative;
-
-overflow:hidden;
-
-min-height:56px;
-
-margin-bottom:36px;
-
-padding:14px 22px;
-
-border-radius:999px;
-
-background:var(--panel);
-
-border:1px solid var(--border);
-
-}
-
-.hero-question{
-
-display:none;
-
-font-size:.95rem;
-
-font-weight:700;
-
-color:var(--text);
-
-animation:fadeHero .45s ease;
-
-}
-
-.hero-question.active{
-
-display:block;
-
-}
-
-@keyframes fadeHero{
-
-from{
-
-    opacity:0;
-
-    transform:translateY(8px);
-
-}
-
-to{
-
-    opacity:1;
-
-    transform:translateY(0);
-
-}
-
-}
-
-@keyframes pulseArrow{
-
-0%{
-    transform:translateX(0);
-}
-
-50%{
-    transform:translateX(6px);
-}
-
-100%{
-    transform:translateX(0);
-}
-
-}
-
-/* Responsive */
+/* ====================== RESPONSIVE ====================== */
 @media (max-width: 1100px) {
   .process-grid,
   .deliverables {
@@ -768,6 +704,15 @@ to{
 
   .cta-card {
     padding: 40px 24px;
+  }
+}
+
+@media (max-width: 700px) {
+  .booking-grid {
+    grid-template-columns: 1fr;
+  }
+  .booking-content {
+    padding: 32px 24px;
   }
 }
 </style>
@@ -833,40 +778,109 @@ to{
 
       <div class="hero-cta">
 
-          <div class="cta-wrapper">
-
-              <div class="cta-status">
-
-                  <span class="status-dot"></span>
-
-                  <span>
-                      Launch Offer Active
-                  </span>
-
-              </div>
-
-              <a
-  href="#"
-  class="btn btn-primary"
-  data-cal-link="aurys/30min"
-  data-cal-namespace="30min"
-  data-cal-config='{"layout":"month_view"}'>
-
-  Book an Experimentation Session
-
-</a>
-
-          </div>
-
-          <a
-              href="#how-it-works"
-              class="btn btn-secondary">
-
-              See How It Works
-
-          </a>
-
-      </div>
+        <div class="launch-active">
+            <span class="dot"></span>
+            Launch Offer Active
+        </div>
+    
+        <button id="bookModalBtn" class="btn btn-primary">
+            Book an Experimentation Session
+        </button>
+    
+        <a href="#how-it-works" class="btn btn-secondary">
+            See How It Works
+        </a>
+    
+    </div>
+    
+    <dialog id="bookingModal" class="booking-modal">
+    
+        <div class="booking-content">
+    
+            <button class="modal-close" id="closeModal">
+                ✕
+            </button>
+    
+            <div class="modal-icon">
+                🧪
+            </div>
+    
+            <h2>
+                Your experiment starts here.
+            </h2>
+    
+            <p class="modal-subtitle">
+                You're one conversation away from replacing opinions with evidence.
+            </p>
+    
+            <div class="booking-grid">
+    
+                <div class="booking-card">
+                    <strong>60 Minutes</strong>
+                    <span>Focused Experimentation Session</span>
+                </div>
+    
+                <div class="booking-card">
+                    <strong>$49</strong>
+                    <span>Launch Offer Active</span>
+                </div>
+    
+                <div class="booking-card">
+                    <strong>1 Deliverable</strong>
+                    <span>Experiment Brief</span>
+                </div>
+    
+                <div class="booking-card">
+                    <strong>100%</strong>
+                    <span>Testing Guarantee</span>
+                </div>
+    
+            </div>
+    
+            <div class="testing-guarantee">
+    
+                <h3>
+                    🧪 Testing Guarantee
+                </h3>
+    
+                <p>
+    
+                    You're testing us.
+    
+                    We're building a better way to turn team debates into evidence.
+    
+                    If you don't leave the session with a clearer path forward,
+                    we'll refund 100% of your payment.
+    
+                </p>
+    
+            </div>
+    
+            <div class="modal-actions">
+    
+                <a
+                    href="https://cal.com/aurys/30min"
+                    target="_blank"
+                    rel="noopener"
+                    class="btn btn-primary">
+    
+                    Choose a Time →
+    
+                </a>
+    
+                <button
+                    id="laterBtn"
+                    class="btn btn-secondary">
+    
+                    Maybe Later
+    
+                </button>
+    
+            </div>
+    
+        </div>
+    
+    </dialog>
 
   </div>
 
@@ -1638,6 +1652,54 @@ Tester<span>Partner</span>
   }, 5000);
   
   </script>
+  <script>
+
+    const modal=document.getElementById("bookingModal");
+    
+    document
+    .getElementById("bookModalBtn")
+    .addEventListener("click",()=>{
+    
+        modal.showModal();
+    
+    });
+    
+    document
+    .getElementById("closeModal")
+    .addEventListener("click",()=>{
+    
+        modal.close();
+    
+    });
+    
+    document
+    .getElementById("laterBtn")
+    .addEventListener("click",()=>{
+    
+        modal.close();
+    
+    });
+    
+    modal.addEventListener("click",(e)=>{
+    
+        const rect=modal.getBoundingClientRect();
+    
+        if(
+    
+            e.clientX<rect.left||
+            e.clientX>rect.right||
+            e.clientY<rect.top||
+            e.clientY>rect.bottom
+    
+        ){
+    
+            modal.close();
+    
+        }
+    
+    });
+    
+    </script>
   <script>
 
     const heroQuestions =

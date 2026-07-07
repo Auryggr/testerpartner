@@ -48,271 +48,115 @@ body {
 }
 .decision-dashboard{
 
-position:relative;
-
-padding:56px;
+padding:64px;
 
 border-radius:32px;
 
-background:
-linear-gradient(
-    180deg,
-    rgba(255,255,255,.05),
-    rgba(255,255,255,.03)
-);
+background:rgba(255,255,255,.04);
 
 border:1px solid rgba(255,255,255,.08);
 
-backdrop-filter:blur(18px);
+}
 
-overflow:hidden;
+.dashboard-intro{
+
+max-width:720px;
+
+margin-bottom:56px;
 
 }
 
-.decision-dashboard::before{
+.dashboard-intro h2{
 
-content:"";
-
-position:absolute;
-
-inset:0;
-
-background:
-radial-gradient(circle at top right,
-    rgba(244,162,97,.08),
-    transparent 40%);
-
-pointer-events:none;
-
-}
-
-.dashboard-header{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:flex-end;
-
-gap:30px;
-
-margin-bottom:42px;
-
-}
-
-.dashboard-title{
-
-font-size:clamp(2rem,3vw,2.8rem);
-
-font-weight:800;
+font-size:clamp(2rem,4vw,3rem);
 
 line-height:1.1;
 
-margin-bottom:10px;
+margin:18px 0;
 
 }
 
-.dashboard-subtitle{
+.dashboard-intro p{
 
 color:var(--muted);
 
-max-width:650px;
+font-size:1.05rem;
 
-line-height:1.7;
-
-}
-
-.dashboard-grid{
-
-display:grid;
-
-grid-template-columns:repeat(3,1fr);
-
-gap:28px;
+line-height:1.8;
 
 }
 
-.dashboard-card{
+.launch-chip{
 
-display:flex;
-
-flex-direction:column;
-
-gap:24px;
-
-padding:34px;
-
-min-height:360px;
-
-border-radius:24px;
-
-background:
-    linear-gradient(
-        180deg,
-        rgba(255,255,255,.045),
-        rgba(255,255,255,.02)
-    );
-
-border:1px solid rgba(255,255,255,.08);
-
-transition:.35s;
-
-}
-
-.dashboard-card:hover{
-
-transform:translateY(-6px);
-
-border-color:rgba(244,162,97,.30);
-
-box-shadow:
-    0 20px 50px rgba(0,0,0,.25);
-
-}
-
-.dashboard-label{
-
-font-size:1.25rem;
-
-font-weight:800;
-
-color:white;
-
-line-height:1.3;
-
-}
-
-.dashboard-roadmap{
-
-display:flex;
-
-flex-direction:column;
-
-gap:18px;
-
-margin-top:4px;
-
-}
-
-.dashboard-roadmap span{
-
-position:relative;
-
-padding-left:20px;
-
-color:var(--muted);
-
-line-height:1.7;
-
-}
-
-.dashboard-roadmap span::before{
-
-content:"";
-
-position:absolute;
-
-left:0;
-
-top:12px;
-
-width:8px;
-
-height:8px;
-
-border-radius:50%;
-
-background:rgba(244,162,97,.75);
-
-}
-
-.roadmap-live{
-
-color:white !important;
-
-font-weight:600;
-
-}
-
-.launch-card{
-
-position:relative;
-
-overflow:hidden;
-
-border-color:rgba(244,162,97,.18);
-
-}
-
-.launch-card::after{
-
-content:"";
-
-position:absolute;
-
-top:-60px;
-
-right:-60px;
-
-width:180px;
-
-height:180px;
-
-border-radius:50%;
-
-background:
-    radial-gradient(
-        rgba(244,162,97,.18),
-        transparent 70%
-    );
-
-}
-
-.launch-header{
-
-align-self:flex-start;
+display:inline-flex;
 
 padding:8px 16px;
 
 border-radius:999px;
 
-background:rgba(244,162,97,.15);
-
-border:1px solid rgba(244,162,97,.20);
+background:rgba(244,162,97,.12);
 
 color:var(--clay);
 
-font-size:.82rem;
-
 font-weight:700;
-
-letter-spacing:.4px;
 
 }
 
-.waitlist-note{
+.dashboard-columns{
 
-margin-top:auto;
+display:grid;
 
-padding-top:24px;
+grid-template-columns:1fr auto 1fr auto 1fr;
 
-border-top:1px solid rgba(255,255,255,.08);
+gap:40px;
 
-color:var(--text);
+align-items:start;
+
+}
+
+.dashboard-divider{
+
+width:1px;
+
+background:rgba(255,255,255,.08);
+
+align-self:stretch;
+
+}
+
+.dashboard-column h3{
+
+margin-bottom:22px;
+
+font-size:1.2rem;
+
+}
+
+.dashboard-column ul{
+
+list-style:none;
+
+padding:0;
+
+}
+
+.dashboard-column li{
+
+margin-bottom:18px;
+
+color:var(--muted);
 
 line-height:1.7;
 
-font-size:.95rem;
-
 }
 
-.waitlist-note strong{
+.dashboard-bottom{
 
-color:white;
+margin-top:56px;
 
-}
+padding-top:32px;
 
-.dashboard-footer{
+border-top:1px solid rgba(255,255,255,.08);
 
 display:flex;
 
@@ -324,95 +168,17 @@ flex-wrap:wrap;
 
 gap:20px;
 
-margin-top:42px;
-
-padding-top:34px;
-
-border-top:1px solid rgba(255,255,255,.08);
-
 }
 
-.launch-active{
-
-display:inline-flex;
-
-align-items:center;
-
-gap:10px;
-
-padding:10px 18px;
-
-border-radius:999px;
-
-background:rgba(52,211,153,.10);
-
-border:1px solid rgba(52,211,153,.25);
-
-color:#34D399;
-
-font-size:.85rem;
-
-font-weight:700;
-
-}
-
-.launch-active .dot{
-
-width:8px;
-
-height:8px;
-
-border-radius:50%;
-
-background:#34D399;
-
-box-shadow:0 0 12px rgba(52,211,153,.7);
-
-animation:pulse 2s infinite;
-
-}
-
-.dashboard-insights{
-
-margin-top:36px;
-
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:24px;
-
-animation:fadeUp .35s ease;
-
-}
-
-.insight-item{
-
-padding:28px;
-
-border-radius:20px;
-
-background:rgba(255,255,255,.04);
-
-border:1px solid rgba(255,255,255,.08);
-
-}
-
-.insight-item strong{
-
-display:block;
-
-margin-bottom:14px;
-
-font-size:1.05rem;
-
-}
-
-.insight-item p{
+.launch-note{
 
 color:var(--muted);
 
-line-height:1.8;
+}
+
+.launch-note strong{
+
+color:white;
 
 }
 
@@ -1586,191 +1352,147 @@ to{
 <section class="dashboard-section">
 
   <div class="container">
-
-      <div class="decision-dashboard">
-
-          <div class="dashboard-header">
-
-              <div>
-
-                  <div class="dashboard-title">
-                      Is this where your team is today?
-                  </div>
-
-                  <div class="dashboard-subtitle">
-                      If any of these sound familiar, you're in the right place.
-                  </div>
-
-              </div>
-
-          </div>
-
-          <div class="dashboard-grid">
-
-              <div class="dashboard-card">
-
-                  <div class="dashboard-label">
-                      When teams get stuck
-                  </div>
-
-                  <div class="dashboard-roadmap">
-
-                      <span>
-                          "We don't know what to prioritize."
-                      </span>
-
-                      <span>
-                          "Everyone has a different opinion."
-                      </span>
-
-                      <span>
-                          "Should we launch this now?"
-                      </span>
-
-                      <span>
-                          "How could we validate this first?"
-                      </span>
-
-                  </div>
-
-              </div>
-
-              <div class="dashboard-card launch-card">
-
-                  <div class="launch-header">
-                      🎉 Launch Celebration
-                  </div>
-
-                  <div class="dashboard-label" style="margin-top:18px;">
-                      We offer
-                  </div>
-
-                  <div class="dashboard-roadmap">
-
-                      <span class="roadmap-live">
-                          ✓ 60-minute decision strategy session
-                      </span>
-
-                      <span>
-                          ✓ 100% Testing Guarantee
-                      </span>
-
-                      <span>
-                          ✓ A trusted partner for future experiments
-                      </span>
-
-                  </div>
-
-                  <div class="waitlist-note" style="margin-top:22px;text-align:left;">
-
-                      🎉 <strong>First 5 Founding Members</strong> receive special
-                      Founding Member pricing and help shape TesterPartner.
-
-                  </div>
-
-              </div>
-
-              <div class="dashboard-card">
-
-                  <div class="dashboard-label">
-                      You'll leave with
-                  </div>
-
-                  <div class="dashboard-roadmap">
-
-                      <span class="roadmap-live">
-                          ✓ A clear hypothesis
-                      </span>
-
-                      <span>
-                          ✓ An experiment roadmap
-                      </span>
-
-                      <span>
-                          ✓ Success metrics
-                      </span>
-
-                      <span>
-                          ✓ A clearer path forward — or your money back
-                      </span>
-
-                  </div>
-
-              </div>
-
-          </div>
-
-          <div class="dashboard-footer">
-
-              <div class="launch-active">
-                  <span class="dot"></span>
-                  Launch Offer Active
-              </div>
-
-              <a href="#"
-                 id="dashboardBookBtn"
-                 class="btn btn-primary">
-
-                  Book a Session to Gain Evidence
-
-              </a>
-
-              <button
-                  class="btn btn-secondary"
-                  id="dashboardToggle">
-
-                  Know More ↓
-
-              </button>
-
-          </div>
-
-          <div id="dashboardDetails" style="display:none;">
-
-              <div class="dashboard-insights">
-
-                  <div class="insight-item">
-
-                      <strong>
-                          Why Founding Members?
-                      </strong>
-
-                      <p>
-
-                          You're not just booking a session.
-                          You're helping shape a new way of making decisions through evidence.
-                          Your feedback will directly influence future Sessions,
-                          Workshops and Experimentation Circles.
-
-                      </p>
-
-                  </div>
-
-                  <div class="insight-item">
-
-                      <strong>
-                          Testing Guarantee
-                      </strong>
-
-                      <p>
-
-                          If you don't leave the session with a clearer path forward,
-                          we'll refund 100% of your payment.
-                          We're asking you to test TesterPartner before asking you to trust it.
-
-                      </p>
-
-                  </div>
-
-              </div>
-
-          </div>
-
-      </div>
-
+  
+  <div class="decision-dashboard">
+  
+  <div class="dashboard-intro">
+  
+  <div class="launch-chip">
+  🎉 Founding Member Launch
   </div>
-
-</section>
+  
+  <h2>
+  One conversation can replace weeks of debating.
+  </h2>
+  
+  <p>
+  
+  If your team is stuck on an important decision,
+  we'll help transform assumptions into an experiment
+  you can actually run.
+  
+  </p>
+  
+  </div>
+  
+  <div class="dashboard-columns">
+  
+  <div class="dashboard-column">
+  
+  <h3>
+  When teams get stuck
+  </h3>
+  
+  <ul>
+  
+  <li>
+  "We don't know what to prioritize."
+  </li>
+  
+  <li>
+  "Should we launch this now?"
+  </li>
+  
+  <li>
+  "Everyone has a different opinion."
+  </li>
+  
+  <li>
+  "How could we validate this first?"
+  </li>
+  
+  </ul>
+  
+  </div>
+  
+  <div class="dashboard-divider"></div>
+  
+  <div class="dashboard-column">
+  
+  <h3>
+  What happens in the session
+  </h3>
+  
+  <ul>
+  
+  <li>
+  ✓ 60-minute decision strategy session
+  </li>
+  
+  <li>
+  ✓ We design one experiment together
+  </li>
+  
+  <li>
+  ✓ Testing Guarantee included
+  </li>
+  
+  <li>
+  ✓ Founding Member pricing available
+  </li>
+  
+  </ul>
+  
+  </div>
+  
+  <div class="dashboard-divider"></div>
+  
+  <div class="dashboard-column">
+  
+  <h3>
+  You'll leave with
+  </h3>
+  
+  <ul>
+  
+  <li>
+  ✓ Clear hypothesis
+  </li>
+  
+  <li>
+  ✓ Experiment roadmap
+  </li>
+  
+  <li>
+  ✓ Success metrics
+  </li>
+  
+  <li>
+  ✓ A clearer path forward
+  </li>
+  
+  </ul>
+  
+  </div>
+  
+  </div>
+  
+  <div class="dashboard-bottom">
+  
+  <div class="launch-note">
+  
+  Only
+  <strong>5 Founding Member spots</strong>
+  available.
+  
+  </div>
+  
+  <a
+  href="#"
+  id="dashboardBookBtn"
+  class="btn btn-primary">
+  
+  Book a Session to Gain Evidence
+  
+  </a>
+  
+  </div>
+  
+  </div>
+  
+  </div>
+  
+  </section>
 
 <script>
 

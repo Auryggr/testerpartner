@@ -1115,125 +1115,130 @@ to{
               <div>
 
                   <div class="dashboard-title">
-                      Today at TesterPartner
+                      Is this where your team is today?
                   </div>
 
                   <div class="dashboard-subtitle">
-                      Live updates, opportunities and milestones.
+                      If any of these sound familiar, you're in the right place.
                   </div>
 
-              </div>
-
-              <div class="dashboard-live">
-                  ● LIVE
               </div>
 
           </div>
 
-          <!-- MAIN VISIBLE DASHBOARD -->
+          <div class="dashboard-grid">
 
-          <div class="dashboard-grid dashboard-preview">
+              <div class="dashboard-card">
 
-              <!-- Launch Offer -->
+                  <div class="dashboard-label">
+                      When teams get stuck
+                  </div>
+
+                  <div class="dashboard-roadmap">
+
+                      <span>
+                          "We don't know what to prioritize."
+                      </span>
+
+                      <span>
+                          "Everyone has a different opinion."
+                      </span>
+
+                      <span>
+                          "Should we launch this now?"
+                      </span>
+
+                      <span>
+                          "How could we validate this first?"
+                      </span>
+
+                  </div>
+
+              </div>
 
               <div class="dashboard-card launch-card">
 
                   <div class="launch-header">
-                      🎉 Launch Offer
+                      🎉 Launch Celebration
                   </div>
 
-                  <div class="launch-flow">
+                  <div class="dashboard-label" style="margin-top:18px;">
+                      We offer
+                  </div>
 
-                      <div class="launch-step">
+                  <div class="dashboard-roadmap">
 
-                          <div class="launch-big">
-                              5 Spots
-                          </div>
+                      <span class="roadmap-live">
+                          ✓ 60-minute decision strategy session
+                      </span>
 
-                          <div class="launch-label">
-                              Founding Members
-                          </div>
+                      <span>
+                          ✓ 100% Testing Guarantee
+                      </span>
 
-                      </div>
+                      <span>
+                          ✓ A trusted partner for future experiments
+                      </span>
 
-                      <div class="launch-arrow">
-                          →
-                      </div>
+                  </div>
 
-                      <div class="launch-step">
+                  <div class="waitlist-note" style="margin-top:22px;text-align:left;">
 
-                          <div class="launch-big">
-                              Join
-                          </div>
-
-                          <div class="launch-label">
-                              Free
-                          </div>
-
-                      </div>
+                      🎉 <strong>First 5 Founding Members</strong> receive special
+                      Founding Member pricing and help shape TesterPartner.
 
                   </div>
 
               </div>
 
-              <!-- Next Price -->
-
               <div class="dashboard-card">
 
                   <div class="dashboard-label">
-                      Next Price
+                      You'll leave with
                   </div>
 
-                  <div class="dashboard-value">
-                      $49
-                  </div>
+                  <div class="dashboard-roadmap">
 
-                  <div class="dashboard-description">
-                      Next 20 Companies
-                  </div>
+                      <span class="roadmap-live">
+                          ✓ A clear hypothesis
+                      </span>
 
-              </div>
+                      <span>
+                          ✓ An experiment roadmap
+                      </span>
 
-              <!-- Typical Outcome -->
+                      <span>
+                          ✓ Success metrics
+                      </span>
 
-              <div class="dashboard-card">
+                      <span>
+                          ✓ A clearer path forward — or your money back
+                      </span>
 
-                  <div class="dashboard-label">
-                      Typical Outcome
-                  </div>
-
-                  <div class="dashboard-value">
-                      1
-                  </div>
-
-                  <div class="dashboard-description">
-                      Experiment Brief Delivered
                   </div>
 
               </div>
 
           </div>
-
-          <!-- CTA IMMEDIATELY VISIBLE -->
 
           <div class="dashboard-footer">
 
-            <div class="cta-wrapper">
-
-              <div class="cta-status">
-                  <span class="status-dot"></span>
-                  <span>Launch Offer Active</span>
+              <div class="launch-active">
+                  <span class="dot"></span>
+                  Launch Offer Active
               </div>
-          
-              <a href="#book-session" class="btn btn-primary">
-                  Claim a Founding Member Spot
+
+              <a href="#"
+                 id="dashboardBookBtn"
+                 class="btn btn-primary">
+
+                  Book a Session to Gain Evidence
+
               </a>
-          
-          </div>
 
               <button
-                  class="btn btn-secondary dashboard-toggle"
-                  type="button">
+                  class="btn btn-secondary"
+                  id="dashboardToggle">
 
                   Know More ↓
 
@@ -1241,151 +1246,40 @@ to{
 
           </div>
 
-          <!-- COLLAPSIBLE CONTENT -->
+          <div id="dashboardDetails" style="display:none;">
 
-          <div class="dashboard-details">
+              <div class="dashboard-insights">
 
-              <div class="dashboard-grid">
+                  <div class="insight-item">
 
-                  <!-- Launch Pricing -->
-
-                  <div class="dashboard-card">
-
-                      <div class="dashboard-label">
-                          Launch Pricing
-                      </div>
-
-                      <div class="pricing-mini">
-
-                          <span class="current">
-                              Free
-                          </span>
-
-                          <span class="arrow">
-                              →
-                          </span>
-
-                          <span>
-                              $49
-                          </span>
-
-                          <span class="arrow">
-                              →
-                          </span>
-
-                          <span>
-                              $149
-                          </span>
-
-                      </div>
-
-                  </div>
-
-                  <!-- Roadmap -->
-
-                  <div class="dashboard-card">
-
-                      <div class="dashboard-label">
-                          Product Roadmap
-                      </div>
-
-                      <div class="dashboard-roadmap">
-
-                          <span class="roadmap-live">
-                              ✓ Experimentation Session Live
-                          </span>
-
-                          <span>
-                              Workshop Coming Soon
-                          </span>
-
-                          <span>
-                              Circle Coming Soon
-                          </span>
-
-                      </div>
-
-                  </div>
-
-                  <!-- Why Founding -->
-
-                  <div class="dashboard-card">
-
-                      <div class="dashboard-label">
+                      <strong>
                           Why Founding Members?
-                      </div>
+                      </strong>
 
-                      <div class="dashboard-description">
+                      <p>
 
-                          Help shape TesterPartner,
-                          receive lifetime founding pricing,
-                          and get priority access to future
-                          Workshops and Circles.
+                          You're not just booking a session.
+                          You're helping shape a new way of making decisions through evidence.
+                          Your feedback will directly influence future Sessions,
+                          Workshops and Experimentation Circles.
 
-                      </div>
-
-                  </div>
-
-                  <!-- Leave With -->
-
-                  <div class="dashboard-card">
-
-                      <div class="dashboard-label">
-                          What You'll Leave With
-                      </div>
-
-                      <div class="dashboard-description">
-
-                          A clear hypothesis,
-                          a recommended experiment,
-                          success metrics,
-                          and a practical next step.
-
-                      </div>
+                      </p>
 
                   </div>
 
-                  <!-- Session Structure -->
+                  <div class="insight-item">
 
-                  <div class="dashboard-card">
+                      <strong>
+                          Testing Guarantee
+                      </strong>
 
-                      <div class="dashboard-label">
-                          Session Structure
-                      </div>
+                      <p>
 
-                      <div class="dashboard-description">
+                          If you don't leave the session with a clearer path forward,
+                          we'll refund 100% of your payment.
+                          We're asking you to test TesterPartner before asking you to trust it.
 
-                          Decision
-                          →
-                          Assumptions
-                          →
-                          Evidence
-                          →
-                          Experiment
-                          →
-                          Action Plan
-
-                      </div>
-
-                  </div>
-
-                  <!-- Delivery -->
-
-                  <div class="dashboard-card">
-
-                      <div class="dashboard-label">
-                          Final Deliverable
-                      </div>
-
-                      <div class="dashboard-description">
-
-                          Decision Brief,
-                          Hypothesis,
-                          KPI Framework,
-                          Experiment Design,
-                          and Next Steps.
-
-                      </div>
+                      </p>
 
                   </div>
 

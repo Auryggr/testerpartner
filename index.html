@@ -422,7 +422,7 @@ border:1px solid var(--border);
 
 .booking-modal{
 
-width:min(760px,92vw);
+width:min(620px,92vw);
 
 padding:0;
 
@@ -430,25 +430,30 @@ border:none;
 
 border-radius:28px;
 
-background:#141B2D;
+background:#111827;
 
-color:white;
+color:#fff;
+
+overflow:hidden;
+
+box-shadow:
+    0 30px 80px rgba(0,0,0,.45);
 
 }
 
 .booking-modal::backdrop{
 
-background:rgba(0,0,0,.72);
+background:rgba(4,8,20,.75);
 
-backdrop-filter:blur(8px);
+backdrop-filter:blur(10px);
 
 }
 
-.booking-content{
-
-position:relative;
+.booking-wizard{
 
 padding:48px;
+
+position:relative;
 
 }
 
@@ -456,19 +461,477 @@ padding:48px;
 
 position:absolute;
 
-top:22px;
+top:24px;
 
-right:22px;
+right:24px;
 
-background:none;
+width:40px;
+
+height:40px;
 
 border:none;
 
+border-radius:50%;
+
+background:rgba(255,255,255,.05);
+
 color:white;
 
-font-size:1.3rem;
+cursor:pointer;
+
+transition:.25s;
+
+}
+
+.modal-close:hover{
+
+background:rgba(255,255,255,.12);
+
+}
+
+.wizard-header{
+
+margin-bottom:40px;
+
+}
+
+.wizard-icon{
+
+font-size:2rem;
+
+margin-bottom:18px;
+
+}
+
+.wizard-kicker{
+
+display:inline-block;
+
+margin-bottom:12px;
+
+color:#F4A261;
+
+font-size:.82rem;
+
+font-weight:700;
+
+letter-spacing:.08em;
+
+text-transform:uppercase;
+
+}
+
+.wizard-header h2{
+
+font-size:3rem;
+
+line-height:1;
+
+margin-bottom:16px;
+
+}
+
+.wizard-header p{
+
+color:#AAB4C8;
+
+line-height:1.8;
+
+max-width:480px;
+
+}
+
+.wizard-progress{
+
+margin-bottom:42px;
+
+}
+
+.progress-bar{
+
+height:4px;
+
+border-radius:999px;
+
+background:rgba(255,255,255,.08);
+
+overflow:hidden;
+
+}
+
+.progress-fill{
+
+width:33.333%;
+
+height:100%;
+
+background:#F4A261;
+
+transition:.35s;
+
+}
+
+.progress-steps{
+
+display:flex;
+
+justify-content:space-between;
+
+margin-top:-12px;
+
+}
+
+.step{
+
+width:28px;
+
+height:28px;
+
+border-radius:50%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+background:#1F2937;
+
+border:2px solid rgba(255,255,255,.08);
+
+color:#AAB4C8;
+
+font-size:.8rem;
+
+transition:.25s;
+
+}
+
+.step.active{
+
+background:#F4A261;
+
+color:#111827;
+
+border-color:#F4A261;
+
+}
+
+.progress-label{
+
+margin-top:18px;
+
+color:#94A3B8;
+
+font-size:.9rem;
+
+}
+
+.wizard-screen{
+
+display:none;
+
+animation:fadeWizard .35s ease;
+
+}
+
+.wizard-screen.active{
+
+display:block;
+
+}
+
+@keyframes fadeWizard{
+
+from{
+
+    opacity:0;
+
+    transform:translateX(15px);
+
+}
+
+to{
+
+    opacity:1;
+
+    transform:none;
+
+}
+
+}
+
+.screen-label{
+
+display:inline-block;
+
+margin-bottom:12px;
+
+color:#F4A261;
+
+font-size:.78rem;
+
+font-weight:700;
+
+letter-spacing:.08em;
+
+}
+
+.wizard-screen h3{
+
+font-size:2rem;
+
+line-height:1.2;
+
+margin-bottom:14px;
+
+}
+
+.screen-description{
+
+color:#94A3B8;
+
+margin-bottom:30px;
+
+}
+
+textarea{
+
+width:100%;
+
+min-height:170px;
+
+padding:20px;
+
+border-radius:18px;
+
+border:1px solid rgba(255,255,255,.08);
+
+background:#0F172A;
+
+color:white;
+
+font:inherit;
+
+resize:none;
+
+transition:.25s;
+
+}
+
+textarea::placeholder{
+
+color:#64748B;
+
+}
+
+textarea:focus{
+
+outline:none;
+
+border-color:#F4A261;
+
+box-shadow:0 0 0 4px rgba(244,162,97,.12);
+
+}
+
+.helper{
+
+margin-top:14px;
+
+color:#94A3B8;
+
+font-size:.9rem;
+
+line-height:1.6;
+
+}
+
+.option-grid{
+
+display:flex;
+
+flex-direction:column;
+
+gap:16px;
+
+margin-top:28px;
+
+}
+
+.option-card{
+
+display:flex;
+
+gap:16px;
+
+align-items:flex-start;
+
+padding:18px;
+
+border-radius:18px;
+
+border:1px solid rgba(255,255,255,.08);
+
+background:#0F172A;
 
 cursor:pointer;
+
+transition:.25s;
+
+}
+
+.option-card:hover{
+
+border-color:#F4A261;
+
+transform:translateY(-2px);
+
+}
+
+.option-card input{
+
+margin-top:4px;
+
+accent-color:#F4A261;
+
+}
+
+.option-card strong{
+
+display:block;
+
+margin-bottom:6px;
+
+font-size:1rem;
+
+}
+
+.option-card span{
+
+color:#94A3B8;
+
+font-size:.92rem;
+
+line-height:1.6;
+
+}
+
+.option-card:has(input:checked){
+
+border-color:#F4A261;
+
+background:rgba(244,162,97,.08);
+
+box-shadow:0 0 0 3px rgba(244,162,97,.12);
+
+}
+
+.wizard-footer{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+gap:16px;
+
+margin-top:40px;
+
+}
+
+.success-screen{
+
+text-align:center;
+
+padding:40px 0;
+
+}
+
+.success-icon{
+
+width:72px;
+
+height:72px;
+
+border-radius:50%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+margin:auto;
+
+margin-bottom:24px;
+
+background:rgba(52,211,153,.12);
+
+color:#34D399;
+
+font-size:2rem;
+
+font-weight:700;
+
+}
+
+.success-screen h3{
+
+font-size:2rem;
+
+margin-bottom:16px;
+
+}
+
+.success-screen p{
+
+color:#AAB4C8;
+
+line-height:1.8;
+
+margin-bottom:16px;
+
+}
+
+.success-screen .btn{
+
+margin-top:18px;
+
+}
+
+@media(max-width:640px){
+
+.booking-wizard{
+
+    padding:28px;
+
+}
+
+.wizard-header h2{
+
+    font-size:2.2rem;
+
+}
+
+.wizard-screen h3{
+
+    font-size:1.55rem;
+
+}
+
+.wizard-footer{
+
+    flex-direction:column;
+
+}
+
+.wizard-footer .btn{
+
+    width:100%;
+
+}
 
 }
 
@@ -488,93 +951,7 @@ line-height:1.8;
 
 }
 
-.booking-grid{
 
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:18px;
-
-margin-bottom:36px;
-
-}
-
-.booking-card{
-
-padding:22px;
-
-border-radius:18px;
-
-background:rgba(255,255,255,.04);
-
-border:1px solid var(--border);
-
-}
-
-.booking-card strong{
-
-display:block;
-
-font-size:1.45rem;
-
-margin-bottom:6px;
-
-}
-
-.booking-card span{
-
-color:var(--muted);
-
-}
-
-.testing-guarantee{
-
-margin-bottom:34px;
-
-padding:28px;
-
-border-radius:20px;
-
-border:1px solid rgba(52,211,153,.25);
-
-background:
-
-linear-gradient(
-
-    135deg,
-
-    rgba(52,211,153,.12),
-
-    rgba(125,211,252,.06)
-
-);
-
-}
-
-.testing-guarantee h3{
-
-margin-bottom:14px;
-
-}
-
-.testing-guarantee p{
-
-line-height:1.8;
-
-}
-
-.modal-actions{
-
-display:flex;
-
-justify-content:flex-end;
-
-gap:18px;
-
-flex-wrap:wrap;
-
-}
 
 .section-intro{
 
@@ -1348,16 +1725,6 @@ h2{
 
 }
 
-.booking-grid{
-
-    grid-template-columns:1fr;
-
-}
-.booking-right{
-
-display:flex;
-
-align-items:center;
 
 }
 
@@ -2126,90 +2493,157 @@ Tester<span>Partner</span>
 
 <dialog id="bookingModal" class="booking-modal">
 
-  <div class="booking-content">
+  <div class="booking-wizard">
 
       <button
           id="closeModal"
-          class="modal-close">
+          class="modal-close"
+          aria-label="Close">
 
           ✕
 
       </button>
 
-      <div class="modal-icon">
+      <div class="wizard-header">
 
-          💬
+          <div class="wizard-icon">
 
-      </div>
+              💬
 
-      <h2>
+          </div>
 
-          Before we book...
+          <span class="wizard-kicker">
 
-      </h2>
+              Let's prepare your session
 
-      <p class="modal-subtitle">
+          </span>
 
-          I'd like a little context so I can prepare.
+          <h2>
 
-          Three quick questions.
+              Before we book...
 
-          It'll take less than a minute.
+          </h2>
 
-      </p>
+          <p>
 
-      <div class="guide-progress">
+              Three quick questions.
 
-          <div class="guide-step active">1</div>
+              This helps me understand your decision before we meet.
 
-          <div class="guide-line"></div>
-
-          <div class="guide-step">2</div>
-
-          <div class="guide-line"></div>
-
-          <div class="guide-step">3</div>
+          </p>
 
       </div>
 
-      <div class="guide-page active">
+      <div class="wizard-progress">
 
-          <span class="guide-title">
+          <div class="progress-bar">
 
-              The Decision
+              <div class="progress-fill"></div>
+
+          </div>
+
+          <div class="progress-steps">
+
+              <div class="step active">
+
+                  <span>1</span>
+
+              </div>
+
+              <div class="step">
+
+                  <span>2</span>
+
+              </div>
+
+              <div class="step">
+
+                  <span>3</span>
+
+              </div>
+
+          </div>
+
+          <div class="progress-label">
+
+              Step <strong id="currentStep">1</strong> of 3
+
+          </div>
+
+      </div>
+
+
+
+      <!-- STEP 1 -->
+
+      <section
+          class="wizard-screen active"
+          data-step="1">
+
+          <span class="screen-label">
+
+              THE DECISION
 
           </span>
 
           <h3>
 
-              What decision is worth 60 minutes of your team's attention?
+              What decision is worth
+              60 minutes of your team's attention?
 
           </h3>
 
+          <p class="screen-description">
+
+              One or two sentences are enough.
+
+          </p>
+
           <textarea
+
               id="decision"
-              rows="5"
-              placeholder="Example: We're unsure whether to redesign our pricing page or improve onboarding first."></textarea>
 
-          <small>
+              rows="6"
 
-              💡 One or two sentences are enough.
+              placeholder="Example: We're unsure whether to redesign our pricing page or improve onboarding first."
 
-          </small>
+          ></textarea>
 
-          <button class="btn btn-primary next-btn">
+          <div class="helper">
 
-              Continue →
+              💡 We focus on one decision per session.
+              The more specific it is,
+              the more actionable the outcome will be.
 
-          </button>
+          </div>
 
-      </div>
+          <div class="wizard-footer">
 
-      <div class="guide-page">
+              <button
 
-          <span class="guide-title">
+                  class="btn btn-primary next-step"
 
-              The Blocker
+              >
+
+                  Continue →
+
+              </button>
+
+          </div>
+
+      </section>
+
+
+
+      <!-- STEP 2 -->
+
+      <section
+          class="wizard-screen"
+          data-step="2">
+
+          <span class="screen-label">
+
+              THE BLOCKER
 
           </span>
 
@@ -2219,61 +2653,319 @@ Tester<span>Partner</span>
 
           </h3>
 
-          <div class="option-group">
+          <p class="screen-description">
 
-              <label><input type="radio" name="blocker"> We don't have enough evidence.</label>
+              Choose the option that best describes your situation.
 
-              <label><input type="radio" name="blocker"> Different opinions.</label>
+          </p>
 
-              <label><input type="radio" name="blocker"> Too many possibilities.</label>
+          <div class="option-grid">
 
-              <label><input type="radio" name="blocker"> We don't know what to test.</label>
+              <label class="option-card">
+
+                  <input
+                      type="radio"
+                      name="blocker"
+                      value="Evidence">
+
+                  <div>
+
+                      <strong>
+
+                          We don't have enough evidence.
+
+                      </strong>
+
+                      <span>
+
+                          We need data before moving forward.
+
+                      </span>
+
+                  </div>
+
+              </label>
+
+              <label class="option-card">
+
+                  <input
+                      type="radio"
+                      name="blocker"
+                      value="Opinions">
+
+                  <div>
+
+                      <strong>
+
+                          Different opinions.
+
+                      </strong>
+
+                      <span>
+
+                          Everyone has a different perspective.
+
+                      </span>
+
+                  </div>
+
+              </label>
+
+              <label class="option-card">
+
+                  <input
+                      type="radio"
+                      name="blocker"
+                      value="Priority">
+
+                  <div>
+
+                      <strong>
+
+                          Too many possibilities.
+
+                      </strong>
+
+                      <span>
+
+                          We don't know what to prioritize.
+
+                      </span>
+
+                  </div>
+
+              </label>
+
+              <label class="option-card">
+
+                  <input
+                      type="radio"
+                      name="blocker"
+                      value="Testing">
+
+                  <div>
+
+                      <strong>
+
+                          We don't know what to test.
+
+                      </strong>
+
+                      <span>
+
+                          We need a practical experiment.
+
+                      </span>
+
+                  </div>
+
+              </label>
 
           </div>
 
-          <button class="btn btn-primary next-btn">
+          <div class="wizard-footer">
 
-              Continue →
+              <button
+                  class="btn btn-secondary previous-step">
 
-          </button>
+                  ← Back
 
-      </div>
+              </button>
 
-      <div class="guide-page">
+              <button
+                  class="btn btn-primary next-step">
 
-          <span class="guide-title">
+                  Continue →
 
-              The Outcome
+              </button>
+
+          </div>
+
+      </section>
+
+
+
+      <!-- STEP 3 -->
+
+      <section
+          class="wizard-screen"
+          data-step="3">
+
+          <span class="screen-label">
+
+              THE OUTCOME
 
           </span>
 
           <h3>
 
-              What would make this session worthwhile?
+              At the end of the session,
+              what would make you think
+
+              <br><br>
+
+              "That hour was worth it."
 
           </h3>
 
-          <div class="option-group">
+          <p class="screen-description">
 
-              <label><input type="radio" name="goal"> A clear next step.</label>
+              Choose the outcome you'd value the most.
 
-              <label><input type="radio" name="goal"> One experiment to run.</label>
+          </p>
 
-              <label><input type="radio" name="goal"> Team alignment.</label>
+          <div class="option-grid">
 
-              <label><input type="radio" name="goal"> Confidence to move forward.</label>
+              <label class="option-card">
+
+                  <input
+                      type="radio"
+                      name="outcome"
+                      value="Next Step">
+
+                  <div>
+
+                      <strong>
+
+                          A clear next step.
+
+                      </strong>
+
+                  </div>
+
+              </label>
+
+              <label class="option-card">
+
+                  <input
+                      type="radio"
+                      name="outcome"
+                      value="Experiment">
+
+                  <div>
+
+                      <strong>
+
+                          One experiment to run.
+
+                      </strong>
+
+                  </div>
+
+              </label>
+
+              <label class="option-card">
+
+                  <input
+                      type="radio"
+                      name="outcome"
+                      value="Alignment">
+
+                  <div>
+
+                      <strong>
+
+                          Team alignment.
+
+                      </strong>
+
+                  </div>
+
+              </label>
+
+              <label class="option-card">
+
+                  <input
+                      type="radio"
+                      name="outcome"
+                      value="Confidence">
+
+                  <div>
+
+                      <strong>
+
+                          Confidence to move forward.
+
+                      </strong>
+
+                  </div>
+
+              </label>
 
           </div>
 
-          <button
-              id="calendarBtn"
-              class="btn btn-primary">
+          <div class="wizard-footer">
 
-              Continue to Calendar →
+              <button
+                  class="btn btn-secondary previous-step">
 
-          </button>
+                  ← Back
 
-      </div>
+              </button>
+
+              <button
+                  id="wizardFinish"
+                  class="btn btn-primary">
+
+                  Continue to Calendar →
+
+              </button>
+
+          </div>
+
+      </section>
+
+
+
+      <!-- SUCCESS -->
+
+      <section
+          class="wizard-screen"
+          data-step="4">
+
+          <div class="success-screen">
+
+              <div class="success-icon">
+
+                  ✓
+
+              </div>
+
+              <h3>
+
+                  Perfect.
+
+              </h3>
+
+              <p>
+
+                  I already have enough context
+                  to prepare our conversation.
+
+              </p>
+
+              <p>
+
+                  The next step is choosing
+                  a convenient time.
+
+              </p>
+
+              <button
+
+                  id="openCalendar"
+
+                  class="btn btn-primary"
+
+              >
+
+                  Choose a Time →
+
+              </button>
+
+          </div>
+
+      </section>
 
   </div>
 
@@ -2319,16 +3011,14 @@ document
 <script>
   (() => {
   
-      (function (C, A, L) {
-  
-          const p = (a, ar) => a.q.push(ar);
+      (function (C, A) {
   
           const d = C.document;
   
           C.Cal = C.Cal || function () {
   
               const cal = C.Cal;
-              const ar = arguments;
+              const args = arguments;
   
               if (!cal.loaded) {
   
@@ -2343,11 +3033,11 @@ document
   
               }
   
-              p(cal, ar);
+              cal.q.push(args);
   
           };
   
-      })(window, "https://app.cal.com/embed/embed.js", "init");
+      })(window, "https://app.cal.com/embed/embed.js");
   
   
       const rotate = (selector, interval = 5000) => {
@@ -2370,10 +3060,7 @@ document
   
       };
   
-  
-      rotate(".hero-question");
-      rotate(".decision-slide");
-  
+      rotate(".hero-question", 6000);
   
       const slides = [...document.querySelectorAll(".decision-slide")];
       const dots = [...document.querySelectorAll(".dot")];
@@ -2392,64 +3079,183 @@ document
               slides[index].classList.add("active");
               dots[index].classList.add("active");
   
-          }, 5000);
+          }, 4500);
   
       }
   
   
       const modal = document.getElementById("bookingModal");
   
-      if (modal) {
+      if (!modal) return;
   
-          const openButtons = [
-              "bookModalBtn",
-              "footerBookBtn",
-              "bookDecisionSession",
-              "dashboardBookBtn"
-          ];
   
-          openButtons.forEach(id => {
+      const screens = [...document.querySelectorAll(".wizard-screen")];
   
-              const button = document.getElementById(id);
+      const steps = [...document.querySelectorAll(".step")];
   
-              if (!button) return;
+      const progressFill = document.querySelector(".progress-fill");
   
-              button.addEventListener("click", () => {
+      const currentStepLabel = document.getElementById("currentStep");
   
-                  modal.showModal();
+      let currentStep = 0;
+  
+  
+      function goToStep(step) {
+  
+          screens.forEach(screen =>
+              screen.classList.remove("active")
+          );
+  
+          steps.forEach(step =>
+              step.classList.remove("active")
+          );
+  
+          screens[step].classList.add("active");
+  
+          if (step < 3) {
+  
+              steps[step].classList.add("active");
+  
+              progressFill.style.width = `${(step + 1) * 33.33}%`;
+  
+              currentStepLabel.textContent = step + 1;
+  
+          }
+  
+          currentStep = step;
+  
+      }
+  
+  
+      function openWizard() {
+  
+          goToStep(0);
+  
+          modal.showModal();
+  
+      }
+  
+  
+      [
+          "bookModalBtn",
+          "bookDecisionSession",
+          "footerBookBtn",
+          "dashboardBookBtn"
+      ].forEach(id => {
+  
+          const button = document.getElementById(id);
+  
+          if (!button) return;
+  
+          button.addEventListener("click", openWizard);
+  
+      });
+  
+  
+      document
+          .getElementById("closeModal")
+          ?.addEventListener("click", () => modal.close());
+  
+  
+      modal.addEventListener("click", e => {
+  
+          const rect = modal.getBoundingClientRect();
+  
+          if (
+  
+              e.clientX < rect.left ||
+              e.clientX > rect.right ||
+              e.clientY < rect.top ||
+              e.clientY > rect.bottom
+  
+          ) {
+  
+              modal.close();
+  
+          }
+  
+      });
+  
+  
+      document.querySelectorAll(".next-step").forEach(button => {
+  
+          button.addEventListener("click", () => {
+  
+              if (currentStep === 0) {
+  
+                  const decision = document
+                      .getElementById("decision")
+                      .value
+                      .trim();
+  
+                  if (!decision) {
+  
+                      document
+                          .getElementById("decision")
+                          .focus();
+  
+                      return;
+  
+                  }
+  
+              }
+  
+              if (currentStep === 1) {
+  
+                  if (!document.querySelector('input[name="blocker"]:checked')) {
+  
+                      return;
+  
+                  }
+  
+              }
+  
+              goToStep(currentStep + 1);
+  
+          });
+  
+      });
+  
+  
+      document.querySelectorAll(".previous-step").forEach(button => {
+  
+          button.addEventListener("click", () => {
+  
+              goToStep(currentStep - 1);
+  
+          });
+  
+      });
+  
+  
+      document
+          .getElementById("wizardFinish")
+          ?.addEventListener("click", () => {
+  
+              if (!document.querySelector('input[name="outcome"]:checked')) {
+  
+                  return;
+  
+              }
+  
+              goToStep(3);
+  
+          });
+  
+  
+      document
+          .getElementById("openCalendar")
+          ?.addEventListener("click", () => {
+  
+              modal.close();
+  
+              Cal("open", {
+  
+                  calLink: "aurys/30min"
   
               });
   
           });
-  
-          document
-              .getElementById("closeModal")
-              ?.addEventListener("click", () => modal.close());
-  
-          document
-              .getElementById("laterBtn")
-              ?.addEventListener("click", () => modal.close());
-  
-          modal.addEventListener("click", e => {
-  
-              const rect = modal.getBoundingClientRect();
-  
-              if (
-  
-                  e.clientX < rect.left ||
-                  e.clientX > rect.right ||
-                  e.clientY < rect.top ||
-                  e.clientY > rect.bottom
-  
-              ) {
-  
-                  modal.close();
-  
-              }
-  
-          });
-  
-      }
   
   })();
   </script>

@@ -2279,7 +2279,43 @@ Tester<span>Partner</span>
 
 </dialog>
 </body>
+const screens = document.querySelectorAll(".guide-screen");
 
+const steps = document.querySelectorAll(".guide-step");
+
+let currentStep = 0;
+
+document.querySelectorAll(".next-step").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        screens[currentStep].classList.remove("active");
+
+        steps[currentStep].classList.remove("active");
+
+        currentStep++;
+
+        screens[currentStep].classList.add("active");
+
+        steps[currentStep].classList.add("active");
+
+    });
+
+});
+
+document
+.getElementById("continueCalendar")
+.addEventListener("click",()=>{
+
+    modal.close();
+
+    Cal("open",{
+
+        calLink:"aurys/30min"
+
+    });
+
+});
 <script>
   (() => {
   

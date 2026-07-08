@@ -1935,7 +1935,160 @@ Tester<span>Partner</span>
 </div>
 </footer>
 
+<dialog id="bookingModal" class="booking-modal">
 
+  <div class="booking-content">
+
+      <button
+          id="closeModal"
+          class="modal-close">
+
+          ✕
+
+      </button>
+
+      <div class="modal-icon">
+
+          💬
+
+      </div>
+
+      <h2>
+
+          Before we book...
+
+      </h2>
+
+      <p class="modal-subtitle">
+
+          I'd like a little context so I can prepare.
+
+          Three quick questions.
+
+          It'll take less than a minute.
+
+      </p>
+
+      <div class="guide-progress">
+
+          <div class="guide-step active">1</div>
+
+          <div class="guide-line"></div>
+
+          <div class="guide-step">2</div>
+
+          <div class="guide-line"></div>
+
+          <div class="guide-step">3</div>
+
+      </div>
+
+      <div class="guide-page active">
+
+          <span class="guide-title">
+
+              The Decision
+
+          </span>
+
+          <h3>
+
+              What decision is worth 60 minutes of your team's attention?
+
+          </h3>
+
+          <textarea
+              id="decision"
+              rows="5"
+              placeholder="Example: We're unsure whether to redesign our pricing page or improve onboarding first."></textarea>
+
+          <small>
+
+              💡 One or two sentences are enough.
+
+          </small>
+
+          <button class="btn btn-primary next-btn">
+
+              Continue →
+
+          </button>
+
+      </div>
+
+      <div class="guide-page">
+
+          <span class="guide-title">
+
+              The Blocker
+
+          </span>
+
+          <h3>
+
+              What's making this decision difficult?
+
+          </h3>
+
+          <div class="option-group">
+
+              <label><input type="radio" name="blocker"> We don't have enough evidence.</label>
+
+              <label><input type="radio" name="blocker"> Different opinions.</label>
+
+              <label><input type="radio" name="blocker"> Too many possibilities.</label>
+
+              <label><input type="radio" name="blocker"> We don't know what to test.</label>
+
+          </div>
+
+          <button class="btn btn-primary next-btn">
+
+              Continue →
+
+          </button>
+
+      </div>
+
+      <div class="guide-page">
+
+          <span class="guide-title">
+
+              The Outcome
+
+          </span>
+
+          <h3>
+
+              What would make this session worthwhile?
+
+          </h3>
+
+          <div class="option-group">
+
+              <label><input type="radio" name="goal"> A clear next step.</label>
+
+              <label><input type="radio" name="goal"> One experiment to run.</label>
+
+              <label><input type="radio" name="goal"> Team alignment.</label>
+
+              <label><input type="radio" name="goal"> Confidence to move forward.</label>
+
+          </div>
+
+          <button
+              id="calendarBtn"
+              class="btn btn-primary">
+
+              Continue to Calendar →
+
+          </button>
+
+      </div>
+
+  </div>
+
+</dialog>
 </body>
 
 <script>

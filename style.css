@@ -107,41 +107,49 @@
   
   }
   
-  header{
-  
-  position:sticky;
-  
-  top:0;
-  
-  z-index:100;
-  
-  background:rgba(11,16,32,.75);
-  
-  backdrop-filter:blur(18px);
-  
-  border-bottom:1px solid var(--border);
-  
-  }
-  
-  .nav{
-  
-  padding:24px 0;
-  
-  }
-  
-  .logo{
-  
-  font-size:1.8rem;
-  
-  font-weight:900;
-  
-  }
-  
-  .logo span{
-  
-  color:var(--clay);
-  
-  }
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(10,14,28,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.header-content{
+    max-width:1200px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:40px;
+    height:84px;
+}
+
+.logo{
+    color:#fff;
+    text-decoration:none;
+    font-size:1.35rem;
+    font-weight:700;
+}
+
+.main-nav{
+    display:flex;
+    gap:32px;
+    margin-left:auto;
+    margin-right:24px;
+}
+
+.main-nav a{
+    color:#9ca3af;
+    text-decoration:none;
+    font-weight:500;
+    transition:.2s;
+}
+
+.main-nav a:hover{
+    color:#fff;
+}
   
   h1{
   

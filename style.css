@@ -1952,4 +1952,413 @@
   }
   
   }
-  
+/* ==========================================================
+   JOURNEY
+========================================================== */
+
+.journey-flow{
+
+  display:grid;
+
+  gap:32px;
+
+  margin-top:64px;
+
+}
+
+.journey-card{
+
+  background:#151928;
+
+  border:1px solid rgba(255,255,255,.08);
+
+  border-radius:20px;
+
+  padding:32px;
+
+  transition:.25s;
+
+}
+
+.journey-card:hover{
+
+  transform:translateY(-4px);
+
+  border-color:#5eead4;
+
+}
+
+.journey-label{
+
+  display:inline-block;
+
+  color:#5eead4;
+
+  font-size:.75rem;
+
+  letter-spacing:.12em;
+
+  text-transform:uppercase;
+
+  margin-bottom:14px;
+
+}
+
+.journey-stage{
+
+  font-size:2rem;
+
+  font-weight:700;
+
+  margin-bottom:20px;
+
+}
+
+.journey-badge{
+
+  display:inline-flex;
+
+  padding:6px 12px;
+
+  border-radius:999px;
+
+  background:#1e293b;
+
+  font-size:.8rem;
+
+  margin-bottom:20px;
+
+}
+
+.journey-card.invitation{
+
+  opacity:.9;
+
+}
+
+.journey-connector{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:20px;
+
+}
+
+.connector-line{
+
+  flex:1;
+
+  height:1px;
+
+  background:rgba(255,255,255,.08);
+
+}
+
+.connector-text{
+
+  font-size:.85rem;
+
+  color:#94a3b8;
+
+}
+/* ==========================================================
+   DECISION SESSION
+========================================================== */
+
+.decision-layout{
+
+  display:grid;
+
+  grid-template-columns:2fr 1fr;
+
+  gap:48px;
+
+  margin-top:60px;
+
+}
+
+.decision-card{
+
+  background:#151928;
+
+  border:1px solid rgba(255,255,255,.08);
+
+  border-radius:20px;
+
+  padding:40px;
+
+}
+
+.decision-header{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:16px;
+
+  margin-bottom:24px;
+
+}
+
+.decision-badge{
+
+  background:#222b3b;
+
+  padding:6px 14px;
+
+  border-radius:999px;
+
+  font-size:.8rem;
+
+}
+
+.decision-list{
+
+  margin:32px 0;
+
+  display:grid;
+
+  gap:14px;
+
+}
+
+.decision-list li{
+
+  list-style:none;
+
+}
+
+.decision-note{
+
+  background:#111827;
+
+  border:1px solid rgba(255,255,255,.08);
+
+  border-radius:20px;
+
+  padding:32px;
+
+}
+/* ==========================================================
+   SNAPSHOTS
+========================================================== */
+
+.snapshot-grid{
+
+  display:grid;
+
+  grid-template-columns:repeat(3,1fr);
+
+  gap:32px;
+
+  margin-top:60px;
+
+}
+
+.snapshot-card{
+
+  background:#151928;
+
+  border-radius:20px;
+
+  padding:32px;
+
+}
+
+.snapshot-label{
+
+  color:#5eead4;
+
+  font-size:.75rem;
+
+  letter-spacing:.1em;
+
+  text-transform:uppercase;
+
+}
+
+.snapshot-arrow{
+
+  text-align:center;
+
+  font-size:2rem;
+
+  margin:28px 0;
+
+  opacity:.5;
+
+}
+
+.snapshot-card blockquote{
+
+  font-size:1.15rem;
+
+  line-height:1.6;
+
+}
+/* ==========================================================
+   REFLECTION
+========================================================== */
+
+.reflection-card{
+
+  margin:48px 0;
+
+  background:#151928;
+
+  border-radius:18px;
+
+  padding:28px;
+
+  display:grid;
+
+  gap:24px;
+
+}
+
+.reflection-item{
+
+  border-bottom:1px solid rgba(255,255,255,.08);
+
+  padding-bottom:18px;
+
+}
+
+.reflection-item:last-child{
+
+  border:none;
+
+}
+
+.reflection-item span{
+
+  color:#5eead4;
+
+  font-size:.75rem;
+
+  text-transform:uppercase;
+
+}
+
+.reflection-note{
+
+  color:#94a3b8;
+
+}
+/* ==========================================================
+   DAY & TIME
+========================================================== */
+
+.day-grid,
+.time-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+
+    gap:18px;
+
+    margin-top:40px;
+
+}
+
+.day-card,
+.time-card{
+
+    background:#151928;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:16px;
+
+    padding:20px;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.day-card:hover,
+.time-card:hover{
+
+    border-color:#5eead4;
+
+}
+
+.day-card.active,
+.time-card.active{
+
+    background:#5eead4;
+
+    color:#081018;
+
+}
+/* ==========================================================
+   SUCCESS
+========================================================== */
+
+.success-screen{
+
+  text-align:center;
+
+  padding:60px 40px;
+
+}
+
+.success-icon{
+
+  width:80px;
+
+  height:80px;
+
+  border-radius:50%;
+
+  background:#5eead4;
+
+  color:#081018;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  margin:0 auto 32px;
+
+  font-size:2rem;
+
+  font-weight:700;
+
+}
+
+.success-card{
+
+  margin-top:40px;
+
+  background:#151928;
+
+  border-radius:20px;
+
+  padding:32px;
+
+  text-align:left;
+
+}
+
+.success-card ul{
+
+  margin-top:20px;
+
+  display:grid;
+
+  gap:12px;
+
+}

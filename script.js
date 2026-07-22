@@ -1,1031 +1,601 @@
 (() => {
-
-const Events={
-
-events:{},
-
-on(event,callback){
-
-(this.events[event]||(this.events[event]=[]))
-.push(callback);
-
-},
-
-emit(event,data){
-
-(this.events[event]||[])
-.forEach(callback=>callback(data));
-
-}
-
-};
-
-
-const State={
-
-step:1,
-
-brief:{
-
-conversation:"",
-
-difficulty:"",
-
-outcome:"",
-
-future:"",
-
-day:null,
-
-time:null,
-
-meeting:null,
-
-briefId:null
-
-},
-
-days:[],
-
-slots:[]
-
-};
-
-
-const UI={
-
-el:{},
-
-cache(){
-
-this.el.modal=
-document.getElementById("breakdownModal");
-
-this.el.screens=[
-...document.querySelectorAll(".wizard-screen")
-];
-
-this.el.chapters=[
-...document.querySelectorAll(".chapter")
-];
-
-this.el.nextButtons=[
-...document.querySelectorAll(".next-step")
-];
-
-this.el.previousButtons=[
-...document.querySelectorAll(".previous-step")
-];
-
-this.el.challenge=
-document.getElementById("challenge");
-
-this.el.dayGrid=
-document.getElementById("dayGrid");
-
-this.el.timeGrid=
-document.getElementById("timeGrid");
-
-this.el.summaryChallenge=
-document.getElementById("summaryChallenge");
-
-this.el.summaryDifficulty=
-document.getElementById("summaryDifficulty");
-
-this.el.summaryOutcome=
-document.getElementById("summaryOutcome");
-
-this.el.continueDay=
-document.getElementById("continueDay");
-
-this.el.confirmBooking=
-document.getElementById("confirmBooking");
-
-this.el.closeSuccess=
-document.getElementById("closeSuccess");
-
-}
-
-};
-
-
-const Helpers={
-
-difficultyLabels:{
-
-Alignment:
-"We don't agree internally.",
-
-Evidence:
-"We don't have enough evidence.",
-
-Customer:
-"We're unsure what customers actually care about.",
-
-Direction:
-"There are too many possible directions."
-
-},
-
-outcomeLabels:{
-
-Direction:
-"One clearer direction.",
-
-Opportunity:
-"One positioning opportunity.",
-
-Recommendation:
-"A recommendation I trust.",
-
-Confidence:
-"More confidence to move forward."
-
-},
-
-futureLabels:{
-
-Move:
-"Move forward with confidence.",
-
-"Stop debating":
-"Stop debating and start acting.",
-
-Know:
-"Know exactly what to test next.",
-
-Align:
-"Align around one shared direction."
-
-},
-
-text(value,fallback="Waiting..."){
-
-return value&&value.length
-?value
-:fallback;
-
-},
-
-set(id,value,fallback="Waiting..."){
-
-const element=document.getElementById(id);
-
-if(!element)return;
-
-element.textContent=this.text(value,fallback);
-
-},
-
-select(card){
-
-card
-.parentElement
-.querySelectorAll(".selected")
-.forEach(item=>
-item.classList.remove("selected")
-);
-
-card.classList.add("selected");
-
-},
-
-scrollTop(){
-
-window.scrollTo({
-
-top:0,
-
-behavior:"smooth"
-
-});
-
-}
-
-};
-
-
-const Fields=[
-"conversation",
-"difficulty",
-"outcome",
-"future"
-];
-
-
-const BriefSchema={
-
-conversation:{
-
-summary:"summaryChallenge",
-
-preview:"briefConversation",
-
-placeholder:"Waiting for your thoughts...",
-
-format:value=>value||""
-
-},
-
-difficulty:{
-
-summary:"summaryDifficulty",
-
-preview:"briefDifficulty",
-
-placeholder:"Waiting...",
-
-format:value=>
-Helpers.difficultyLabels[value]||""
-
-},
-
-outcome:{
-
-summary:"summaryOutcome",
-
-preview:"briefOutcome",
-
-placeholder:"Waiting...",
-
-format:value=>
-Helpers.outcomeLabels[value]||""
-
-},
-
-future:{
-
-summary:"summaryFuture",
-
-preview:"briefFuture",
-
-placeholder:"We'll define this together.",
-
-format:value=>
-Helpers.futureLabels[value]||""
-
-}
-
-};
-
-
-const Wizard={
-
-init(){
-
-UI.el.nextButtons.forEach(button=>{
-
-button.addEventListener("click",()=>this.next());
-
-});
-
-UI.el.previousButtons.forEach(button=>{
-
-button.addEventListener("click",()=>this.previous());
-
-});
-
-this.bindConversation();
-
-Fields
-.filter(field=>field!=="conversation")
-.forEach(field=>this.bindOptions(field));
-
-this.go(1);
-
-},
-
-bindConversation(){
-
-if(!UI.el.challenge)return;
-
-UI.el.challenge.addEventListener("input",event=>{
-
-State.brief.conversation=
-event.target.value.trim();
-
-Events.emit("brief:changed");
-
-});
-
-},
-
-bindOptions(field){
-
-document
-.querySelectorAll(`input[name="${field}"]`)
-.forEach(input=>{
-
-input.addEventListener("change",event=>{
-
-State.brief[field]=event.target.value;
-
-const card=
-event.target.closest(".option-card");
-
-if(card){
-
-Helpers.select(card);
-
-}
-
-Events.emit("brief:changed");
-
-});
-
-});
-
-},
-
-move(direction){
-
-const step=
-State.step+direction;
-
-if(step<1)return;
-
-if(step>UI.el.screens.length)return;
-
-this.go(step);
-
-},
-
-next(){
-
-this.move(1);
-
-},
-
-previous(){
-
-this.move(-1);
-
-},
-
-go(step){
-
-State.step=step;
-
-UI.el.screens.forEach(screen=>{
-
-screen.classList.toggle(
-
-"active",
-
-Number(screen.dataset.step)===step
-
-);
-
-});
-
-Events.emit("wizard:changed");
-
-Helpers.scrollTop();
-
-}
-
-};
-
-
-const Brief={
-
-timeout:null,
-
-init(){
-
-Events.on(
-
-"brief:changed",
-
-()=>this.render()
-
-);
-
-Events.on(
-
-"wizard:changed",
-
-()=>{
-
-this.render();
-
-this.renderProgress();
-
-this.renderReflection();
-
-}
-
-);
-
-},
-
-render(){
-
-Fields.forEach(field=>{
-
-const config=
-BriefSchema[field];
-
-if(!config)return;
-
-const value=
-config.format(
-State.brief[field]
-);
-
-this.renderSection(
-config,
-value
-);
-
-});
-
-},
-
-renderSection(config,value){
-
-Helpers.set(
-
-config.summary,
-
-value,
-
-config.placeholder
-
-);
-
-Helpers.set(
-
-config.preview,
-
-value,
-
-config.placeholder
-
-);
-
-},
-
-renderProgress(){
-
-UI.el.chapters.forEach((chapter,index)=>{
-
-chapter.classList.toggle(
-
-"completed",
-
-index+1<State.step
-
-);
-
-chapter.classList.toggle(
-
-"active",
-
-index+1===State.step
-
-);
-
-});
-
-},
-
-renderReflection(){
-
-if(State.step!==4)return;
-
-const title=
-document.getElementById("reflectionTitle");
-
-const subtitle=
-document.getElementById("reflectionSubtitle");
-
-if(!title)return;
-
-title.textContent=
-"Reviewing your Opportunity Brief...";
-
-clearTimeout(this.timeout);
-
-this.timeout=
-setTimeout(()=>{
-
-title.textContent=
-"Take a moment to review your Opportunity Brief.";
-
-if(subtitle){
-
-subtitle.textContent=
-"Does it accurately describe the conversation your team needs to have before we meet?";
-
-}
-
-},600);
-
-}
-
-};
-
-
-const API={
-
-base:"/api",
-
-async request(endpoint,options={}){
-
-const response=
-
-await fetch(
-
-`${this.base}${endpoint}`,
-
-{
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-...options
-
-}
-
-);
-
-if(!response.ok){
-
-throw new Error(
-
-`API Error (${response.status})`
-
-);
-
-}
-
-return await response.json();
-
-},
-
-availability(){
-
-return this.request("/availability");
-
-},
-
-slots(day){
-
-return this.request(
-
-`/availability?day=${encodeURIComponent(day)}`
-
-);
-
-},
-
-book(data){
-
-return this.request(
-
-"/booking",
-
-{
-
-method:"POST",
-
-body:JSON.stringify(data)
-
-}
-
-);
-
-}
-
-};
-
-
-const Scheduler={
-
-async loadDays(){
-
-State.days=
-
-await API.availability();
-
-Events.emit("calendar:days");
-
-},
-
-async loadSlots(){
-
-if(!State.brief.day)return;
-
-State.slots=
-
-await API.slots(
-
-State.brief.day
-
-);
-
-Events.emit("calendar:slots");
-
-}
-
-};
-
-
-const Calendar={
-
-init(){
-
-Events.on(
-
-"wizard:changed",
-
-()=>{
-
-if(State.step===6){
-
-Scheduler.loadDays();
-
-}
-
-if(State.step===7){
-
-Scheduler.loadSlots();
-
-}
-
-});
-
-Events.on(
-
-"calendar:days",
-
-()=>this.renderDays()
-
-);
-
-Events.on(
-
-"calendar:slots",
-
-()=>this.renderSlots()
-
-);
-
-},
-
-renderDays(){
-
-if(!UI.el.dayGrid)return;
-
-UI.el.dayGrid.innerHTML="";
-
-State.days.forEach(day=>{
-
-const card=
-
-document.createElement("button");
-
-card.type="button";
-
-card.className="day-card";
-
-card.innerHTML=`
-
-<strong>${day.weekday}</strong>
-
-<span>${day.date}</span>
-
-`;
-
-card.addEventListener(
-
-"click",
-
-()=>{
-
-State.brief.day=
-
-day.value;
-
-UI.el.continueDay.disabled=false;
-
-this.select(
-
-UI.el.dayGrid,
-
-card
-
-);
-
-Events.emit(
-
-"brief:changed"
-
-);
-
-}
-
-);
-
-UI.el.dayGrid
-
-.appendChild(card);
-
-});
-
-},
-
-renderSlots(){
-
-if(!UI.el.timeGrid)return;
-
-UI.el.timeGrid.innerHTML="";
-
-State.slots.forEach(slot=>{
-
-const card=
-
-document.createElement("button");
-
-card.type="button";
-
-card.className="time-card";
-
-card.textContent=slot;
-
-card.addEventListener(
-
-"click",
-
-()=>{
-
-State.brief.time=slot;
-
-UI.el.confirmBooking.disabled=false;
-
-this.select(
-
-UI.el.timeGrid,
-
-card
-
-);
-
-Events.emit(
-
-"brief:changed"
-
-);
-
-}
-
-);
-
-UI.el.timeGrid
-
-.appendChild(card);
-
-});
-
-},
-
-select(container,card){
-
-container
-
-.querySelectorAll(
-
-".selected"
-
-)
-
-.forEach(item=>
-
-item.classList.remove(
-
-"selected"
-
-)
-
-);
-
-card.classList.add(
-
-"selected"
-
-);
-
-}
-
-};
-
-
-const Booking={
-
-init(){
-
-UI.el.confirmBooking
-
-?.addEventListener(
-
-"click",
-
-()=>this.submit()
-
-);
-
-UI.el.closeSuccess
-
-?.addEventListener(
-
-"click",
-
-()=>{
-
-UI.el.modal.close();
-
-}
-
-);
-
-},
-
-async submit(){
-
-const button=
-
-UI.el.confirmBooking;
-
-button.disabled=true;
-
-button.textContent=
-
-"Booking...";
-
-try{
-
-const booking=
-
-await API.book({
-
-brief:State.brief
-
-});
-
-State.brief.briefId=
-
-booking.briefId;
-
-State.bookingId=
-
-booking.bookingId;
-
-Wizard.go(8);
-
-}
-
-catch(error){
-
-console.error(error);
-
-button.disabled=false;
-
-button.textContent=
-
-"Book The Positioning Breakdown →";
-
-alert(
-
-"Something went wrong. Please try again."
-
-);
-
-}
-
-}
-
-};
-
-
-const Modal={
-
-init(){
-
-document
-
-.querySelectorAll(
-
-"#bookBreakdownBtn,#footerBookBtn"
-
-)
-
-.forEach(button=>{
-
-button.addEventListener(
-
-"click",
-
-()=>{
-
-UI.el.modal.showModal();
-
-Wizard.go(1);
-
-}
-
-);
-
-});
-
-document
-
-.getElementById(
-
-"closeModal"
-
-)
-
-?.addEventListener(
-
-"click",
-
-()=>{
-
-UI.el.modal.close();
-
-}
-
-);
-
-UI.el.modal
-
-?.addEventListener(
-
-"click",
-
-event=>{
-
-const rect=
-
-UI.el.modal
-
-.getBoundingClientRect();
-
-if(
-
-event.clientX<rect.left||
-
-event.clientX>rect.right||
-
-event.clientY<rect.top||
-
-event.clientY>rect.bottom
-
-){
-
-UI.el.modal.close();
-
-}
-
-});
-
-}
-
-};
-
-
-const App={
-
-init(){
-
-UI.cache();
-
-Wizard.init();
-
-Brief.init();
-
-Calendar.init();
-
-Booking.init();
-
-Modal.init();
-
-}
-
-};
-
-
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-()=>App.init()
-
-);
-
-})();
+    "use strict";
+  
+    const modal = document.getElementById("breakdownModal");
+    const screens = Array.from(document.querySelectorAll(".wizard-screen"));
+    const dots = Array.from(document.querySelectorAll(".progress-dots .dot"));
+    const chapterNumber = document.querySelector(".chapter-number");
+    const chapterTitle = document.querySelector(".chapter-title");
+  
+    const state = {
+      step: 1,
+      challenge: "",
+      difficulty: "",
+      outcome: "",
+      future: "",
+      meetingDay: "",
+      meetingTime: "",
+      availability: []
+    };
+  
+    const chapters = {
+      1: ["01", "Your Challenge"],
+      2: ["02", "Current Situation"],
+      3: ["03", "Desired Outcome"],
+      4: ["04", "Reflection"],
+      5: ["05", "Looking Ahead"],
+      6: ["06", "Choose a Day"],
+      7: ["07", "Choose a Time"],
+      8: ["08", "Booked"]
+    };
+  
+    function openModal() {
+      if (!modal) return;
+  
+      if (typeof modal.showModal === "function") {
+        modal.showModal();
+      } else {
+        modal.setAttribute("open", "");
+      }
+  
+      showStep(1);
+    }
+  
+    function closeModal() {
+      if (!modal) return;
+  
+      if (typeof modal.close === "function") {
+        modal.close();
+      } else {
+        modal.removeAttribute("open");
+      }
+    }
+  
+    function showStep(step) {
+      state.step = step;
+  
+      screens.forEach((screen) => {
+        screen.classList.toggle(
+          "active",
+          Number(screen.dataset.step) === step
+        );
+      });
+  
+      dots.forEach((dot, index) => {
+        dot.classList.toggle(
+          "active",
+          index <= Math.min(step - 1, dots.length - 1)
+        );
+      });
+  
+      const chapter = chapters[step];
+  
+      if (chapterNumber && chapter) {
+        chapterNumber.textContent = chapter[0];
+      }
+  
+      if (chapterTitle && chapter) {
+        chapterTitle.textContent = chapter[1];
+      }
+  
+      if (step === 4) {
+        renderReflection();
+      }
+  
+      if (step === 6) {
+        loadAvailability();
+      }
+    }
+  
+    function selectedRadio(name) {
+      return (
+        document.querySelector(
+          `input[name="${name}"]:checked`
+        )?.value || ""
+      );
+    }
+  
+    function validateStep(step) {
+      if (step === 1) {
+        const challenge =
+          document.getElementById("challenge")?.value.trim() || "";
+  
+        if (challenge.length < 10) {
+          alert(
+            "Please share a little more about the conversation your team keeps having."
+          );
+  
+          return false;
+        }
+  
+        state.challenge = challenge;
+      }
+  
+      if (step === 2) {
+        state.difficulty = selectedRadio("difficulty");
+  
+        if (!state.difficulty) {
+          alert(
+            "Choose the option that best describes what makes the decision difficult."
+          );
+  
+          return false;
+        }
+      }
+  
+      if (step === 3) {
+        state.outcome = selectedRadio("outcome");
+  
+        if (!state.outcome) {
+          alert(
+            "Choose the outcome you would most like to leave with."
+          );
+  
+          return false;
+        }
+      }
+  
+      if (step === 5) {
+        state.future = selectedRadio("future");
+  
+        if (!state.future) {
+          alert(
+            "Choose what would ideally change after the Breakdown."
+          );
+  
+          return false;
+        }
+      }
+  
+      if (step === 6 && !state.meetingDay) {
+        alert("Choose an available day.");
+  
+        return false;
+      }
+  
+      return true;
+    }
+  
+    function renderReflection() {
+      const challenge =
+        document.getElementById("summaryChallenge");
+  
+      const difficulty =
+        document.getElementById("summaryDifficulty");
+  
+      const outcome =
+        document.getElementById("summaryOutcome");
+  
+      if (challenge) {
+        challenge.textContent =
+          state.challenge || "—";
+      }
+  
+      if (difficulty) {
+        difficulty.textContent =
+          state.difficulty || "—";
+      }
+  
+      if (outcome) {
+        outcome.textContent =
+          state.outcome || "—";
+      }
+    }
+  
+    async function loadAvailability() {
+      const dayGrid =
+        document.getElementById("dayGrid");
+  
+      const continueDay =
+        document.getElementById("continueDay");
+  
+      if (!dayGrid) return;
+  
+      dayGrid.innerHTML =
+        '<div class="availability-status">Loading availability…</div>';
+  
+      if (continueDay) {
+        continueDay.disabled = true;
+      }
+  
+      try {
+        const response = await fetch(
+          "/api/availability",
+          {
+            headers: {
+              Accept: "application/json"
+            }
+          }
+        );
+  
+        if (!response.ok) {
+          throw new Error(
+            `Availability request failed: ${response.status}`
+          );
+        }
+  
+        const data = await response.json();
+  
+        const rawDays =
+          Array.isArray(data)
+            ? data
+            : Array.isArray(data.days)
+            ? data.days
+            : Array.isArray(data.availability)
+            ? data.availability
+            : [];
+  
+        state.availability = rawDays;
+  
+        renderDays(rawDays);
+      } catch (error) {
+        console.error(error);
+  
+        dayGrid.innerHTML =
+          '<div class="availability-status">We couldn’t load availability right now. Please refresh and try again.</div>';
+      }
+    }
+  
+    function normalizeDay(item) {
+      if (typeof item === "string") {
+        return {
+          date: item,
+          slots: []
+        };
+      }
+  
+      return {
+        date:
+          item.date ||
+          item.day ||
+          item.start ||
+          "",
+  
+        label:
+          item.label ||
+          "",
+  
+        slots:
+          item.slots ||
+          item.times ||
+          item.availableTimes ||
+          []
+      };
+    }
+  
+    function renderDays(rawDays) {
+      const dayGrid =
+        document.getElementById("dayGrid");
+  
+      if (!dayGrid) return;
+  
+      const days = rawDays
+        .map(normalizeDay)
+        .filter((day) => day.date);
+  
+      if (!days.length) {
+        dayGrid.innerHTML =
+          '<div class="availability-status">No available days were returned. Please check back soon.</div>';
+  
+        return;
+      }
+  
+      dayGrid.innerHTML = "";
+  
+      days.forEach((day) => {
+        const button =
+          document.createElement("button");
+  
+        button.type = "button";
+        button.className = "day-option";
+        button.dataset.date = day.date;
+  
+        const date =
+          new Date(`${day.date}T12:00:00`);
+  
+        const label =
+          day.label ||
+          new Intl.DateTimeFormat(
+            undefined,
+            {
+              weekday: "short",
+              month: "short",
+              day: "numeric"
+            }
+          ).format(date);
+  
+        button.textContent = label;
+  
+        button.addEventListener(
+          "click",
+          () => {
+            document
+              .querySelectorAll(".day-option")
+              .forEach((element) => {
+                element.classList.remove("selected");
+              });
+  
+            button.classList.add("selected");
+  
+            state.meetingDay = day.date;
+            state.meetingTime = "";
+  
+            renderTimes(day.slots);
+  
+            const continueDay =
+              document.getElementById("continueDay");
+  
+            if (continueDay) {
+              continueDay.disabled = false;
+            }
+          }
+        );
+  
+        dayGrid.appendChild(button);
+      });
+    }
+  
+    function renderTimes(slots) {
+      const timeGrid =
+        document.getElementById("timeGrid");
+  
+      const confirm =
+        document.getElementById("confirmBooking");
+  
+      if (!timeGrid) return;
+  
+      const values =
+        Array.isArray(slots)
+          ? slots
+          : [];
+  
+      timeGrid.innerHTML = "";
+  
+      if (confirm) {
+        confirm.disabled = true;
+      }
+  
+      if (!values.length) {
+        timeGrid.innerHTML =
+          '<div class="availability-status">No available times were returned for this day.</div>';
+  
+        return;
+      }
+  
+      values.forEach((slot) => {
+        const value =
+          typeof slot === "string"
+            ? slot
+            : slot.time ||
+              slot.label ||
+              slot.start ||
+              "";
+  
+        if (!value) return;
+  
+        const button =
+          document.createElement("button");
+  
+        button.type = "button";
+        button.className = "time-option";
+  
+        button.textContent =
+          typeof slot === "object" &&
+          slot.label
+            ? slot.label
+            : value;
+  
+        button.addEventListener(
+          "click",
+          () => {
+            document
+              .querySelectorAll(".time-option")
+              .forEach((element) => {
+                element.classList.remove("selected");
+              });
+  
+            button.classList.add("selected");
+  
+            state.meetingTime = value;
+  
+            if (confirm) {
+              confirm.disabled = false;
+            }
+          }
+        );
+  
+        timeGrid.appendChild(button);
+      });
+    }
+  
+    async function submitBooking() {
+      if (
+        !state.meetingDay ||
+        !state.meetingTime
+      ) {
+        alert(
+          "Choose a time before booking."
+        );
+  
+        return;
+      }
+  
+      const confirm =
+        document.getElementById(
+          "confirmBooking"
+        );
+  
+      const originalText =
+        confirm?.textContent;
+  
+      if (confirm) {
+        confirm.disabled = true;
+        confirm.textContent =
+          "Booking…";
+      }
+  
+      const payload = {
+        conversation: state.challenge,
+        difficulty: state.difficulty,
+        outcome: state.outcome,
+        future: state.future,
+        meetingDay: state.meetingDay,
+        meetingTime: state.meetingTime
+      };
+  
+      try {
+        const response = await fetch(
+          "/api/booking",
+          {
+            method: "POST",
+  
+            headers: {
+              "Content-Type":
+                "application/json",
+  
+              Accept:
+                "application/json"
+            },
+  
+            body:
+              JSON.stringify(payload)
+          }
+        );
+  
+        const data =
+          await response
+            .json()
+            .catch(() => ({}));
+  
+        if (!response.ok) {
+          throw new Error(
+            data.error ||
+            data.message ||
+            `Booking failed: ${response.status}`
+          );
+        }
+  
+        showStep(8);
+      } catch (error) {
+        console.error(error);
+  
+        alert(
+          "We couldn’t complete the booking. Please try again."
+        );
+  
+        if (confirm) {
+          confirm.disabled = false;
+  
+          confirm.textContent =
+            originalText ||
+            "Book The Positioning Breakdown →";
+        }
+      }
+    }
+  
+    document
+      .querySelectorAll(
+        ".js-book-breakdown"
+      )
+      .forEach((button) => {
+        button.addEventListener(
+          "click",
+          openModal
+        );
+      });
+  
+    document
+      .getElementById("closeModal")
+      ?.addEventListener(
+        "click",
+        closeModal
+      );
+  
+    document
+      .getElementById("closeSuccess")
+      ?.addEventListener(
+        "click",
+        closeModal
+      );
+  
+    modal?.addEventListener(
+      "click",
+      (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      }
+    );
+  
+    document
+      .querySelectorAll(".next-step")
+      .forEach((button) => {
+        button.addEventListener(
+          "click",
+          () => {
+            if (!validateStep(state.step)) {
+              return;
+            }
+  
+            showStep(
+              Math.min(
+                state.step + 1,
+                8
+              )
+            );
+          }
+        );
+      });
+  
+    document
+      .querySelectorAll(
+        ".previous-step"
+      )
+      .forEach((button) => {
+        button.addEventListener(
+          "click",
+          () => {
+            showStep(
+              Math.max(
+                state.step - 1,
+                1
+              )
+            );
+          }
+        );
+      });
+  
+    document
+      .getElementById(
+        "confirmBooking"
+      )
+      ?.addEventListener(
+        "click",
+        submitBooking
+      );
+  
+    const questions =
+      Array.from(
+        document.querySelectorAll(
+          ".rotating-question"
+        )
+      );
+  
+    if (questions.length > 1) {
+      let activeQuestion = 0;
+  
+      setInterval(() => {
+        questions[
+          activeQuestion
+        ].classList.remove("active");
+  
+        activeQuestion =
+          (activeQuestion + 1) %
+          questions.length;
+  
+        questions[
+          activeQuestion
+        ].classList.add("active");
+      }, 4500);
+    }
+  })();

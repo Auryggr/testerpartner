@@ -165,6 +165,22 @@
     <section class="wizard-screen" data-step="8"><div class="success-screen"><div class="success-icon">✓</div><span class="wizard-kicker">You're booked</span><h2>We'll take it from here.</h2><p>Before we meet, we'll review public customer and competitive signals connected to your question. Your session will start with what we found—not with introductions.</p><div class="success-card"><div><strong>Your Breakdown includes</strong></div><ul><li>Focused pre-session research</li><li>30-minute live Breakdown</li><li>Observed signals</li><li>Core tension</li><li>Positioning hypothesis</li><li>Suggested next experiment, when appropriate</li><li>Opportunity Brief</li></ul></div><button id="closeSuccess" class="btn btn-primary" type="button">Perfect. See you soon →</button></div></section>
   </div>
 </dialog>
+
+<script>
+(() => {
+  const questions = Array.from(document.querySelectorAll('.rotating-question'));
+  if (questions.length < 2) return;
+
+  let current = 0;
+
+  window.setInterval(() => {
+    questions[current].classList.remove('active');
+    current = (current + 1) % questions.length;
+    questions[current].classList.add('active');
+  }, 4500);
+})();
+</script>
+
 <script src="js/script.js"></script>
 </body>
 </html>

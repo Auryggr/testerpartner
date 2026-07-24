@@ -62,9 +62,9 @@ section {
   font-weight: 900;
   font-size: 1.8rem;
   text-decoration: none;
-.logo span {
-    color: var(--clay);
 }
+.logo span {
+  color: var(--clay);
 }
 .main-nav {
   display: flex;

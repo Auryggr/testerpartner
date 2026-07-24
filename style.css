@@ -58,9 +58,12 @@ section {
   gap: 28px;
 }
 .logo {
-  font-weight: 800;
+  font-weight: 900;
+  font-size: 1.8rem;
   text-decoration: none;
-  letter-spacing: -0.03em;
+.logo span {
+    color: var(--clay);
+}
 }
 .main-nav {
   display: flex;

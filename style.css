@@ -100,7 +100,7 @@ section {
   min-height: 790px;
   display: flex;
   align-items: center;
-  padding-top: 88px;
+  padding-top: 110px;
 }
 .hero-content {
   display: grid;
@@ -123,7 +123,7 @@ section {
 }
 .hero h1 {
   margin: 28px 0 8px;
-  font-size: clamp(4rem, 7.6vw, 6.8rem);
+  font-size: clamp(4rem,9vw,8rem);
   line-height: 0.95;
   letter-spacing: -0.07em;
 }

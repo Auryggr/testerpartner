@@ -8,8 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <header class="site-header">
@@ -28,7 +27,8 @@
 <section id="hero" class="hero">
   <div class="container hero-content hero-content-single">
     <div class="hero-copy hero-copy-wide">
-      <div class="hero-question-rotator" aria-live="polite">
+
+      <div class="hero-question-rotator" aria-live="polite" aria-atomic="true">
         <span class="rotating-question active">Why do customers choose you over the alternatives?</span>
         <span class="rotating-question">What do your best customers value that your messaging doesn't say?</span>
         <span class="rotating-question">Are you solving a messaging problem—or a positioning problem?</span>
@@ -38,23 +38,34 @@
 
       <h1>Stop guessing.<br>Start knowing.</h1>
 
-      <p class="hero-secondary">Bring the decision.<br>Leave with a positioning hypothesis.</p>
+      <p class="hero-secondary">
+        Bring the decision. Leave with a positioning hypothesis.
+      </p>
 
       <p class="hero-subtitle">
         Before we meet, we review customer language and competitive signals.
-        In 30 focused minutes, we use that context to challenge assumptions and uncover a positioning hypothesis worth pursuing.
+        In 30 focused minutes, we use that context to challenge assumptions
+        and uncover a positioning hypothesis worth pursuing.
       </p>
 
       <div class="hero-actions">
-        <button class="btn btn-primary js-book-breakdown" type="button">Book a Free Breakdown →</button>
-        <a href="#how-it-works" class="btn btn-secondary">See Our Approach</a>
+        <button class="btn btn-primary js-book-breakdown" type="button">
+          Book a Free Breakdown →
+        </button>
+
+        <a href="#how-it-works" class="btn btn-secondary">
+          See Our Approach
+        </a>
       </div>
 
-      <div class="hero-trust">
-        <span>5-minute brief</span><span>•</span>
-        <span>Focused pre-session research</span><span>•</span>
+      <div class="hero-trust" aria-label="Breakdown details">
+        <span>5-minute brief</span>
+        <span>•</span>
+        <span>Focused pre-session research</span>
+        <span>•</span>
         <span>One positioning hypothesis</span>
       </div>
+
     </div>
   </div>
 </section>
@@ -176,22 +187,6 @@
     <section class="wizard-screen" data-step="8"><div class="success-screen"><div class="success-icon">✓</div><span class="wizard-kicker">You're booked</span><h2>We'll take it from here.</h2><p>Before we meet, we'll review public customer and competitive signals connected to your question. Your session will start with what we found—not with introductions.</p><div class="success-card"><div><strong>Your Breakdown includes</strong></div><ul><li>Focused pre-session research</li><li>30-minute live Breakdown</li><li>Observed signals</li><li>Core tension</li><li>Positioning hypothesis</li><li>Suggested next experiment, when appropriate</li><li>Opportunity Brief</li></ul></div><button id="closeSuccess" class="btn btn-primary" type="button">Perfect. See you soon →</button></div></section>
   </div>
 </dialog>
-
-<script>
-(() => {
-  const questions = Array.from(document.querySelectorAll('.rotating-question'));
-  if (questions.length < 2) return;
-
-  let current = 0;
-
-  window.setInterval(() => {
-    questions[current].classList.remove('active');
-    current = (current + 1) % questions.length;
-    questions[current].classList.add('active');
-  }, 4500);
-})();
-</script>
-
-<script src="script.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>

@@ -1,11 +1,58 @@
-(() => {
+document.addEventListener("DOMContentLoaded", () => {
   "use strict";
 
+  /* =========================================================
+     HERO QUESTION ROTATOR
+     ========================================================= */
+
+  const questions = Array.from(
+    document.querySelectorAll(".rotating-question")
+  );
+
+  if (questions.length > 1) {
+    let activeQuestion = questions.findIndex((item) =>
+      item.classList.contains("active")
+    );
+
+    if (activeQuestion < 0) {
+      activeQuestion = 0;
+      questions[0].classList.add("active");
+    }
+
+    window.setInterval(() => {
+      questions[activeQuestion].classList.remove("active");
+
+      activeQuestion = (activeQuestion + 1) % questions.length;
+
+      questions[activeQuestion].classList.add("active");
+    }, 4500);
+  }
+
+  /* =========================================================
+     POSITIONING BREAKDOWN MODAL
+     ========================================================= */
+
   const modal = document.getElementById("breakdownModal");
-  const screens = Array.from(document.querySelectorAll(".wizard-screen"));
-  const dots = Array.from(document.querySelectorAll(".progress-dots .dot"));
-  const chapterNumber = document.querySelector(".chapter-number");
-  const chapterTitle = document.querySelector(".chapter-title");
+
+  if (!modal) {
+    console.error('TesterPartner: #breakdownModal was not found.');
+    return;
+  }
+
+  const openButtons = document.querySelectorAll(".js-book-breakdown");
+  const closeButton = document.getElementById("closeModal");
+  const closeSuccessButton = document.getElementById("closeSuccess");
+
+  const screens = Array.from(
+    modal.querySelectorAll(".wizard-screen")
+  );
+
+  const dots = Array.from(
+    modal.querySelectorAll(".progress-dots .dot")
+  );
+
+  const chapterNumber = modal.querySelector(".chapter-number");
+  const chapterTitle = modal.querySelector(".chapter-title");
 
   const state = {
     step: 1,
@@ -18,7 +65,7 @@
     availability: []
   };
 
-  const chapters = {
+  const chapterLabels = {
     1: ["01", "Your Challenge"],
     2: ["02", "Current Situation"],
     3: ["03", "Desired Outcome"],
@@ -29,36 +76,12 @@
     8: ["08", "Booked"]
   };
 
-  function openModal() {
-    if (!modal) return;
-
-    if (typeof modal.showModal === "function") {
-      modal.showModal();
-    } else {
-      modal.setAttribute("open", "");
-    }
-
-    showStep(1);
-  }
-
-  function closeModal() {
-    if (!modal) return;
-
-    if (typeof modal.close === "function") {
-      modal.close();
-    } else {
-      modal.removeAttribute("open");
-    }
-  }
-
   function showStep(step) {
     state.step = step;
 
     screens.forEach((screen) => {
-      screen.classList.toggle(
-        "active",
-        Number(screen.dataset.step) === step
-      );
+      const screenStep = Number(screen.dataset.step);
+      screen.classList.toggle("active", screenStep === step);
     });
 
     dots.forEach((dot, index) => {
@@ -68,7 +91,7 @@
       );
     });
 
-    const chapter = chapters[step];
+    const chapter = chapterLabels[step];
 
     if (chapterNumber && chapter) {
       chapterNumber.textContent = chapter[0];
@@ -87,11 +110,55 @@
     }
   }
 
+  function openModal() {
+    showStep(1);
+
+    if (typeof modal.showModal === "function") {
+      if (!modal.open) {
+        modal.showModal();
+      }
+    } else {
+      modal.setAttribute("open", "");
+    }
+
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    if (typeof modal.close === "function" && modal.open) {
+      modal.close();
+    } else {
+      modal.removeAttribute("open");
+    }
+
+    document.body.style.overflow = "";
+  }
+
+  openButtons.forEach((button) => {
+    button.addEventListener("click", openModal);
+  });
+
+  closeButton?.addEventListener("click", closeModal);
+  closeSuccessButton?.addEventListener("click", closeModal);
+
+  modal.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeModal();
+  });
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      closeModal();
+    }
+  });
+
+  /* =========================================================
+     WIZARD
+     ========================================================= */
+
   function selectedRadio(name) {
     return (
-      document.querySelector(
-        `input[name="${name}"]:checked`
-      )?.value || ""
+      modal.querySelector(`input[name="${name}"]:checked`)?.value || ""
     );
   }
 
@@ -101,10 +168,9 @@
         document.getElementById("challenge")?.value.trim() || "";
 
       if (challenge.length < 10) {
-        alert(
+        window.alert(
           "Please share a little more about the conversation your team keeps having."
         );
-
         return false;
       }
 
@@ -115,10 +181,9 @@
       state.difficulty = selectedRadio("difficulty");
 
       if (!state.difficulty) {
-        alert(
+        window.alert(
           "Choose the option that best describes what makes the decision difficult."
         );
-
         return false;
       }
     }
@@ -127,10 +192,9 @@
       state.outcome = selectedRadio("outcome");
 
       if (!state.outcome) {
-        alert(
+        window.alert(
           "Choose the outcome you would most like to leave with."
         );
-
         return false;
       }
     }
@@ -139,17 +203,15 @@
       state.future = selectedRadio("future");
 
       if (!state.future) {
-        alert(
+        window.alert(
           "Choose what would ideally change after the Breakdown."
         );
-
         return false;
       }
     }
 
     if (step === 6 && !state.meetingDay) {
-      alert("Choose an available day.");
-
+      window.alert("Choose an available day.");
       return false;
     }
 
@@ -157,282 +219,269 @@
   }
 
   function renderReflection() {
-    const challenge =
+    const summaryChallenge =
       document.getElementById("summaryChallenge");
-
-    const difficulty =
+    const summaryDifficulty =
       document.getElementById("summaryDifficulty");
-
-    const outcome =
+    const summaryOutcome =
       document.getElementById("summaryOutcome");
 
-    if (challenge) {
-      challenge.textContent =
-        state.challenge || "—";
+    if (summaryChallenge) {
+      summaryChallenge.textContent = state.challenge || "—";
     }
 
-    if (difficulty) {
-      difficulty.textContent =
-        state.difficulty || "—";
+    if (summaryDifficulty) {
+      summaryDifficulty.textContent = state.difficulty || "—";
     }
 
-    if (outcome) {
-      outcome.textContent =
-        state.outcome || "—";
+    if (summaryOutcome) {
+      summaryOutcome.textContent = state.outcome || "—";
     }
   }
 
+  modal.querySelectorAll(".next-step").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!validateStep(state.step)) {
+        return;
+      }
+
+      showStep(Math.min(state.step + 1, 8));
+    });
+  });
+
+  modal.querySelectorAll(".previous-step").forEach((button) => {
+    button.addEventListener("click", () => {
+      showStep(Math.max(state.step - 1, 1));
+    });
+  });
+
+  /* =========================================================
+     AVAILABILITY
+     ========================================================= */
+
+  const dayGrid = document.getElementById("dayGrid");
+  const timeGrid = document.getElementById("timeGrid");
+  const continueDay = document.getElementById("continueDay");
+  const confirmBooking = document.getElementById("confirmBooking");
+
   async function loadAvailability() {
-    const dayGrid =
-      document.getElementById("dayGrid");
-
-    const continueDay =
-      document.getElementById("continueDay");
-
-    if (!dayGrid) return;
+    if (!dayGrid) {
+      return;
+    }
 
     dayGrid.innerHTML =
       '<div class="availability-status">Loading availability…</div>';
+
+    state.meetingDay = "";
+    state.meetingTime = "";
 
     if (continueDay) {
       continueDay.disabled = true;
     }
 
+    if (confirmBooking) {
+      confirmBooking.disabled = true;
+    }
+
     try {
-      const response = await fetch(
-        "/api/availability",
-        {
-          headers: {
-            Accept: "application/json"
-          }
+      const response = await fetch("/api/availability", {
+        method: "GET",
+        headers: {
+          Accept: "application/json"
         }
-      );
+      });
 
       if (!response.ok) {
         throw new Error(
-          `Availability request failed: ${response.status}`
+          `Availability request failed with ${response.status}`
         );
       }
 
-      const data = await response.json();
+      const payload = await response.json();
 
-      const rawDays =
-        Array.isArray(data)
-          ? data
-          : Array.isArray(data.days)
-          ? data.days
-          : Array.isArray(data.availability)
-          ? data.availability
+      const days =
+        Array.isArray(payload)
+          ? payload
+          : Array.isArray(payload.days)
+          ? payload.days
+          : Array.isArray(payload.availability)
+          ? payload.availability
           : [];
 
-      state.availability = rawDays;
+      state.availability = days;
 
-      renderDays(rawDays);
+      renderDays(days);
     } catch (error) {
-      console.error(error);
+      console.error("TesterPartner availability error:", error);
 
       dayGrid.innerHTML =
         '<div class="availability-status">We couldn’t load availability right now. Please refresh and try again.</div>';
     }
   }
 
-  function normalizeDay(item) {
-    if (typeof item === "string") {
+  function normalizeDay(day) {
+    if (typeof day === "string") {
       return {
-        date: item,
+        date: day,
+        label: "",
         slots: []
       };
     }
 
     return {
-      date:
-        item.date ||
-        item.day ||
-        item.start ||
-        "",
-
-      label:
-        item.label ||
-        "",
-
+      date: day.date || day.day || day.start || "",
+      label: day.label || "",
       slots:
-        item.slots ||
-        item.times ||
-        item.availableTimes ||
+        day.slots ||
+        day.times ||
+        day.availableTimes ||
         []
     };
   }
 
   function renderDays(rawDays) {
-    const dayGrid =
-      document.getElementById("dayGrid");
-
-    if (!dayGrid) return;
+    if (!dayGrid) {
+      return;
+    }
 
     const days = rawDays
       .map(normalizeDay)
       .filter((day) => day.date);
 
+    dayGrid.innerHTML = "";
+
     if (!days.length) {
       dayGrid.innerHTML =
         '<div class="availability-status">No available days were returned. Please check back soon.</div>';
-
       return;
     }
 
-    dayGrid.innerHTML = "";
-
     days.forEach((day) => {
-      const button =
-        document.createElement("button");
+      const button = document.createElement("button");
 
       button.type = "button";
       button.className = "day-option";
       button.dataset.date = day.date;
 
-      const date =
-        new Date(`${day.date}T12:00:00`);
+      let label = day.label;
 
-      const label =
-        day.label ||
-        new Intl.DateTimeFormat(
-          undefined,
-          {
-            weekday: "short",
-            month: "short",
-            day: "numeric"
-          }
-        ).format(date);
+      if (!label) {
+        const parsedDate = new Date(`${day.date}T12:00:00`);
+
+        label = Number.isNaN(parsedDate.getTime())
+          ? day.date
+          : new Intl.DateTimeFormat(undefined, {
+              weekday: "short",
+              month: "short",
+              day: "numeric"
+            }).format(parsedDate);
+      }
 
       button.textContent = label;
 
-      button.addEventListener(
-        "click",
-        () => {
-          document
-            .querySelectorAll(".day-option")
-            .forEach((element) => {
-              element.classList.remove("selected");
-            });
+      button.addEventListener("click", () => {
+        dayGrid
+          .querySelectorAll(".day-option")
+          .forEach((item) => item.classList.remove("selected"));
 
-          button.classList.add("selected");
+        button.classList.add("selected");
 
-          state.meetingDay = day.date;
-          state.meetingTime = "";
+        state.meetingDay = day.date;
+        state.meetingTime = "";
 
-          renderTimes(day.slots);
+        renderTimes(day.slots);
 
-          const continueDay =
-            document.getElementById("continueDay");
-
-          if (continueDay) {
-            continueDay.disabled = false;
-          }
+        if (continueDay) {
+          continueDay.disabled = false;
         }
-      );
+      });
 
       dayGrid.appendChild(button);
     });
   }
 
-  function renderTimes(slots) {
-    const timeGrid =
-      document.getElementById("timeGrid");
-
-    const confirm =
-      document.getElementById("confirmBooking");
-
-    if (!timeGrid) return;
-
-    const values =
-      Array.isArray(slots)
-        ? slots
-        : [];
-
-    timeGrid.innerHTML = "";
-
-    if (confirm) {
-      confirm.disabled = true;
-    }
-
-    if (!values.length) {
-      timeGrid.innerHTML =
-        '<div class="availability-status">No available times were returned for this day.</div>';
-
+  function renderTimes(rawSlots) {
+    if (!timeGrid) {
       return;
     }
 
-    values.forEach((slot) => {
+    timeGrid.innerHTML = "";
+
+    if (confirmBooking) {
+      confirmBooking.disabled = true;
+    }
+
+    const slots = Array.isArray(rawSlots)
+      ? rawSlots
+      : [];
+
+    if (!slots.length) {
+      timeGrid.innerHTML =
+        '<div class="availability-status">No available times were returned for this day.</div>';
+      return;
+    }
+
+    slots.forEach((slot) => {
       const value =
         typeof slot === "string"
           ? slot
           : slot.time ||
-            slot.label ||
             slot.start ||
+            slot.value ||
+            slot.label ||
             "";
 
-      if (!value) return;
-
-      const button =
-        document.createElement("button");
-
-      button.type = "button";
-      button.className = "time-option";
-
-      button.textContent =
-        typeof slot === "object" &&
-        slot.label
+      const label =
+        typeof slot === "object" && slot.label
           ? slot.label
           : value;
 
-      button.addEventListener(
-        "click",
-        () => {
-          document
-            .querySelectorAll(".time-option")
-            .forEach((element) => {
-              element.classList.remove("selected");
-            });
+      if (!value) {
+        return;
+      }
 
-          button.classList.add("selected");
+      const button = document.createElement("button");
 
-          state.meetingTime = value;
+      button.type = "button";
+      button.className = "time-option";
+      button.textContent = label;
 
-          if (confirm) {
-            confirm.disabled = false;
-          }
+      button.addEventListener("click", () => {
+        timeGrid
+          .querySelectorAll(".time-option")
+          .forEach((item) => item.classList.remove("selected"));
+
+        button.classList.add("selected");
+
+        state.meetingTime = value;
+
+        if (confirmBooking) {
+          confirmBooking.disabled = false;
         }
-      );
+      });
 
       timeGrid.appendChild(button);
     });
   }
 
-  async function submitBooking() {
-    if (
-      !state.meetingDay ||
-      !state.meetingTime
-    ) {
-      alert(
-        "Choose a time before booking."
-      );
+  /* =========================================================
+     BOOKING
+     ========================================================= */
 
+  async function submitBooking() {
+    if (!state.meetingDay || !state.meetingTime) {
+      window.alert("Choose a time before booking.");
       return;
     }
 
-    const confirm =
-      document.getElementById(
-        "confirmBooking"
-      );
-
-    const originalText =
-      confirm?.textContent;
-
-    if (confirm) {
-      confirm.disabled = true;
-      confirm.textContent =
-        "Booking…";
+    if (!confirmBooking) {
+      return;
     }
+
+    const previousText = confirmBooking.textContent;
+
+    confirmBooking.disabled = true;
+    confirmBooking.textContent = "Booking…";
 
     const payload = {
       conversation: state.challenge,
@@ -444,158 +493,43 @@
     };
 
     try {
-      const response = await fetch(
-        "/api/booking",
-        {
-          method: "POST",
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
 
-          headers: {
-            "Content-Type":
-              "application/json",
-
-            Accept:
-              "application/json"
-          },
-
-          body:
-            JSON.stringify(payload)
-        }
-      );
-
-      const data =
-        await response
-          .json()
-          .catch(() => ({}));
+      const result = await response
+        .json()
+        .catch(() => ({}));
 
       if (!response.ok) {
         throw new Error(
-          data.error ||
-          data.message ||
-          `Booking failed: ${response.status}`
+          result.error ||
+            result.message ||
+            `Booking request failed with ${response.status}`
         );
       }
 
       showStep(8);
     } catch (error) {
-      console.error(error);
+      console.error("TesterPartner booking error:", error);
 
-      alert(
+      window.alert(
         "We couldn’t complete the booking. Please try again."
       );
 
-      if (confirm) {
-        confirm.disabled = false;
-
-        confirm.textContent =
-          originalText ||
-          "Book The Positioning Breakdown →";
-      }
+      confirmBooking.disabled = false;
+      confirmBooking.textContent =
+        previousText || "Book The Positioning Breakdown →";
     }
   }
 
-  document
-    .querySelectorAll(
-      ".js-book-breakdown"
-    )
-    .forEach((button) => {
-      button.addEventListener(
-        "click",
-        openModal
-      );
-    });
+  confirmBooking?.addEventListener("click", submitBooking);
 
-  document
-    .getElementById("closeModal")
-    ?.addEventListener(
-      "click",
-      closeModal
-    );
-
-  document
-    .getElementById("closeSuccess")
-    ?.addEventListener(
-      "click",
-      closeModal
-    );
-
-  modal?.addEventListener(
-    "click",
-    (event) => {
-      if (event.target === modal) {
-        closeModal();
-      }
-    }
-  );
-
-  document
-    .querySelectorAll(".next-step")
-    .forEach((button) => {
-      button.addEventListener(
-        "click",
-        () => {
-          if (!validateStep(state.step)) {
-            return;
-          }
-
-          showStep(
-            Math.min(
-              state.step + 1,
-              8
-            )
-          );
-        }
-      );
-    });
-
-  document
-    .querySelectorAll(
-      ".previous-step"
-    )
-    .forEach((button) => {
-      button.addEventListener(
-        "click",
-        () => {
-          showStep(
-            Math.max(
-              state.step - 1,
-              1
-            )
-          );
-        }
-      );
-    });
-
-  document
-    .getElementById(
-      "confirmBooking"
-    )
-    ?.addEventListener(
-      "click",
-      submitBooking
-    );
-
-  const questions =
-    Array.from(
-      document.querySelectorAll(
-        ".rotating-question"
-      )
-    );
-
-  if (questions.length > 1) {
-    let activeQuestion = 0;
-
-    setInterval(() => {
-      questions[
-        activeQuestion
-      ].classList.remove("active");
-
-      activeQuestion =
-        (activeQuestion + 1) %
-        questions.length;
-
-      questions[
-        activeQuestion
-      ].classList.add("active");
-    }, 4500);
-  }
-})();
+  // Initial modal state
+  showStep(1);
+});

@@ -932,3 +932,184 @@ textarea {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* =========================================================
+   FINAL HERO
+   Single column + rotating positioning questions
+   ========================================================= */
+
+.hero {
+  min-height: 790px;
+  display: flex;
+  align-items: center;
+  padding-top: 88px;
+  padding-bottom: 96px;
+}
+
+.hero-content,
+.hero-content-single {
+  display: block !important;
+  grid-template-columns: none !important;
+}
+
+.hero-copy,
+.hero-copy-wide {
+  width: 100%;
+  max-width: 1080px;
+}
+
+/* The old right-hand panel has been intentionally removed. */
+.hero-visual,
+.thinking-card,
+.decision-card,
+.hero-panel,
+.hero-right {
+  display: none !important;
+}
+
+/* Only one question is visible at a time. */
+.hero-question-rotator {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: min(100%, 780px);
+  min-height: 56px;
+  margin-bottom: 42px;
+  padding: 13px 25px;
+  border: 1px solid var(--border2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  overflow: hidden;
+}
+
+.rotating-question {
+  display: none !important;
+  color: var(--text);
+  font-size: clamp(0.95rem, 1.25vw, 1.1rem);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.rotating-question.active {
+  display: block !important;
+  animation: questionFade 0.42s ease;
+}
+
+@keyframes questionFade {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero h1 {
+  max-width: 1080px;
+  margin: 0 0 24px;
+  font-size: clamp(4.8rem, 8.5vw, 7.7rem);
+  line-height: 0.92;
+  letter-spacing: -0.075em;
+}
+
+.hero-secondary {
+  max-width: 1000px;
+  margin: 0 0 28px;
+  color: #bdc9db;
+  font-size: clamp(2rem, 3.3vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted2);
+  font-size: 1rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.hero-trust {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+/* Dialog / wizard */
+.breakdown-modal[open] {
+  display: block;
+}
+
+.modal-close {
+  cursor: pointer;
+}
+
+.day-option,
+.time-option {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.day-option:hover,
+.time-option:hover,
+.day-option.selected,
+.time-option.selected {
+  border-color: rgba(74, 222, 128, 0.32);
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.availability-status {
+  grid-column: 1 / -1;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .hero {
+    min-height: auto;
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .hero-question-rotator {
+    width: 100%;
+    min-height: 68px;
+    margin-bottom: 30px;
+    padding: 13px 18px;
+    border-radius: 18px;
+  }
+
+  .rotating-question {
+    font-size: 0.94rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(3.4rem, 16vw, 5.4rem);
+    line-height: 0.94;
+  }
+
+  .hero-secondary {
+    font-size: clamp(1.65rem, 8vw, 2.35rem);
+    line-height: 1.1;
+  }
+}

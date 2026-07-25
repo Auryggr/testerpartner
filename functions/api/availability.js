@@ -1,5 +1,5 @@
 import { ok, error } from "../../lib/response.js";
-import { getAvailability } from "../../lib/scheduler";
+import { getAvailability } from "../../lib/scheduler.js";
 
 export async function onRequestGet(context) {
 

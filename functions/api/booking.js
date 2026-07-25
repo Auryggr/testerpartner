@@ -1,25 +1,62 @@
-const body=
+import { createOpportunityBrief } from "../../lib/airtable.js";
 
-await request.json();
+export async function onRequestPost(context) {
+  try {
+    const body = await context.request.json();
 
-const errors=[
+    const {
+      conversation,
+      difficulty,
+      outcome,
+      future,
+      meetingDay,
+      meetingTime
+    } = body;
 
-...validateBrief(body.brief),
+    if (!conversation) {
+      return Response.json(
+        {
+          ok: false,
+          error: "Conversation is required."
+        },
+        {
+          status: 400
+        }
+      );
+    }
 
-...validateBooking(body.booking)
+    const briefId = crypto.randomUUID();
 
-];
+    const record = await createOpportunityBrief(
+      context.env,
+      {
+        "Brief ID": briefId,
+        "Status": "Booked",
+        "Conversation": conversation,
+        "Difficulty": difficulty || "",
+        "Desired Outcome": outcome || "",
+        "Future Change": future || "",
+        "Meeting Date": meetingDay || "",
+        "Meeting Time": meetingTime || ""
+      }
+    );
 
-if(errors.length){
+    return Response.json({
+      ok: true,
+      briefId,
+      recordId: record.id
+    });
+  } catch (error) {
+    console.error("Booking error:", error);
 
-return validation(errors);
-
+    return Response.json(
+      {
+        ok: false,
+        error: "Unable to create the Opportunity Brief."
+      },
+      {
+        status: 500
+      }
+    );
+  }
 }
-
-const brief=
-
-createBrief(body.brief);
-
-const meeting=
-
-createMeeting(body.booking);

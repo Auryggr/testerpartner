@@ -1,4 +1,4 @@
-import { ok } from "../lib/response.js";
+import { ok } from "../../lib/response.js";
 
 export const onRequestGet=async()=>{
 

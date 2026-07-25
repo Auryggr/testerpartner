@@ -1,4 +1,4 @@
-import { ok, error } from "./lib/response";
+import { ok, error } from "../../lib/response.js";
 import { getAvailability } from "../../lib/scheduler";
 
 export async function onRequestGet(context) {

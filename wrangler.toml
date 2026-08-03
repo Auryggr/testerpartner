@@ -8,3 +8,10 @@ pages_build_output_dir = "./"
 TIMEZONE = "America/Argentina/Buenos_Aires"
 SESSION_DURATION = "30"
 BUFFER_MINUTES = "15"
+
+AIRTABLE_BASE_ID = "TU_BASE_ID"
+AIRTABLE_TABLE = "TU_TABLE_ID"
+
+GOOGLE_CLIENT_ID = "TU_GOOGLE_CLIENT_ID"
+GOOGLE_REDIRECT_URI = "https://testerpartner.pages.dev/api/google/callback"
+GOOGLE_CALENDAR_ID = "primary"

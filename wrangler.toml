@@ -9,8 +9,8 @@ TIMEZONE = "America/Argentina/Buenos_Aires"
 SESSION_DURATION = "30"
 BUFFER_MINUTES = "15"
 
-AIRTABLE_BASE_ID = "TU_BASE_ID"
-AIRTABLE_TABLE = "TU_TABLE_ID"
+AIRTABLE_BASE_ID = "appbys02ktQ1emdKV"
+AIRTABLE_TABLE_NAME = "tbl6SfrEDkobf8FlP"
 
 GOOGLE_CLIENT_ID = "738192917531-g1rjejs674ts8k78qehn4gjakdgnaogo.apps.googleusercontent.com"
 GOOGLE_REDIRECT_URI = "https://testerpartner.pages.dev/api/google/callback"

@@ -12,6 +12,6 @@ BUFFER_MINUTES = "15"
 AIRTABLE_BASE_ID = "TU_BASE_ID"
 AIRTABLE_TABLE = "TU_TABLE_ID"
 
-GOOGLE_CLIENT_ID = "TU_GOOGLE_CLIENT_ID"
+GOOGLE_CLIENT_ID = "738192917531-g1rjejs674ts8k78qehn4gjakdgnaogo.apps.googleusercontent.com"
 GOOGLE_REDIRECT_URI = "https://testerpartner.pages.dev/api/google/callback"
 GOOGLE_CALENDAR_ID = "primary"

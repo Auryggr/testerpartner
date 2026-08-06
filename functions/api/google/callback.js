@@ -66,9 +66,8 @@ export async function onRequestGet(context) {
     }
   
     return Response.json({
-      success: true,
-      refreshToken: tokens.refresh_token || null,
-      accessTokenReceived: Boolean(tokens.access_token),
-      expiresIn: tokens.expires_in || null
-    });
+        success: true,
+        connected: Boolean(tokens.refresh_token),
+        message: "Google Calendar connected successfully."
+      });
   }

@@ -131,8 +131,10 @@ export async function onRequestPost(context) {
         end: end.toISOString(),
         briefId,
         decision: conversation,
-        attendeeName: name,
-        attendeeEmail: email
+        whyStuck: difficulty,
+        desiredOutcome: outcome,
+        name,
+        website
       }
     );
 

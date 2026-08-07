@@ -60,6 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
     difficulty: "",
     outcome: "",
     future: "",
+    name: "",
+    website: "",
     meetingDay: "",
     meetingTime: "",
     availability: []
@@ -201,13 +203,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (step === 5) {
       state.future = selectedRadio("future");
-
+    
       if (!state.future) {
         window.alert(
           "Choose what would ideally change after the Breakdown."
         );
         return false;
       }
+    
+      const name =
+        document.getElementById("name")?.value.trim() || "";
+    
+      let website =
+        document.getElementById("website")?.value.trim() || "";
+    
+      if (!name) {
+        window.alert("Please enter your name.");
+        return false;
+      }
+    
+      if (!website) {
+        window.alert("Please enter your company website.");
+        return false;
+      }
+    
+      if (
+        !website.startsWith("http://") &&
+        !website.startsWith("https://")
+      ) {
+        website = `https://${website}`;
+      }
+    
+      try {
+        new URL(website);
+      } catch {
+        window.alert("Please enter a valid website.");
+        return false;
+      }
+    
+      state.name = name;
+      state.website = website;
     }
 
     if (step === 6 && !state.meetingDay) {
@@ -492,8 +527,11 @@ document.addEventListener("DOMContentLoaded", () => {
       difficulty: state.difficulty,
       outcome: state.outcome,
       future: state.future,
+      name: state.name,
+      website: state.website,
       meetingDay: state.meetingDay,
       meetingTime: state.meetingTime
+    };tingTime: state.meetingTime
     };
 
     try {

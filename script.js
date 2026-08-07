@@ -2,16 +2,51 @@ document.addEventListener("DOMContentLoaded", () => {
   "use strict";
 
   /* =========================================================
+     HELPERS
+     ========================================================= */
+
+  const $ = (selector, scope = document) =>
+    scope.querySelector(selector);
+
+  const $$ = (selector, scope = document) =>
+    Array.from(scope.querySelectorAll(selector));
+
+  function normalizeWebsite(value) {
+    let website = value.trim();
+
+    if (!website) {
+      return "";
+    }
+
+    if (
+      !website.startsWith("http://") &&
+      !website.startsWith("https://")
+    ) {
+      website = `https://${website}`;
+    }
+
+    try {
+      const url = new URL(website);
+
+      if (!url.hostname.includes(".")) {
+        return "";
+      }
+
+      return url.href;
+    } catch {
+      return "";
+    }
+  }
+
+  /* =========================================================
      HERO QUESTION ROTATOR
      ========================================================= */
 
-  const questions = Array.from(
-    document.querySelectorAll(".rotating-question")
-  );
+  const questions = $$(".rotating-question");
 
   if (questions.length > 1) {
-    let activeQuestion = questions.findIndex((item) =>
-      item.classList.contains("active")
+    let activeQuestion = questions.findIndex((question) =>
+      question.classList.contains("active")
     );
 
     if (activeQuestion < 0) {
@@ -22,7 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
     window.setInterval(() => {
       questions[activeQuestion].classList.remove("active");
 
-      activeQuestion = (activeQuestion + 1) % questions.length;
+      activeQuestion =
+        (activeQuestion + 1) % questions.length;
 
       questions[activeQuestion].classList.add("active");
     }, 4500);
@@ -32,38 +68,44 @@ document.addEventListener("DOMContentLoaded", () => {
      POSITIONING BREAKDOWN MODAL
      ========================================================= */
 
-  const modal = document.getElementById("breakdownModal");
+  const modal = $("#breakdownModal");
 
   if (!modal) {
-    console.error('TesterPartner: #breakdownModal was not found.');
+    console.error(
+      "TesterPartner: #breakdownModal was not found."
+    );
     return;
   }
 
-  const openButtons = document.querySelectorAll(".js-book-breakdown");
-  const closeButton = document.getElementById("closeModal");
-  const closeSuccessButton = document.getElementById("closeSuccess");
+  const openButtons = $$(".js-book-breakdown");
+  const closeButton = $("#closeModal");
+  const closeSuccessButton = $("#closeSuccess");
 
-  const screens = Array.from(
-    modal.querySelectorAll(".wizard-screen")
-  );
+  const screens = $$(".wizard-screen", modal);
+  const dots = $$(".progress-dots .dot", modal);
 
-  const dots = Array.from(
-    modal.querySelectorAll(".progress-dots .dot")
-  );
+  const chapterNumber = $(".chapter-number", modal);
+  const chapterTitle = $(".chapter-title", modal);
 
-  const chapterNumber = modal.querySelector(".chapter-number");
-  const chapterTitle = modal.querySelector(".chapter-title");
+  const dayGrid = $("#dayGrid");
+  const timeGrid = $("#timeGrid");
+  const continueDay = $("#continueDay");
+  const confirmBooking = $("#confirmBooking");
 
   const state = {
     step: 1,
+
     challenge: "",
     difficulty: "",
     outcome: "",
     future: "",
+
     name: "",
     website: "",
+
     meetingDay: "",
     meetingTime: "",
+
     availability: []
   };
 
@@ -78,29 +120,45 @@ document.addEventListener("DOMContentLoaded", () => {
     8: ["08", "Booked"]
   };
 
+  /* =========================================================
+     MODAL
+     ========================================================= */
+
   function showStep(step) {
     state.step = step;
 
     screens.forEach((screen) => {
-      const screenStep = Number(screen.dataset.step);
-      screen.classList.toggle("active", screenStep === step);
+      const screenStep =
+        Number(screen.dataset.step);
+
+      screen.classList.toggle(
+        "active",
+        screenStep === step
+      );
     });
 
     dots.forEach((dot, index) => {
       dot.classList.toggle(
         "active",
-        index <= Math.min(step - 1, dots.length - 1)
+        index <=
+          Math.min(
+            step - 1,
+            dots.length - 1
+          )
       );
     });
 
-    const chapter = chapterLabels[step];
+    const chapter =
+      chapterLabels[step];
 
     if (chapterNumber && chapter) {
-      chapterNumber.textContent = chapter[0];
+      chapterNumber.textContent =
+        chapter[0];
     }
 
     if (chapterTitle && chapter) {
-      chapterTitle.textContent = chapter[1];
+      chapterTitle.textContent =
+        chapter[1];
     }
 
     if (step === 4) {
@@ -115,7 +173,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function openModal() {
     showStep(1);
 
-    if (typeof modal.showModal === "function") {
+    if (
+      typeof modal.showModal === "function"
+    ) {
       if (!modal.open) {
         modal.showModal();
       }
@@ -123,11 +183,15 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.setAttribute("open", "");
     }
 
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow =
+      "hidden";
   }
 
   function closeModal() {
-    if (typeof modal.close === "function" && modal.open) {
+    if (
+      typeof modal.close === "function" &&
+      modal.open
+    ) {
       modal.close();
     } else {
       modal.removeAttribute("open");
@@ -137,42 +201,63 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   openButtons.forEach((button) => {
-    button.addEventListener("click", openModal);
+    button.addEventListener(
+      "click",
+      openModal
+    );
   });
 
-  closeButton?.addEventListener("click", closeModal);
-  closeSuccessButton?.addEventListener("click", closeModal);
+  closeButton?.addEventListener(
+    "click",
+    closeModal
+  );
 
-  modal.addEventListener("cancel", (event) => {
-    event.preventDefault();
-    closeModal();
-  });
+  closeSuccessButton?.addEventListener(
+    "click",
+    closeModal
+  );
 
-  modal.addEventListener("click", (event) => {
-    if (event.target === modal) {
+  modal.addEventListener(
+    "cancel",
+    (event) => {
+      event.preventDefault();
       closeModal();
     }
-  });
+  );
+
+  modal.addEventListener(
+    "click",
+    (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+  );
 
   /* =========================================================
-     WIZARD
+     WIZARD VALIDATION
      ========================================================= */
 
   function selectedRadio(name) {
     return (
-      modal.querySelector(`input[name="${name}"]:checked`)?.value || ""
+      $(
+        `input[name="${name}"]:checked`,
+        modal
+      )?.value || ""
     );
   }
 
   function validateStep(step) {
     if (step === 1) {
       const challenge =
-        document.getElementById("challenge")?.value.trim() || "";
+        $("#challenge")?.value.trim() ||
+        "";
 
       if (challenge.length < 10) {
         window.alert(
           "Please share a little more about the conversation your team keeps having."
         );
+
         return false;
       }
 
@@ -180,179 +265,277 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (step === 2) {
-      state.difficulty = selectedRadio("difficulty");
+      state.difficulty =
+        selectedRadio("difficulty");
 
       if (!state.difficulty) {
         window.alert(
           "Choose the option that best describes what makes the decision difficult."
         );
+
         return false;
       }
     }
 
     if (step === 3) {
-      state.outcome = selectedRadio("outcome");
+      state.outcome =
+        selectedRadio("outcome");
 
       if (!state.outcome) {
         window.alert(
           "Choose the outcome you would most like to leave with."
         );
+
         return false;
       }
     }
 
     if (step === 5) {
-      state.future = selectedRadio("future");
-    
+      state.future =
+        selectedRadio("future");
+
       if (!state.future) {
         window.alert(
           "Choose what would ideally change after the Breakdown."
         );
+
         return false;
       }
-    
+
       const name =
-        document.getElementById("name")?.value.trim() || "";
-    
-      let website =
-        document.getElementById("website")?.value.trim() || "";
-    
+        $("#name")?.value.trim() || "";
+
+      const websiteInput =
+        $("#website")?.value.trim() || "";
+
       if (!name) {
-        window.alert("Please enter your name.");
+        window.alert(
+          "Please enter your name."
+        );
+
+        $("#name")?.focus();
+
         return false;
       }
-    
+
+      if (!websiteInput) {
+        window.alert(
+          "Please enter your company website."
+        );
+
+        $("#website")?.focus();
+
+        return false;
+      }
+
+      const website =
+        normalizeWebsite(
+          websiteInput
+        );
+
       if (!website) {
-        window.alert("Please enter your company website.");
+        window.alert(
+          "Please enter a valid company website."
+        );
+
+        $("#website")?.focus();
+
         return false;
       }
-    
-      if (
-        !website.startsWith("http://") &&
-        !website.startsWith("https://")
-      ) {
-        website = `https://${website}`;
-      }
-    
-      try {
-        new URL(website);
-      } catch {
-        window.alert("Please enter a valid website.");
-        return false;
-      }
-    
+
       state.name = name;
       state.website = website;
+
+      /*
+       * Keep the normalized URL visible
+       * when the user navigates back.
+       */
+      const websiteField =
+        $("#website");
+
+      if (websiteField) {
+        websiteField.value =
+          website;
+      }
     }
 
-    if (step === 6 && !state.meetingDay) {
-      window.alert("Choose an available day.");
+    if (
+      step === 6 &&
+      !state.meetingDay
+    ) {
+      window.alert(
+        "Choose an available day."
+      );
+
       return false;
     }
 
     return true;
   }
 
+  /* =========================================================
+     REFLECTION
+     ========================================================= */
+
   function renderReflection() {
     const summaryChallenge =
-      document.getElementById("summaryChallenge");
+      $("#summaryChallenge");
+
     const summaryDifficulty =
-      document.getElementById("summaryDifficulty");
+      $("#summaryDifficulty");
+
     const summaryOutcome =
-      document.getElementById("summaryOutcome");
+      $("#summaryOutcome");
 
     if (summaryChallenge) {
-      summaryChallenge.textContent = state.challenge || "—";
+      summaryChallenge.textContent =
+        state.challenge || "—";
     }
 
     if (summaryDifficulty) {
-      summaryDifficulty.textContent = state.difficulty || "—";
+      summaryDifficulty.textContent =
+        state.difficulty || "—";
     }
 
     if (summaryOutcome) {
-      summaryOutcome.textContent = state.outcome || "—";
+      summaryOutcome.textContent =
+        state.outcome || "—";
     }
   }
 
-  modal.querySelectorAll(".next-step").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (!validateStep(state.step)) {
-        return;
-      }
+  /* =========================================================
+     WIZARD NAVIGATION
+     ========================================================= */
 
-      showStep(Math.min(state.step + 1, 8));
-    });
-  });
+  $$(".next-step", modal).forEach(
+    (button) => {
+      button.addEventListener(
+        "click",
+        () => {
+          if (
+            !validateStep(
+              state.step
+            )
+          ) {
+            return;
+          }
 
-  modal.querySelectorAll(".previous-step").forEach((button) => {
-    button.addEventListener("click", () => {
-      showStep(Math.max(state.step - 1, 1));
-    });
-  });
+          showStep(
+            Math.min(
+              state.step + 1,
+              8
+            )
+          );
+        }
+      );
+    }
+  );
+
+  $$(".previous-step", modal).forEach(
+    (button) => {
+      button.addEventListener(
+        "click",
+        () => {
+          showStep(
+            Math.max(
+              state.step - 1,
+              1
+            )
+          );
+        }
+      );
+    }
+  );
 
   /* =========================================================
      AVAILABILITY
      ========================================================= */
 
-  const dayGrid = document.getElementById("dayGrid");
-  const timeGrid = document.getElementById("timeGrid");
-  const continueDay = document.getElementById("continueDay");
-  const confirmBooking = document.getElementById("confirmBooking");
-
   async function loadAvailability() {
     if (!dayGrid) {
       return;
     }
-  
+
     dayGrid.innerHTML =
       '<div class="availability-status">Loading availability…</div>';
-  
+
+    if (timeGrid) {
+      timeGrid.innerHTML = "";
+    }
+
     state.meetingDay = "";
     state.meetingTime = "";
-  
+
     if (continueDay) {
       continueDay.disabled = true;
     }
-  
+
     if (confirmBooking) {
       confirmBooking.disabled = true;
     }
-  
+
     try {
-      const response = await fetch("/api/availability", {
-        method: "GET",
-        headers: {
-          Accept: "application/json"
-        }
-      });
-  
+      const response =
+        await fetch(
+          "/api/availability",
+          {
+            method: "GET",
+            headers: {
+              Accept:
+                "application/json"
+            }
+          }
+        );
+
+      const payload =
+        await response
+          .json()
+          .catch(() => ({}));
+
       if (!response.ok) {
         throw new Error(
+          payload.error ||
           `Availability request failed with ${response.status}`
         );
       }
-  
-      const payload = await response.json();
-  
+
+      /*
+       * Supports the current API:
+       *
+       * {
+       *   success: true,
+       *   data: {
+       *     days: [...]
+       *   }
+       * }
+       *
+       * plus previous response shapes.
+       */
       const days =
-        Array.isArray(payload?.data?.days)
+        Array.isArray(
+          payload?.data?.days
+        )
           ? payload.data.days
-          : Array.isArray(payload?.days)
+          : Array.isArray(
+              payload?.days
+            )
           ? payload.days
-          : Array.isArray(payload?.availability)
+          : Array.isArray(
+              payload?.availability
+            )
           ? payload.availability
           : [];
-  
-      state.availability = days;
-  
+
+      state.availability =
+        days;
+
       renderDays(days);
-  
     } catch (error) {
       console.error(
         "TesterPartner availability error:",
         error
       );
-  
+
       dayGrid.innerHTML =
         '<div class="availability-status">We couldn’t load availability right now. Please refresh and try again.</div>';
     }
@@ -368,12 +551,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     return {
-      date: day.date || day.day || day.start || "",
-      label: day.label || "",
+      date:
+        day?.date ||
+        day?.day ||
+        day?.start ||
+        "",
+
+      label:
+        day?.label || "",
+
       slots:
-        day.slots ||
-        day.times ||
-        day.availableTimes ||
+        day?.slots ||
+        day?.times ||
+        day?.availableTimes ||
         []
     };
   }
@@ -383,59 +573,98 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const days = rawDays
-      .map(normalizeDay)
-      .filter((day) => day.date);
+    const days =
+      rawDays
+        .map(normalizeDay)
+        .filter(
+          (day) => day.date
+        );
 
     dayGrid.innerHTML = "";
 
     if (!days.length) {
       dayGrid.innerHTML =
         '<div class="availability-status">No available days were returned. Please check back soon.</div>';
+
       return;
     }
 
     days.forEach((day) => {
-      const button = document.createElement("button");
+      const button =
+        document.createElement(
+          "button"
+        );
 
       button.type = "button";
-      button.className = "day-option";
-      button.dataset.date = day.date;
+      button.className =
+        "day-option";
+
+      button.dataset.date =
+        day.date;
 
       let label = day.label;
 
       if (!label) {
-        const parsedDate = new Date(`${day.date}T12:00:00`);
+        const parsedDate =
+          new Date(
+            `${day.date}T12:00:00`
+          );
 
-        label = Number.isNaN(parsedDate.getTime())
-          ? day.date
-          : new Intl.DateTimeFormat(undefined, {
-              weekday: "short",
-              month: "short",
-              day: "numeric"
-            }).format(parsedDate);
+        label =
+          Number.isNaN(
+            parsedDate.getTime()
+          )
+            ? day.date
+            : new Intl.DateTimeFormat(
+                undefined,
+                {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric"
+                }
+              ).format(
+                parsedDate
+              );
       }
 
       button.textContent = label;
 
-      button.addEventListener("click", () => {
-        dayGrid
-          .querySelectorAll(".day-option")
-          .forEach((item) => item.classList.remove("selected"));
+      button.addEventListener(
+        "click",
+        () => {
+          $$(
+            ".day-option",
+            dayGrid
+          ).forEach(
+            (item) =>
+              item.classList.remove(
+                "selected"
+              )
+          );
 
-        button.classList.add("selected");
+          button.classList.add(
+            "selected"
+          );
 
-        state.meetingDay = day.date;
-        state.meetingTime = "";
+          state.meetingDay =
+            day.date;
 
-        renderTimes(day.slots);
+          state.meetingTime = "";
 
-        if (continueDay) {
-          continueDay.disabled = false;
+          renderTimes(
+            day.slots
+          );
+
+          if (continueDay) {
+            continueDay.disabled =
+              false;
+          }
         }
-      });
+      );
 
-      dayGrid.appendChild(button);
+      dayGrid.appendChild(
+        button
+      );
     });
   }
 
@@ -447,16 +676,19 @@ document.addEventListener("DOMContentLoaded", () => {
     timeGrid.innerHTML = "";
 
     if (confirmBooking) {
-      confirmBooking.disabled = true;
+      confirmBooking.disabled =
+        true;
     }
 
-    const slots = Array.isArray(rawSlots)
-      ? rawSlots
-      : [];
+    const slots =
+      Array.isArray(rawSlots)
+        ? rawSlots
+        : [];
 
     if (!slots.length) {
       timeGrid.innerHTML =
         '<div class="availability-status">No available times were returned for this day.</div>';
+
       return;
     }
 
@@ -464,14 +696,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const value =
         typeof slot === "string"
           ? slot
-          : slot.time ||
-            slot.start ||
-            slot.value ||
-            slot.label ||
+          : slot?.time ||
+            slot?.start ||
+            slot?.value ||
+            slot?.label ||
             "";
 
       const label =
-        typeof slot === "object" && slot.label
+        typeof slot === "object" &&
+        slot?.label
           ? slot.label
           : value;
 
@@ -479,27 +712,48 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const button = document.createElement("button");
+      const button =
+        document.createElement(
+          "button"
+        );
 
       button.type = "button";
-      button.className = "time-option";
-      button.textContent = label;
+      button.className =
+        "time-option";
 
-      button.addEventListener("click", () => {
-        timeGrid
-          .querySelectorAll(".time-option")
-          .forEach((item) => item.classList.remove("selected"));
+      button.textContent =
+        label;
 
-        button.classList.add("selected");
+      button.addEventListener(
+        "click",
+        () => {
+          $$(
+            ".time-option",
+            timeGrid
+          ).forEach(
+            (item) =>
+              item.classList.remove(
+                "selected"
+              )
+          );
 
-        state.meetingTime = value;
+          button.classList.add(
+            "selected"
+          );
 
-        if (confirmBooking) {
-          confirmBooking.disabled = false;
+          state.meetingTime =
+            value;
+
+          if (confirmBooking) {
+            confirmBooking.disabled =
+              false;
+          }
         }
-      });
+      );
 
-      timeGrid.appendChild(button);
+      timeGrid.appendChild(
+        button
+      );
     });
   }
 
@@ -508,8 +762,14 @@ document.addEventListener("DOMContentLoaded", () => {
      ========================================================= */
 
   async function submitBooking() {
-    if (!state.meetingDay || !state.meetingTime) {
-      window.alert("Choose a time before booking.");
+    if (
+      !state.meetingDay ||
+      !state.meetingTime
+    ) {
+      window.alert(
+        "Choose a time before booking."
+      );
+
       return;
     }
 
@@ -517,61 +777,113 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const previousText = confirmBooking.textContent;
+    const previousText =
+      confirmBooking.textContent;
 
     confirmBooking.disabled = true;
-    confirmBooking.textContent = "Booking…";
+    confirmBooking.textContent =
+      "Booking…";
 
     const payload = {
-      conversation: state.challenge,
-      difficulty: state.difficulty,
-      outcome: state.outcome,
-      future: state.future,
-      name: state.name,
-      website: state.website,
-      meetingDay: state.meetingDay,
-      meetingTime: state.meetingTime
-    };tingTime: state.meetingTime
+      conversation:
+        state.challenge,
+
+      difficulty:
+        state.difficulty,
+
+      outcome:
+        state.outcome,
+
+      future:
+        state.future,
+
+      name:
+        state.name,
+
+      website:
+        state.website,
+
+      meetingDay:
+        state.meetingDay,
+
+      meetingTime:
+        state.meetingTime
     };
 
     try {
-      const response = await fetch("/api/booking", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+      const response =
+        await fetch(
+          "/api/booking",
+          {
+            method: "POST",
 
-      const result = await response
-        .json()
-        .catch(() => ({}));
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              Accept:
+                "application/json"
+            },
+
+            body:
+              JSON.stringify(
+                payload
+              )
+          }
+        );
+
+      const result =
+        await response
+          .json()
+          .catch(() => ({}));
 
       if (!response.ok) {
         throw new Error(
           result.error ||
-            result.message ||
-            `Booking request failed with ${response.status}`
+          result.message ||
+          `Booking request failed with ${response.status}`
         );
       }
 
+      console.log(
+        "TesterPartner booking created:",
+        result
+      );
+
       showStep(8);
     } catch (error) {
-      console.error("TesterPartner booking error:", error);
+      console.error(
+        "TesterPartner booking error:",
+        error
+      );
 
+      /*
+       * Show the actual backend error.
+       * This is especially useful while
+       * we're still developing the MVP.
+       */
       window.alert(
+        error.message ||
         "We couldn’t complete the booking. Please try again."
       );
 
-      confirmBooking.disabled = false;
+      confirmBooking.disabled =
+        false;
+
       confirmBooking.textContent =
-        previousText || "Book The Positioning Breakdown →";
+        previousText ||
+        "Book The Positioning Breakdown →";
     }
   }
 
-  confirmBooking?.addEventListener("click", submitBooking);
+  confirmBooking?.addEventListener(
+    "click",
+    submitBooking
+  );
 
-  // Initial modal state
+  /* =========================================================
+     INITIAL STATE
+     ========================================================= */
+
   showStep(1);
 });

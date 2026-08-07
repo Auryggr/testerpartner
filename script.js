@@ -268,21 +268,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!dayGrid) {
       return;
     }
-
+  
     dayGrid.innerHTML =
       '<div class="availability-status">Loading availability…</div>';
-
+  
     state.meetingDay = "";
     state.meetingTime = "";
-
+  
     if (continueDay) {
       continueDay.disabled = true;
     }
-
+  
     if (confirmBooking) {
       confirmBooking.disabled = true;
     }
-
+  
     try {
       const response = await fetch("/api/availability", {
         method: "GET",
@@ -290,30 +290,34 @@ document.addEventListener("DOMContentLoaded", () => {
           Accept: "application/json"
         }
       });
-
+  
       if (!response.ok) {
         throw new Error(
           `Availability request failed with ${response.status}`
         );
       }
-
+  
       const payload = await response.json();
-
+  
       const days =
-        Array.isArray(payload)
-          ? payload
-          : Array.isArray(payload.days)
+        Array.isArray(payload?.data?.days)
+          ? payload.data.days
+          : Array.isArray(payload?.days)
           ? payload.days
-          : Array.isArray(payload.availability)
+          : Array.isArray(payload?.availability)
           ? payload.availability
           : [];
-
+  
       state.availability = days;
-
+  
       renderDays(days);
+  
     } catch (error) {
-      console.error("TesterPartner availability error:", error);
-
+      console.error(
+        "TesterPartner availability error:",
+        error
+      );
+  
       dayGrid.innerHTML =
         '<div class="availability-status">We couldn’t load availability right now. Please refresh and try again.</div>';
     }

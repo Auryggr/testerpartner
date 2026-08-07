@@ -181,35 +181,39 @@
     <section class="wizard-screen" data-step="2"><div class="wizard-content"><span class="wizard-kicker">Current Situation</span><h2>What makes this conversation difficult?</h2><p>Choose the one that feels closest.</p><div class="option-grid"><label class="option-card"><input type="radio" name="difficulty" value="Alignment"><div><strong>We don't agree internally.</strong><span>Different teams see the problem differently.</span></div></label><label class="option-card"><input type="radio" name="difficulty" value="Evidence"><div><strong>We don't have enough evidence.</strong><span>We're making assumptions.</span></div></label><label class="option-card"><input type="radio" name="difficulty" value="Customer"><div><strong>We're unsure what customers actually care about.</strong><span>Our story doesn't seem to connect.</span></div></label><label class="option-card"><input type="radio" name="difficulty" value="Direction"><div><strong>There are too many possible directions.</strong><span>Everything sounds reasonable.</span></div></label></div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
     <section class="wizard-screen" data-step="3"><div class="wizard-content"><span class="wizard-kicker">Desired Outcome</span><h2>What would make this conversation worthwhile?</h2><p>Choose the outcome that matters most.</p><div class="option-grid"><label class="option-card"><input type="radio" name="outcome" value="Direction"><div><strong>One clearer direction.</strong></div></label><label class="option-card"><input type="radio" name="outcome" value="Opportunity"><div><strong>One positioning opportunity.</strong></div></label><label class="option-card"><input type="radio" name="outcome" value="Recommendation"><div><strong>A recommendation I trust.</strong></div></label><label class="option-card"><input type="radio" name="outcome" value="Confidence"><div><strong>More confidence about what to test.</strong></div></label></div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
     <section class="wizard-screen" data-step="4"><div class="wizard-content reflection-screen"><span class="wizard-kicker">04 · Reflection</span><h2>Here's what I'm hearing.</h2><p>Before we choose a time, let's make sure we're investigating the right challenge.</p><div class="reflection-card"><div class="reflection-item"><span>YOUR CONVERSATION</span><p id="summaryChallenge">—</p></div><div class="reflection-item"><span>CURRENT SITUATION</span><p id="summaryDifficulty">—</p></div><div class="reflection-item"><span>YOU'D LIKE TO LEAVE WITH</span><p id="summaryOutcome">—</p></div></div><div class="reflection-note"><strong>This becomes our research starting point.</strong>Before the call, we'll look for relevant public customer language, recurring use cases and competitive signals connected to this question.</div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Yes, this feels right →</button></div></section>
-    <section class="wizard-screen" data-step="5"><div class="wizard-content"><span class="wizard-kicker">05 · Looking Ahead</span><h2>If this conversation went really well... what would change next week?</h2><p>Choose the outcome that feels most valuable.</p><div class="option-grid"><label class="option-card"><input type="radio" name="future" value="Move"><div><strong>We'd finally move forward.</strong></div></label><label class="option-card"><input type="radio" name="future" value="Stop debating"><div><strong>We'd stop debating.</strong></div></label><label class="option-card"><input type="radio" name="future" value="Know"><div><strong>We'd know what to test.</strong></div></label><label class="option-card"><input type="radio" name="future" value="Align"><div><strong>We'd align around one direction.</strong></div></label></div><div class="wizard-tip">After you book, we'll use the context you've shared to prepare the Breakdown before the 30-minute session.</div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><div class="identity-fields">
+    <section class="wizard-screen" data-step="5">
+      <div class="wizard-content">
+        <span class="wizard-kicker">05 · Looking Ahead</span>
+        <h2>If this conversation went really well... what would change next week?</h2>
+        <p>Choose the outcome that feels most valuable.</p>
 
-      <div class="form-field">
-        <label for="name">Your name</label>
-    
-        <input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Jane Smith"
-          autocomplete="name"
-          required
-        >
+        <div class="option-grid">
+          <label class="option-card"><input type="radio" name="future" value="Move"><div><strong>We'd finally move forward.</strong></div></label>
+          <label class="option-card"><input type="radio" name="future" value="Stop debating"><div><strong>We'd stop debating.</strong></div></label>
+          <label class="option-card"><input type="radio" name="future" value="Know"><div><strong>We'd know what to test.</strong></div></label>
+          <label class="option-card"><input type="radio" name="future" value="Align"><div><strong>We'd align around one direction.</strong></div></label>
+        </div>
+
+        <div class="identity-fields">
+          <div class="form-field">
+            <label for="name">Your name</label>
+            <input type="text" id="name" name="name" placeholder="Jane Smith" autocomplete="name" required>
+          </div>
+
+          <div class="form-field">
+            <label for="website">Company website</label>
+            <input type="text" id="website" name="website" placeholder="yourcompany.com" autocomplete="url" inputmode="url" required>
+          </div>
+        </div>
+
+        <div class="wizard-tip">After you book, we'll use the context you've shared to prepare the Breakdown before the 30-minute session.</div>
       </div>
-    
-      <div class="form-field">
-        <label for="website">Company website</label>
-    
-        <input
-          type="text"
-          id="website"
-          name="website"
-          placeholder="yourcompany.com"
-          autocomplete="url"
-          required
-        >
+
+      <div class="wizard-actions">
+        <button class="btn btn-secondary previous-step" type="button">← Back</button>
+        <button class="btn btn-primary next-step" type="button">Continue →</button>
       </div>
-    
-    </div><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
+    </section>
     <section class="wizard-screen" data-step="6"><div class="wizard-content"><span class="wizard-kicker">06 · Choose a Day</span><h2>When would you like to have the Positioning Breakdown?</h2><p>These are the next available conversations.</p><div id="dayGrid" class="day-grid"></div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button id="continueDay" class="btn btn-primary next-step" type="button" disabled>Continue →</button></div></section>
     <section class="wizard-screen" data-step="7"><div class="wizard-content"><span class="wizard-kicker">07 · Choose a Time</span><h2>What time works best?</h2><p>Every Positioning Breakdown lasts around 30 minutes.</p><div id="timeGrid" class="time-grid"></div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button id="confirmBooking" class="btn btn-primary" type="button" disabled>Book The Positioning Breakdown →</button></div></section>
     <section class="wizard-screen" data-step="8"><div class="success-screen"><div class="success-icon">✓</div><span class="wizard-kicker">You're booked</span><h2>We'll take it from here.</h2><p>Before we meet, we'll review public customer and competitive signals connected to your question. Your session will start with what we found—not with introductions.</p><div class="success-card"><div><strong>Your Breakdown includes</strong></div><ul><li>Focused pre-session research</li><li>30-minute live Breakdown</li><li>Observed signals</li><li>Core tension</li><li>Positioning hypothesis</li><li>Suggested next experiment, when appropriate</li><li>Opportunity Brief</li></ul></div><button id="closeSuccess" class="btn btn-primary" type="button">Perfect. See you soon →</button></div></section>

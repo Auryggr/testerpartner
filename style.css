@@ -59,12 +59,9 @@ section {
   gap: 28px;
 }
 .logo {
-  font-weight: 900;
-  font-size: 1.8rem;
+  font-weight: 800;
   text-decoration: none;
-}
-.logo span {
-  color: var(--clay);
+  letter-spacing: -0.03em;
 }
 .main-nav {
   display: flex;
@@ -100,7 +97,7 @@ section {
   min-height: 790px;
   display: flex;
   align-items: center;
-  padding-top: 110px;
+  padding-top: 88px;
 }
 .hero-content {
   display: grid;
@@ -123,7 +120,7 @@ section {
 }
 .hero h1 {
   margin: 28px 0 8px;
-  font-size: clamp(4rem,9vw,8rem);
+  font-size: clamp(4rem, 7.6vw, 6.8rem);
   line-height: 0.95;
   letter-spacing: -0.07em;
 }
@@ -1116,4 +1113,54 @@ textarea {
     font-size: clamp(1.65rem, 8vw, 2.35rem);
     line-height: 1.1;
   }
+}
+
+/* =========================================================
+   IDENTITY FIELDS
+   Step 05 — Name + company website
+   ========================================================= */
+.identity-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 28px;
+  margin-bottom: 20px;
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+.form-field label {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.form-field input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+.form-field input::placeholder {
+  color: var(--muted);
+  opacity: 0.65;
+}
+.form-field input:hover {
+  border-color: var(--border2);
+}
+.form-field input:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.08);
+}
+@media (max-width: 700px) {
+  .identity-fields { grid-template-columns: 1fr; }
 }

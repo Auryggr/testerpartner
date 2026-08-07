@@ -1117,3 +1117,62 @@ textarea {
     line-height: 1.1;
   }
 }
+.identity-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 28px;
+  margin-bottom: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.form-field label {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.form-field input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+
+  font: inherit;
+
+  outline: none;
+
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.form-field input::placeholder {
+  color: var(--muted);
+  opacity: 0.65;
+}
+
+.form-field input:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.04);
+
+  box-shadow:
+    0 0 0 3px rgba(74, 222, 128, 0.08);
+}
+
+@media (max-width: 700px) {
+  .identity-fields {
+    grid-template-columns: 1fr;
+  }
+}

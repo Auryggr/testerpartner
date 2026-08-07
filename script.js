@@ -101,6 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     future: "",
 
     name: "",
+    email: "",
     website: "",
 
     meetingDay: "",
@@ -317,6 +318,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         return false;
       }
+
+      const email =
+  $("#email")?.value.trim() || "";
+
+if (!email) {
+  window.alert("Please enter your work email.");
+  $("#email")?.focus();
+  return false;
+}
+
+const emailIsValid =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+if (!emailIsValid) {
+  window.alert("Please enter a valid email.");
+  $("#email")?.focus();
+  return false;
+}
+
+state.email = email;
 
       if (!websiteInput) {
         window.alert(
@@ -799,6 +820,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       name:
         state.name,
+        
+      email:
+       state.email,
 
       website:
         state.website,

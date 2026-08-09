@@ -8,15 +8,26 @@ import {
   createOpportunityBrief
 } from "../../lib/airtable.js";
 
+import {
+  sendBookingConfirmation
+} from "../../lib/email.js";
 
-function addMinutes(date, minutes) {
+
+function addMinutes(
+  date,
+  minutes
+) {
   return new Date(
-    date.getTime() + minutes * 60 * 1000
+    date.getTime() +
+      minutes * 60 * 1000
   );
 }
 
 
-function localSlotToDate(dateString, timeString) {
+function localSlotToDate(
+  dateString,
+  timeString
+) {
   return new Date(
     `${dateString}T${timeString}:00-03:00`
   );
@@ -29,12 +40,17 @@ function overlaps(
   startB,
   endB
 ) {
-  return startA < endB && endA > startB;
+  return (
+    startA < endB &&
+    endA > startB
+  );
 }
 
 
 function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+    email
+  );
 }
 
 
@@ -44,13 +60,24 @@ async function assertSlotStillAvailable(
   end
 ) {
   const bufferMinutes =
-    Number(env.BUFFER_MINUTES || 15);
+    Number(
+      env.BUFFER_MINUTES || 15
+    );
+
 
   const bufferedStart =
-    addMinutes(start, -bufferMinutes);
+    addMinutes(
+      start,
+      -bufferMinutes
+    );
+
 
   const bufferedEnd =
-    addMinutes(end, bufferMinutes);
+    addMinutes(
+      end,
+      bufferMinutes
+    );
+
 
   const busy =
     await getBusyPeriods(
@@ -59,21 +86,29 @@ async function assertSlotStillAvailable(
       bufferedEnd.toISOString()
     );
 
+
   const conflict =
-    busy.some((period) => {
-      const busyStart =
-        new Date(period.start);
+    busy.some(
+      (period) => {
+        const busyStart =
+          new Date(
+            period.start
+          );
 
-      const busyEnd =
-        new Date(period.end);
+        const busyEnd =
+          new Date(
+            period.end
+          );
 
-      return overlaps(
-        bufferedStart,
-        bufferedEnd,
-        busyStart,
-        busyEnd
-      );
-    });
+        return overlaps(
+          bufferedStart,
+          bufferedEnd,
+          busyStart,
+          busyEnd
+        );
+      }
+    );
+
 
   if (conflict) {
     const error =
@@ -88,12 +123,16 @@ async function assertSlotStillAvailable(
 }
 
 
-export async function onRequestPost(context) {
+export async function onRequestPost(
+  context
+) {
   let calendarEvent = null;
+  let airtableRecord = null;
 
   try {
     const body =
       await context.request.json();
+
 
     const {
       conversation,
@@ -108,11 +147,16 @@ export async function onRequestPost(context) {
     } = body;
 
 
+    /* ===============================
+       VALIDATION
+       =============================== */
+
     if (!conversation?.trim()) {
       return Response.json(
         {
           success: false,
-          error: "Conversation is required."
+          error:
+            "Conversation is required."
         },
         {
           status: 400
@@ -125,7 +169,8 @@ export async function onRequestPost(context) {
       return Response.json(
         {
           success: false,
-          error: "Name is required."
+          error:
+            "Name is required."
         },
         {
           status: 400
@@ -138,7 +183,8 @@ export async function onRequestPost(context) {
       return Response.json(
         {
           success: false,
-          error: "Email is required."
+          error:
+            "Email is required."
         },
         {
           status: 400
@@ -147,11 +193,16 @@ export async function onRequestPost(context) {
     }
 
 
-    if (!isValidEmail(email.trim())) {
+    if (
+      !isValidEmail(
+        email.trim()
+      )
+    ) {
       return Response.json(
         {
           success: false,
-          error: "A valid email is required."
+          error:
+            "A valid email is required."
         },
         {
           status: 400
@@ -164,7 +215,8 @@ export async function onRequestPost(context) {
       return Response.json(
         {
           success: false,
-          error: "Website is required."
+          error:
+            "Website is required."
         },
         {
           status: 400
@@ -173,11 +225,15 @@ export async function onRequestPost(context) {
     }
 
 
-    if (!meetingDay || !meetingTime) {
+    if (
+      !meetingDay ||
+      !meetingTime
+    ) {
       return Response.json(
         {
           success: false,
-          error: "Meeting day and time are required."
+          error:
+            "Meeting day and time are required."
         },
         {
           status: 400
@@ -186,16 +242,24 @@ export async function onRequestPost(context) {
     }
 
 
+    /* ===============================
+       MEETING TIME
+       =============================== */
+
     const duration =
       Number(
-        context.env.SESSION_DURATION || 30
+        context.env
+          .SESSION_DURATION ||
+          30
       );
+
 
     const start =
       localSlotToDate(
         meetingDay,
         meetingTime
       );
+
 
     if (
       Number.isNaN(
@@ -205,7 +269,8 @@ export async function onRequestPost(context) {
       return Response.json(
         {
           success: false,
-          error: "Invalid meeting date or time."
+          error:
+            "Invalid meeting date or time."
         },
         {
           status: 400
@@ -214,11 +279,14 @@ export async function onRequestPost(context) {
     }
 
 
-    if (start <= new Date()) {
+    if (
+      start <= new Date()
+    ) {
       return Response.json(
         {
           success: false,
-          error: "This meeting time is in the past."
+          error:
+            "This meeting time is in the past."
         },
         {
           status: 400
@@ -236,7 +304,7 @@ export async function onRequestPost(context) {
 
     /*
      * Re-check Google Calendar immediately
-     * before creating the event.
+     * before creating anything.
      */
     await assertSlotStillAvailable(
       context.env,
@@ -249,10 +317,10 @@ export async function onRequestPost(context) {
       crypto.randomUUID();
 
 
-    /*
-     * 1. Create Google Calendar event + Meet link
-     *    + invite the attendee.
-     */
+    /* ===============================
+       1. GOOGLE CALENDAR
+       =============================== */
+
     calendarEvent =
       await createCalendarEvent(
         context.env,
@@ -289,11 +357,10 @@ export async function onRequestPost(context) {
       );
 
 
-    /*
-     * 2. Persist Opportunity Brief in Airtable.
-     *
-     * These field names must match Airtable exactly.
-     */
+    /* ===============================
+       2. AIRTABLE
+       =============================== */
+
     const fields = {
       "Brief ID":
         briefId,
@@ -337,21 +404,101 @@ export async function onRequestPost(context) {
 
 
     /*
-     * Optional Airtable field.
-     * If you create a "Google Meet URL" column,
-     * uncomment these lines:
+     * If you create this Airtable column later:
      *
      * fields["Google Meet URL"] =
      *   calendarEvent.meetLink || "";
      */
 
 
-    const record =
+    airtableRecord =
       await createOpportunityBrief(
         context.env,
         fields
       );
 
+
+    /* ===============================
+       3. CONFIRMATION EMAIL
+       =============================== */
+
+    let emailResult = {
+      sent: false,
+      id: null,
+      error: null
+    };
+
+
+    try {
+      const result =
+        await sendBookingConfirmation(
+          context.env,
+          {
+            briefId,
+
+            name:
+              name.trim(),
+
+            email:
+              email.trim(),
+
+            website:
+              website.trim(),
+
+            decision:
+              conversation.trim(),
+
+            start:
+              calendarEvent.start,
+
+            meetLink:
+              calendarEvent.meetLink ||
+              "",
+
+            calendarEventUrl:
+              calendarEvent.htmlLink ||
+              ""
+          }
+        );
+
+
+      emailResult = {
+        sent: true,
+        id:
+          result.id,
+        error:
+          null
+      };
+
+    } catch (emailError) {
+      /*
+       * IMPORTANT:
+       *
+       * Calendar + Airtable already succeeded.
+       *
+       * We DO NOT throw here because otherwise
+       * the frontend may retry the booking and
+       * create duplicate bookings.
+       */
+      console.error(
+        "Booking confirmation email error:",
+        emailError
+      );
+
+
+      emailResult = {
+        sent: false,
+        id: null,
+        error:
+          emailError.message ||
+          "Unable to send confirmation email."
+      };
+    }
+
+
+    /* ===============================
+       SUCCESS
+       =============================== */
 
     return Response.json(
       {
@@ -360,7 +507,7 @@ export async function onRequestPost(context) {
         briefId,
 
         recordId:
-          record.id,
+          airtableRecord.id,
 
         meeting: {
           start:
@@ -376,8 +523,12 @@ export async function onRequestPost(context) {
             calendarEvent.htmlLink,
 
           meetLink:
-            calendarEvent.meetLink || null
-        }
+            calendarEvent.meetLink ||
+            null
+        },
+
+        email:
+          emailResult
       },
       {
         status: 201
@@ -392,16 +543,22 @@ export async function onRequestPost(context) {
 
 
     /*
-     * If Google created the event but Airtable fails,
-     * remove the Calendar event again so the systems
-     * do not become inconsistent.
+     * Calendar succeeded but Airtable failed:
+     * rollback the Calendar event.
+     *
+     * If Airtable succeeded and only Resend failed,
+     * execution never reaches this block.
      */
-    if (calendarEvent?.id) {
+    if (
+      calendarEvent?.id &&
+      !airtableRecord
+    ) {
       try {
         await deleteCalendarEvent(
           context.env,
           calendarEvent.id
         );
+
       } catch (
         rollbackError
       ) {
@@ -416,13 +573,15 @@ export async function onRequestPost(context) {
     return Response.json(
       {
         success: false,
+
         error:
           error.message ||
           "Unable to complete booking."
       },
       {
         status:
-          error.status || 500
+          error.status ||
+          500
       }
     );
   }

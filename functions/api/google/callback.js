@@ -64,10 +64,7 @@ export async function onRequestGet(context) {
         { status: tokenResponse.status }
       );
     }
-    console.log(
-  "NEW GOOGLE_REFRESH_TOKEN:",
-  tokens.refresh_token
-);
+  
   
     return Response.json({
   success: true,

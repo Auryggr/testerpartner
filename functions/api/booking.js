@@ -54,6 +54,14 @@ function isValidEmail(email) {
 }
 
 
+function createBriefId() {
+  return `TP-${crypto
+    .randomUUID()
+    .split("-")[0]
+    .toUpperCase()}`;
+}
+
+
 async function assertSlotStillAvailable(
   env,
   start,
@@ -64,13 +72,11 @@ async function assertSlotStillAvailable(
       env.BUFFER_MINUTES || 15
     );
 
-
   const bufferedStart =
     addMinutes(
       start,
       -bufferMinutes
     );
-
 
   const bufferedEnd =
     addMinutes(
@@ -78,14 +84,12 @@ async function assertSlotStillAvailable(
       bufferMinutes
     );
 
-
   const busy =
     await getBusyPeriods(
       env,
       bufferedStart.toISOString(),
       bufferedEnd.toISOString()
     );
-
 
   const conflict =
     busy.some(
@@ -108,7 +112,6 @@ async function assertSlotStillAvailable(
         );
       }
     );
-
 
   if (conflict) {
     const error =
@@ -133,7 +136,6 @@ export async function onRequestPost(
     const body =
       await context.request.json();
 
-
     const {
       conversation,
       difficulty,
@@ -146,10 +148,6 @@ export async function onRequestPost(
       website = ""
     } = body;
 
-
-    /* ===============================
-       VALIDATION
-       =============================== */
 
     if (!conversation?.trim()) {
       return Response.json(
@@ -242,10 +240,6 @@ export async function onRequestPost(
     }
 
 
-    /* ===============================
-       MEETING TIME
-       =============================== */
-
     const duration =
       Number(
         context.env
@@ -302,10 +296,6 @@ export async function onRequestPost(
       );
 
 
-    /*
-     * Re-check Google Calendar immediately
-     * before creating anything.
-     */
     await assertSlotStillAvailable(
       context.env,
       start,
@@ -314,12 +304,8 @@ export async function onRequestPost(
 
 
     const briefId =
-      crypto.randomUUID();
+      createBriefId();
 
-
-    /* ===============================
-       1. GOOGLE CALENDAR
-       =============================== */
 
     calendarEvent =
       await createCalendarEvent(
@@ -357,16 +343,15 @@ export async function onRequestPost(
       );
 
 
-    /* ===============================
-       2. AIRTABLE
-       =============================== */
-
     const fields = {
       "Brief ID":
         briefId,
 
       "Status":
         "New",
+
+      "Transcript Status":
+        "Pending",
 
       "Decision":
         conversation.trim(),
@@ -403,24 +388,12 @@ export async function onRequestPost(
     }
 
 
-    /*
-     * If you create this Airtable column later:
-     *
-     * fields["Google Meet URL"] =
-     *   calendarEvent.meetLink || "";
-     */
-
-
     airtableRecord =
       await createOpportunityBrief(
         context.env,
         fields
       );
 
-
-    /* ===============================
-       3. CONFIRMATION EMAIL
-       =============================== */
 
     let emailResult = {
       sent: false,
@@ -471,15 +444,6 @@ export async function onRequestPost(
       };
 
     } catch (emailError) {
-      /*
-       * IMPORTANT:
-       *
-       * Calendar + Airtable already succeeded.
-       *
-       * We DO NOT throw here because otherwise
-       * the frontend may retry the booking and
-       * create duplicate bookings.
-       */
       console.error(
         "Booking confirmation email error:",
         emailError
@@ -495,10 +459,6 @@ export async function onRequestPost(
       };
     }
 
-
-    /* ===============================
-       SUCCESS
-       =============================== */
 
     return Response.json(
       {
@@ -542,13 +502,6 @@ export async function onRequestPost(
     );
 
 
-    /*
-     * Calendar succeeded but Airtable failed:
-     * rollback the Calendar event.
-     *
-     * If Airtable succeeded and only Resend failed,
-     * execution never reaches this block.
-     */
     if (
       calendarEvent?.id &&
       !airtableRecord
@@ -573,7 +526,6 @@ export async function onRequestPost(
     return Response.json(
       {
         success: false,
-
         error:
           error.message ||
           "Unable to complete booking."

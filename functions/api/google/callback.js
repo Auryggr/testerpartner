@@ -64,10 +64,15 @@ export async function onRequestGet(context) {
         { status: tokenResponse.status }
       );
     }
+    console.log(
+  "NEW GOOGLE_REFRESH_TOKEN:",
+  tokens.refresh_token
+);
   
     return Response.json({
-      success: true,
-      connected: Boolean(tokens.refresh_token),
-      message: "Google Calendar connected successfully."
-    });
+  success: true,
+  connected: Boolean(tokens.refresh_token),
+  refreshToken: tokens.refresh_token || null,
+  message: "Google Calendar connected successfully."
+});
     }

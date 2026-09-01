@@ -1,4 +1,9 @@
-const ALLOWED_ORIGIN = "https://app.laxis.tech";
+import {
+  getPendingOpportunityBriefs
+} from "../../lib/airtable.js";
+
+const ALLOWED_ORIGIN =
+  "https://app.laxis.tech";
 
 function corsHeaders(origin) {
   return {
@@ -55,16 +60,25 @@ export async function onRequestPost(context) {
           meeting.noteUrl
       }));
 
+    const pendingBriefs =
+      await getPendingOpportunityBriefs(
+        context.env
+      );
+
     console.log(
       "[Laxis Discovery]",
-      meetings
+      {
+        meetings,
+        pendingBriefs
+      }
     );
 
     return Response.json(
       {
         success: true,
         received: meetings.length,
-        meetings
+        meetings,
+        pendingBriefs
       },
       {
         status: 200,

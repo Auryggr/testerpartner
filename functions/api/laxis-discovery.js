@@ -1,5 +1,6 @@
 import {
   getPendingOpportunityBriefs,
+  getAssignedLaxisMeetings,
   updateOpportunityBriefByRecordId
 } from "../../lib/airtable.js";
 
@@ -31,7 +32,10 @@ function normalizeText(value = "") {
     .trim();
 }
 
-function hasNameMatch(brief, meeting) {
+function hasNameMatch(
+  brief,
+  meeting
+) {
   const name =
     normalizeText(brief.name);
 
@@ -57,10 +61,14 @@ function getTimeDifferenceMinutes(
   }
 
   const briefTime =
-    new Date(brief.meetingTime).getTime();
+    new Date(
+      brief.meetingTime
+    ).getTime();
 
   const meetingTime =
-    new Date(meeting.createdTime).getTime();
+    new Date(
+      meeting.createdTime
+    ).getTime();
 
   if (
     Number.isNaN(briefTime) ||
@@ -71,7 +79,8 @@ function getTimeDifferenceMinutes(
 
   return Math.round(
     Math.abs(
-      briefTime - meetingTime
+      briefTime -
+      meetingTime
     ) / 60000
   );
 }
@@ -81,7 +90,10 @@ function evaluateCandidate(
   meeting
 ) {
   const nameMatch =
-    hasNameMatch(brief, meeting);
+    hasNameMatch(
+      brief,
+      meeting
+    );
 
   const timeDifferenceMinutes =
     getTimeDifferenceMinutes(
@@ -100,7 +112,9 @@ function evaluateCandidate(
     score += 100;
   }
 
-  if (timeDifferenceMinutes !== null) {
+  if (
+    timeDifferenceMinutes !== null
+  ) {
     score += Math.max(
       0,
       REVIEW_WINDOW_MINUTES -
@@ -175,7 +189,7 @@ function evaluateBrief(
       autoMatch:
         false,
       reason:
-        "No transcribed Laxis meetings found.",
+        "No available Laxis meetings found.",
       candidate:
         null
     };
@@ -203,9 +217,11 @@ function evaluateBrief(
   const plausibleCandidate =
     candidate.nameMatch ||
     (
-      candidate.timeDifferenceMinutes !==
+      candidate
+        .timeDifferenceMinutes !==
         null &&
-      candidate.timeDifferenceMinutes <=
+      candidate
+        .timeDifferenceMinutes <=
         REVIEW_WINDOW_MINUTES
     );
 
@@ -243,6 +259,139 @@ function evaluateBrief(
   };
 }
 
+function getEvaluationPriority(
+  evaluation
+) {
+  if (
+    evaluation.status ===
+      "Discovered"
+  ) {
+    return 2;
+  }
+
+  if (
+    evaluation.status ===
+      "Needs Review"
+  ) {
+    return 1;
+  }
+
+  return 0;
+}
+
+function resolveDuplicateMeetings(
+  evaluations
+) {
+  const groups =
+    new Map();
+
+  for (
+    const evaluation
+    of evaluations
+  ) {
+    const laxisId =
+      evaluation
+        .candidate
+        ?.laxisId;
+
+    if (!laxisId) {
+      continue;
+    }
+
+    if (
+      !groups.has(laxisId)
+    ) {
+      groups.set(
+        laxisId,
+        []
+      );
+    }
+
+    groups
+      .get(laxisId)
+      .push(evaluation);
+  }
+
+  for (
+    const [
+      laxisId,
+      group
+    ] of groups
+  ) {
+    if (
+      group.length <= 1
+    ) {
+      continue;
+    }
+
+    group.sort(
+      (a, b) => {
+        const priorityDifference =
+          getEvaluationPriority(b) -
+          getEvaluationPriority(a);
+
+        if (
+          priorityDifference !== 0
+        ) {
+          return priorityDifference;
+        }
+
+        if (
+          a.candidate.nameMatch !==
+          b.candidate.nameMatch
+        ) {
+          return b.candidate.nameMatch
+            ? 1
+            : -1;
+        }
+
+        const aTime =
+          a.candidate
+            .timeDifferenceMinutes ??
+          Infinity;
+
+        const bTime =
+          b.candidate
+            .timeDifferenceMinutes ??
+          Infinity;
+
+        if (
+          aTime !== bTime
+        ) {
+          return aTime - bTime;
+        }
+
+        return (
+          b.candidate.score -
+          a.candidate.score
+        );
+      }
+    );
+
+    const winner =
+      group[0];
+
+    for (
+      const loser
+      of group.slice(1)
+    ) {
+      loser.status =
+        "Pending";
+
+      loser.autoMatch =
+        false;
+
+      loser.reason =
+        `Laxis meeting ${laxisId} is already reserved for Opportunity Brief ${winner.briefId}.`;
+
+      loser.candidate =
+        null;
+    }
+  }
+
+  return evaluations;
+}
+
 export async function onRequestOptions(
   context
 ) {
@@ -251,11 +400,14 @@ export async function onRequestOptions(
       "Origin"
     );
 
-  return new Response(null, {
-    status: 204,
-    headers:
-      corsHeaders(origin)
-  });
+  return new Response(
+    null,
+    {
+      status: 204,
+      headers:
+        corsHeaders(origin)
+    }
+  );
 }
 
 export async function onRequestPost(
@@ -308,17 +460,49 @@ export async function onRequestPost(
             `https://app.laxis.tech/notes/${meeting.id}`
         }));
 
-    const pendingBriefs =
-      await getPendingOpportunityBriefs(
-        context.env
+    const [
+      pendingBriefs,
+      assignedMeetings
+    ] =
+      await Promise.all([
+        getPendingOpportunityBriefs(
+          context.env
+        ),
+        getAssignedLaxisMeetings(
+          context.env
+        )
+      ]);
+
+    const assignedLaxisIds =
+      new Set(
+        assignedMeetings
+          .map(
+            item =>
+              item.laxisNoteId
+          )
+          .filter(Boolean)
       );
 
-    const evaluations =
-      pendingBriefs.map(brief =>
-        evaluateBrief(
-          brief,
-          meetings
-        )
+    const availableMeetings =
+      meetings.filter(
+        meeting =>
+          !assignedLaxisIds.has(
+            meeting.id
+          )
+      );
+
+    let evaluations =
+      pendingBriefs.map(
+        brief =>
+          evaluateBrief(
+            brief,
+            availableMeetings
+          )
+      );
+
+    evaluations =
+      resolveDuplicateMeetings(
+        evaluations
       );
 
     const updates = [];
@@ -339,11 +523,17 @@ export async function onRequestPost(
             "Transcript Status":
               "Needs Review",
             "Candidate Laxis Note ID":
-              evaluation.candidate.laxisId,
+              evaluation
+                .candidate
+                .laxisId,
             "Candidate Laxis URL":
-              evaluation.candidate.noteUrl,
+              evaluation
+                .candidate
+                .noteUrl,
             "Candidate Laxis Title":
-              evaluation.candidate.title,
+              evaluation
+                .candidate
+                .title,
             "Match Reason":
               evaluation.reason
           }
@@ -371,9 +561,13 @@ export async function onRequestPost(
             "Transcript Source":
               "Laxis",
             "Laxis Note ID":
-              evaluation.candidate.laxisId,
+              evaluation
+                .candidate
+                .laxisId,
             "Laxis URL":
-              evaluation.candidate.noteUrl,
+              evaluation
+                .candidate
+                .noteUrl,
             "Candidate Laxis Note ID":
               "",
             "Candidate Laxis URL":
@@ -398,6 +592,8 @@ export async function onRequestPost(
       "[Laxis Discovery]",
       {
         meetings,
+        availableMeetings,
+        assignedMeetings,
         pendingBriefs,
         evaluations,
         updates
@@ -409,6 +605,8 @@ export async function onRequestPost(
         success: true,
         received:
           meetings.length,
+        availableMeetings:
+          availableMeetings.length,
         pendingBriefs:
           pendingBriefs.length,
         evaluations,

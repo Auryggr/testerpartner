@@ -1,5 +1,6 @@
 import {
-  getPendingOpportunityBriefs
+  getPendingOpportunityBriefs,
+  updateOpportunityBriefByRecordId
 } from "../../lib/airtable.js";
 
 const ALLOWED_ORIGIN =
@@ -108,8 +109,10 @@ function evaluateCandidate(
   }
 
   return {
-    laxisId: meeting.id,
-    title: meeting.title,
+    laxisId:
+      meeting.id,
+    title:
+      meeting.title,
     createdTime:
       meeting.createdTime,
     noteUrl:
@@ -134,11 +137,14 @@ function evaluateBrief(
         brief.briefId || null,
       recordId:
         brief.recordId,
-      status: "Pending",
-      autoMatch: false,
+      status:
+        "Pending",
+      autoMatch:
+        false,
       reason:
         "Brief does not have enough data for matching.",
-      candidate: null
+      candidate:
+        null
     };
   }
 
@@ -164,11 +170,14 @@ function evaluateBrief(
         brief.briefId,
       recordId:
         brief.recordId,
-      status: "Pending",
-      autoMatch: false,
+      status:
+        "Pending",
+      autoMatch:
+        false,
       reason:
         "No transcribed Laxis meetings found.",
-      candidate: null
+      candidate:
+        null
     };
   }
 
@@ -181,8 +190,10 @@ function evaluateBrief(
         brief.briefId,
       recordId:
         brief.recordId,
-      status: "Discovered",
-      autoMatch: true,
+      status:
+        "Discovered",
+      autoMatch:
+        true,
       reason:
         "Name and meeting time matched.",
       candidate
@@ -204,8 +215,10 @@ function evaluateBrief(
         brief.briefId,
       recordId:
         brief.recordId,
-      status: "Needs Review",
-      autoMatch: false,
+      status:
+        "Needs Review",
+      autoMatch:
+        false,
       reason:
         candidate.nameMatch
           ? "Name matched, but meeting time did not."
@@ -219,11 +232,14 @@ function evaluateBrief(
       brief.briefId,
     recordId:
       brief.recordId,
-    status: "Pending",
-    autoMatch: false,
+    status:
+      "Pending",
+    autoMatch:
+      false,
     reason:
       "No plausible Laxis candidate found yet.",
-    candidate: null
+    candidate:
+      null
   };
 }
 
@@ -237,7 +253,8 @@ export async function onRequestOptions(
 
   return new Response(null, {
     status: 204,
-    headers: corsHeaders(origin)
+    headers:
+      corsHeaders(origin)
   });
 }
 
@@ -280,7 +297,8 @@ export async function onRequestPost(
             meeting.createdTime
         )
         .map(meeting => ({
-          id: meeting.id,
+          id:
+            meeting.id,
           title:
             meeting.title || "",
           createdTime:
@@ -303,12 +321,86 @@ export async function onRequestPost(
         )
       );
 
+    const updates = [];
+
+    for (
+      const evaluation
+      of evaluations
+    ) {
+      if (
+        evaluation.status ===
+          "Needs Review" &&
+        evaluation.candidate
+      ) {
+        await updateOpportunityBriefByRecordId(
+          context.env,
+          evaluation.recordId,
+          {
+            "Transcript Status":
+              "Needs Review",
+            "Candidate Laxis Note ID":
+              evaluation.candidate.laxisId,
+            "Candidate Laxis URL":
+              evaluation.candidate.noteUrl,
+            "Candidate Laxis Title":
+              evaluation.candidate.title,
+            "Match Reason":
+              evaluation.reason
+          }
+        );
+
+        updates.push({
+          briefId:
+            evaluation.briefId,
+          status:
+            "Needs Review"
+        });
+      }
+
+      if (
+        evaluation.status ===
+          "Discovered" &&
+        evaluation.candidate
+      ) {
+        await updateOpportunityBriefByRecordId(
+          context.env,
+          evaluation.recordId,
+          {
+            "Transcript Status":
+              "Discovered",
+            "Transcript Source":
+              "Laxis",
+            "Laxis Note ID":
+              evaluation.candidate.laxisId,
+            "Laxis URL":
+              evaluation.candidate.noteUrl,
+            "Candidate Laxis Note ID":
+              "",
+            "Candidate Laxis URL":
+              "",
+            "Candidate Laxis Title":
+              "",
+            "Match Reason":
+              evaluation.reason
+          }
+        );
+
+        updates.push({
+          briefId:
+            evaluation.briefId,
+          status:
+            "Discovered"
+        });
+      }
+    }
+
     console.log(
       "[Laxis Discovery]",
       {
         meetings,
         pendingBriefs,
-        evaluations
+        evaluations,
+        updates
       }
     );
 
@@ -319,7 +411,8 @@ export async function onRequestPost(
           meetings.length,
         pendingBriefs:
           pendingBriefs.length,
-        evaluations
+        evaluations,
+        updates
       },
       {
         status: 200,

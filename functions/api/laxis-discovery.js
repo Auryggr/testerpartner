@@ -4,319 +4,572 @@ import {
   updateOpportunityBriefByRecordId
 } from "../../lib/airtable.js";
 
-const ALLOWED_ORIGIN =
-  "https://app.laxis.tech";
+import {
+  fetchLaxisTranscript
+} from "../../lib/transcript.js";
 
-const AUTO_MATCH_WINDOW_MINUTES = 60;
-const REVIEW_WINDOW_MINUTES = 24 * 60;
+const AUTO_MATCH_WINDOW_MINUTES =
+  60;
 
-function corsHeaders(origin) {
-  return {
-    "Access-Control-Allow-Origin":
-      origin === ALLOWED_ORIGIN
-        ? ALLOWED_ORIGIN
-        : "null",
-    "Access-Control-Allow-Methods":
-      "POST, OPTIONS",
-    "Access-Control-Allow-Headers":
-      "Content-Type"
-  };
-}
+const REVIEW_WINDOW_MINUTES =
+  24 * 60;
 
-function normalizeText(value = "") {
+const MEETING_DURATION_MINUTES =
+  30;
+
+const PROVISIONAL_GRACE_MINUTES =
+  20;
+
+function normalizeName(
+  value = ""
+) {
   return value
-    .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, " ")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    )
+    .toLowerCase()
+    .replace(
+      /[^a-z0-9]+/g,
+      " "
+    )
     .trim();
 }
 
-function hasNameMatch(
-  brief,
-  meeting
+function minutesBetween(
+  first,
+  second
 ) {
-  const name =
-    normalizeText(brief.name);
+  const firstDate =
+    new Date(first);
 
-  const title =
-    normalizeText(meeting.title);
+  const secondDate =
+    new Date(second);
 
-  if (!name || !title) {
-    return false;
+  if (
+    Number.isNaN(
+      firstDate.getTime()
+    ) ||
+    Number.isNaN(
+      secondDate.getTime()
+    )
+  ) {
+    return Infinity;
   }
 
-  return title.includes(name);
+  return Math.abs(
+    firstDate.getTime() -
+      secondDate.getTime()
+  ) / 60000;
 }
 
-function getTimeDifferenceMinutes(
-  brief,
-  meeting
+function parseLaxisMeetingDateFromTitle(
+  title = ""
 ) {
+  const match =
+    title.match(
+      /^Meeting_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})$/i
+    );
+
+  if (!match) {
+    return null;
+  }
+
+  return {
+    year:
+      Number(match[1]),
+    month:
+      Number(match[2]),
+    day:
+      Number(match[3]),
+    hour:
+      Number(match[4]),
+    minute:
+      Number(match[5])
+  };
+}
+
+function getLocalMeetingParts(
+  meetingTime
+) {
+  const date =
+    new Date(meetingTime);
+
   if (
-    !brief.meetingTime ||
-    !meeting.createdTime
+    Number.isNaN(
+      date.getTime()
+    )
   ) {
     return null;
   }
 
-  const briefTime =
-    new Date(
-      brief.meetingTime
-    ).getTime();
+  const formatter =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone:
+          "America/Argentina/Buenos_Aires",
+        year:
+          "numeric",
+        month:
+          "2-digit",
+        day:
+          "2-digit",
+        hour:
+          "2-digit",
+        minute:
+          "2-digit",
+        hour12:
+          false
+      }
+    );
 
-  const meetingTime =
-    new Date(
-      meeting.createdTime
-    ).getTime();
+  const parts =
+    formatter.formatToParts(
+      date
+    );
 
-  if (
-    Number.isNaN(briefTime) ||
-    Number.isNaN(meetingTime)
-  ) {
-    return null;
+  const map = {};
+
+  for (const part of parts) {
+    map[part.type] =
+      part.value;
   }
 
-  return Math.round(
-    Math.abs(
-      briefTime -
+  return {
+    year:
+      Number(map.year),
+    month:
+      Number(map.month),
+    day:
+      Number(map.day),
+    hour:
+      Number(map.hour),
+    minute:
+      Number(map.minute)
+  };
+}
+
+function compareMeetingTitleTime(
+  title,
+  meetingTime
+) {
+  const titleParts =
+    parseLaxisMeetingDateFromTitle(
+      title
+    );
+
+  const meetingParts =
+    getLocalMeetingParts(
       meetingTime
-    ) / 60000
+    );
+
+  if (
+    !titleParts ||
+    !meetingParts
+  ) {
+    return {
+      matchesDate: false,
+      differenceMinutes:
+        Infinity
+    };
+  }
+
+  const matchesDate =
+    titleParts.year ===
+      meetingParts.year &&
+    titleParts.month ===
+      meetingParts.month &&
+    titleParts.day ===
+      meetingParts.day;
+
+  if (!matchesDate) {
+    return {
+      matchesDate: false,
+      differenceMinutes:
+        Infinity
+    };
+  }
+
+  const titleMinutes =
+    titleParts.hour * 60 +
+    titleParts.minute;
+
+  const meetingMinutes =
+    meetingParts.hour * 60 +
+    meetingParts.minute;
+
+  return {
+    matchesDate: true,
+    differenceMinutes:
+      Math.abs(
+        titleMinutes -
+          meetingMinutes
+      )
+  };
+}
+
+function isGenericMeetingTitle(
+  title = ""
+) {
+  return Boolean(
+    parseLaxisMeetingDateFromTitle(
+      title
+    )
   );
 }
 
-function evaluateCandidate(
+function isCanonicalTitleMatch(
   brief,
   meeting
 ) {
-  const nameMatch =
-    hasNameMatch(
+  const briefName =
+    normalizeName(
+      brief.name
+    );
+
+  const title =
+    normalizeName(
+      meeting.title
+    );
+
+  if (
+    !briefName ||
+    !title
+  ) {
+    return false;
+  }
+
+  return (
+    title.includes(
+      "testerpartner"
+    ) &&
+    title.includes(
+      briefName
+    )
+  );
+}
+
+function getExpectedFallbackTime(
+  meetingTime
+) {
+  const start =
+    new Date(meetingTime);
+
+  if (
+    Number.isNaN(
+      start.getTime()
+    )
+  ) {
+    return null;
+  }
+
+  return new Date(
+    start.getTime() +
+      (
+        MEETING_DURATION_MINUTES +
+        PROVISIONAL_GRACE_MINUTES
+      ) *
+        60000
+  );
+}
+
+function provisionalGraceExpired(
+  meetingTime
+) {
+  const fallbackTime =
+    getExpectedFallbackTime(
+      meetingTime
+    );
+
+  if (!fallbackTime) {
+    return false;
+  }
+
+  return (
+    Date.now() >=
+    fallbackTime.getTime()
+  );
+}
+
+function evaluateMeeting(
+  brief,
+  meeting
+) {
+  const canonicalNameMatch =
+    isCanonicalTitleMatch(
       brief,
       meeting
     );
 
-  const timeDifferenceMinutes =
-    getTimeDifferenceMinutes(
-      brief,
-      meeting
+  const createdDifference =
+    minutesBetween(
+      brief.meetingTime,
+      meeting.createdTime
     );
 
-  const timeMatch =
-    timeDifferenceMinutes !== null &&
-    timeDifferenceMinutes <=
-      AUTO_MATCH_WINDOW_MINUTES;
+  const titleTime =
+    compareMeetingTitleTime(
+      meeting.title,
+      brief.meetingTime
+    );
+
+  const genericTitle =
+    isGenericMeetingTitle(
+      meeting.title
+    );
 
   let score = 0;
 
-  if (nameMatch) {
+  if (canonicalNameMatch) {
     score += 100;
   }
 
   if (
-    timeDifferenceMinutes !== null
+    createdDifference <=
+    AUTO_MATCH_WINDOW_MINUTES
   ) {
-    score += Math.max(
-      0,
-      REVIEW_WINDOW_MINUTES -
-        timeDifferenceMinutes
-    );
+    score += 40;
   }
 
-  return {
-    laxisId:
-      meeting.id,
-    title:
-      meeting.title,
-    createdTime:
-      meeting.createdTime,
-    noteUrl:
-      meeting.noteUrl,
-    nameMatch,
-    timeMatch,
-    timeDifferenceMinutes,
-    score
-  };
-}
-
-function evaluateBrief(
-  brief,
-  meetings
-) {
   if (
-    !brief.briefId ||
-    !brief.meetingTime
+    titleTime.matchesDate &&
+    titleTime.differenceMinutes <=
+      AUTO_MATCH_WINDOW_MINUTES
   ) {
-    return {
-      briefId:
-        brief.briefId || null,
-      recordId:
-        brief.recordId,
-      status:
-        "Pending",
-      autoMatch:
-        false,
-      reason:
-        "Brief does not have enough data for matching.",
-      candidate:
-        null
-    };
+    score += 60;
   }
 
-  const candidates =
-    meetings
-      .map(meeting =>
-        evaluateCandidate(
-          brief,
-          meeting
-        )
+  if (
+    meeting.status ===
+    "transcribed"
+  ) {
+    score += 20;
+  }
+
+  if (
+    Number(meeting.duration) >
+    60
+  ) {
+    score += 10;
+  }
+
+  let status =
+    "Pending";
+
+  let reason =
+    "No reliable Laxis match found.";
+
+  let autoMatch =
+    false;
+
+  if (
+    canonicalNameMatch &&
+    createdDifference <=
+      AUTO_MATCH_WINDOW_MINUTES
+  ) {
+    status =
+      "Discovered";
+
+    autoMatch =
+      true;
+
+    reason =
+      "Canonical meeting title matched the Brief name and meeting time.";
+  } else if (
+    genericTitle &&
+    titleTime.matchesDate &&
+    titleTime.differenceMinutes <=
+      AUTO_MATCH_WINDOW_MINUTES
+  ) {
+    if (
+      provisionalGraceExpired(
+        brief.meetingTime
       )
-      .sort(
-        (a, b) =>
-          b.score - a.score
-      );
+    ) {
+      status =
+        "Discovered";
 
-  const candidate =
-    candidates[0];
+      autoMatch =
+        true;
 
-  if (!candidate) {
-    return {
-      briefId:
-        brief.briefId,
-      recordId:
-        brief.recordId,
-      status:
-        "Pending",
-      autoMatch:
-        false,
-      reason:
-        "No available Laxis meetings found.",
-      candidate:
-        null
-    };
-  }
+      reason =
+        "Generic Laxis meeting matched the scheduled date/time and the provisional grace period expired.";
+    } else {
+      status =
+        "Needs Review";
 
-  if (
-    candidate.nameMatch &&
-    candidate.timeMatch
+      reason =
+        "Generic Laxis meeting matched the scheduled date/time but is still inside the provisional grace period.";
+    }
+  } else if (
+    canonicalNameMatch
   ) {
-    return {
-      briefId:
-        brief.briefId,
-      recordId:
-        brief.recordId,
-      status:
-        "Discovered",
-      autoMatch:
-        true,
-      reason:
-        "Name and meeting time matched.",
-      candidate
-    };
-  }
+    status =
+      "Needs Review";
 
-  const plausibleCandidate =
-    candidate.nameMatch ||
-    (
-      candidate
-        .timeDifferenceMinutes !==
-        null &&
-      candidate
-        .timeDifferenceMinutes <=
-        REVIEW_WINDOW_MINUTES
-    );
+    reason =
+      "Meeting name matched, but the time was outside the automatic match window.";
+  } else if (
+    createdDifference <=
+      REVIEW_WINDOW_MINUTES
+  ) {
+    status =
+      "Needs Review";
 
-  if (plausibleCandidate) {
-    return {
-      briefId:
-        brief.briefId,
-      recordId:
-        brief.recordId,
-      status:
-        "Needs Review",
-      autoMatch:
-        false,
-      reason:
-        candidate.nameMatch
-          ? "Name matched, but meeting time did not."
-          : "Meeting time is close, but name did not match.",
-      candidate
-    };
+    reason =
+      "Meeting time is close, but the name did not match.";
   }
 
   return {
-    briefId:
-      brief.briefId,
-    recordId:
-      brief.recordId,
-    status:
-      "Pending",
-    autoMatch:
-      false,
-    reason:
-      "No plausible Laxis candidate found yet.",
-    candidate:
-      null
+    brief,
+    meeting,
+    status,
+    reason,
+    autoMatch,
+    score,
+    canonicalNameMatch,
+    genericTitle,
+    createdDifference,
+    titleTimeDifference:
+      titleTime.differenceMinutes
   };
 }
 
-function getEvaluationPriority(
-  evaluation
+function compareEvaluations(
+  first,
+  second
+) {
+  const statusPriority = {
+    Discovered: 3,
+    "Needs Review": 2,
+    Pending: 1
+  };
+
+  const firstPriority =
+    statusPriority[
+      first.status
+    ] || 0;
+
+  const secondPriority =
+    statusPriority[
+      second.status
+    ] || 0;
+
+  if (
+    firstPriority !==
+    secondPriority
+  ) {
+    return (
+      secondPriority -
+      firstPriority
+    );
+  }
+
+  if (
+    first.canonicalNameMatch !==
+    second.canonicalNameMatch
+  ) {
+    return first
+      .canonicalNameMatch
+      ? -1
+      : 1;
+  }
+
+  if (
+    first.genericTitle !==
+    second.genericTitle
+  ) {
+    return first.genericTitle
+      ? 1
+      : -1;
+  }
+
+  const firstTime =
+    Math.min(
+      first.createdDifference,
+      first.titleTimeDifference
+    );
+
+  const secondTime =
+    Math.min(
+      second.createdDifference,
+      second.titleTimeDifference
+    );
+
+  if (
+    firstTime !==
+    secondTime
+  ) {
+    return (
+      firstTime -
+      secondTime
+    );
+  }
+
+  return (
+    second.score -
+    first.score
+  );
+}
+
+function chooseBestEvaluation(
+  evaluations
 ) {
   if (
-    evaluation.status ===
-      "Discovered"
+    !evaluations.length
   ) {
-    return 2;
+    return null;
   }
 
-  if (
-    evaluation.status ===
-      "Needs Review"
-  ) {
-    return 1;
-  }
-
-  return 0;
+  return [
+    ...evaluations
+  ].sort(
+    compareEvaluations
+  )[0];
 }
 
 function resolveDuplicateMeetings(
   evaluations
 ) {
-  const groups =
+  const grouped =
     new Map();
 
   for (
     const evaluation
     of evaluations
   ) {
-    const laxisId =
-      evaluation
-        .candidate
-        ?.laxisId;
-
-    if (!laxisId) {
+    if (
+      !evaluation.meeting?.id
+    ) {
       continue;
     }
 
+    const meetingId =
+      evaluation.meeting.id;
+
     if (
-      !groups.has(laxisId)
+      !grouped.has(
+        meetingId
+      )
     ) {
-      groups.set(
-        laxisId,
+      grouped.set(
+        meetingId,
         []
       );
     }
 
-    groups
-      .get(laxisId)
-      .push(evaluation);
+    grouped
+      .get(meetingId)
+      .push(
+        evaluation
+      );
   }
 
   for (
-    const [
-      laxisId,
-      group
-    ] of groups
+    const group
+    of grouped.values()
   ) {
     if (
       group.length <= 1
@@ -324,56 +577,19 @@ function resolveDuplicateMeetings(
       continue;
     }
 
-    group.sort(
-      (a, b) => {
-        const priorityDifference =
-          getEvaluationPriority(b) -
-          getEvaluationPriority(a);
-
-        if (
-          priorityDifference !== 0
-        ) {
-          return priorityDifference;
-        }
-
-        if (
-          a.candidate.nameMatch !==
-          b.candidate.nameMatch
-        ) {
-          return b.candidate.nameMatch
-            ? 1
-            : -1;
-        }
-
-        const aTime =
-          a.candidate
-            .timeDifferenceMinutes ??
-          Infinity;
-
-        const bTime =
-          b.candidate
-            .timeDifferenceMinutes ??
-          Infinity;
-
-        if (
-          aTime !== bTime
-        ) {
-          return aTime - bTime;
-        }
-
-        return (
-          b.candidate.score -
-          a.candidate.score
-        );
-      }
-    );
+    const sorted =
+      [
+        ...group
+      ].sort(
+        compareEvaluations
+      );
 
     const winner =
-      group[0];
+      sorted[0];
 
     for (
       const loser
-      of group.slice(1)
+      of sorted.slice(1)
     ) {
       loser.status =
         "Pending";
@@ -382,192 +598,258 @@ function resolveDuplicateMeetings(
         false;
 
       loser.reason =
-        `Laxis meeting ${laxisId} is already reserved for Opportunity Brief ${winner.briefId}.`;
-
-      loser.candidate =
-        null;
+        `Meeting already assigned to ${winner.brief.briefId}.`;
     }
   }
 
   return evaluations;
 }
 
-export async function onRequestOptions(
-  context
+async function tryAttachTranscript(
+  env,
+  brief,
+  noteId
 ) {
-  const origin =
-    context.request.headers.get(
-      "Origin"
+  if (!noteId) {
+    return {
+      success: false,
+      reason:
+        "No Laxis Note ID available."
+    };
+  }
+
+  try {
+    const result =
+      await fetchLaxisTranscript(
+        noteId
+      );
+
+    await updateOpportunityBriefByRecordId(
+      env,
+      brief.recordId,
+      {
+        Transcript:
+          result.transcript,
+        "Transcript Source":
+          "Laxis",
+        "Transcript Status":
+          "Ready"
+      }
     );
 
-  return new Response(
-    null,
-    {
-      status: 204,
-      headers:
-        corsHeaders(origin)
-    }
-  );
+    return {
+      success: true,
+      noteId,
+      transcriptLength:
+        result.transcript.length
+    };
+  } catch (error) {
+    return {
+      success: false,
+      noteId,
+      reason:
+        error instanceof Error
+          ? error.message
+          : String(error)
+    };
+  }
 }
 
 export async function onRequestPost(
   context
 ) {
-  const origin =
-    context.request.headers.get(
-      "Origin"
-    );
-
   try {
-    const body =
-      await context.request.json();
+    const {
+      request,
+      env
+    } = context;
 
-    if (
-      !Array.isArray(
-        body.meetings
-      )
-    ) {
-      return Response.json(
-        {
-          success: false,
-          error:
-            "meetings must be an array."
-        },
-        {
-          status: 400,
-          headers:
-            corsHeaders(origin)
-        }
-      );
-    }
+    const body =
+      await request.json();
 
     const meetings =
-      body.meetings
-        .filter(
-          meeting =>
-            meeting.id &&
-            meeting.createdTime
-        )
-        .map(meeting => ({
-          id:
-            meeting.id,
-          title:
-            meeting.title || "",
-          createdTime:
-            meeting.createdTime,
-          noteUrl:
-            meeting.noteUrl ||
-            `https://app.laxis.tech/notes/${meeting.id}`
-        }));
+      Array.isArray(
+        body?.meetings
+      )
+        ? body.meetings
+        : [];
 
-    const [
-      pendingBriefs,
-      assignedMeetings
-    ] =
-      await Promise.all([
-        getPendingOpportunityBriefs(
-          context.env
-        ),
-        getAssignedLaxisMeetings(
-          context.env
-        )
-      ]);
+    const pendingBriefs =
+      await getPendingOpportunityBriefs(
+        env
+      );
 
-    const assignedLaxisIds =
+    const assigned =
+      await getAssignedLaxisMeetings(
+        env
+      );
+
+    const assignedIds =
       new Set(
-        assignedMeetings
-          .map(
-            item =>
-              item.laxisNoteId
-          )
-          .filter(Boolean)
+        assigned.map(
+          item =>
+            item.laxisNoteId
+        )
       );
 
     const availableMeetings =
       meetings.filter(
         meeting =>
-          !assignedLaxisIds.has(
+          meeting?.id &&
+          !assignedIds.has(
             meeting.id
           )
       );
 
-    let evaluations =
-      pendingBriefs.map(
-        brief =>
-          evaluateBrief(
-            brief,
-            availableMeetings
-          )
-      );
+    const allEvaluations =
+      [];
 
-    evaluations =
-      resolveDuplicateMeetings(
-        evaluations
-      );
+    for (
+      const brief
+      of pendingBriefs
+    ) {
+      if (
+        brief.transcriptStatus ===
+          "Discovered" &&
+        brief.laxisNoteId
+      ) {
+        allEvaluations.push({
+          brief,
+          meeting: {
+            id:
+              brief.laxisNoteId,
+            noteUrl:
+              brief.laxisUrl
+          },
+          status:
+            "Discovered",
+          reason:
+            "Brief already has a definitive Laxis meeting assigned.",
+          autoMatch: true,
+          score: 999,
+          canonicalNameMatch:
+            true,
+          genericTitle:
+            false,
+          createdDifference:
+            0,
+          titleTimeDifference:
+            0,
+          alreadyAssigned:
+            true
+        });
+
+        continue;
+      }
+
+      const evaluations =
+        availableMeetings.map(
+          meeting =>
+            evaluateMeeting(
+              brief,
+              meeting
+            )
+        );
+
+      const best =
+        chooseBestEvaluation(
+          evaluations
+        );
+
+      if (best) {
+        allEvaluations.push(
+          best
+        );
+      } else {
+        allEvaluations.push({
+          brief,
+          meeting: null,
+          status:
+            "Pending",
+          reason:
+            "No available Laxis meetings.",
+          autoMatch:
+            false,
+          score: 0,
+          canonicalNameMatch:
+            false,
+          genericTitle:
+            false,
+          createdDifference:
+            Infinity,
+          titleTimeDifference:
+            Infinity
+        });
+      }
+    }
+
+    resolveDuplicateMeetings(
+      allEvaluations.filter(
+        item =>
+          item.meeting?.id &&
+          !item.alreadyAssigned
+      )
+    );
 
     const updates = [];
 
     for (
       const evaluation
-      of evaluations
+      of allEvaluations
     ) {
+      const {
+        brief,
+        meeting,
+        status,
+        reason,
+        alreadyAssigned
+      } = evaluation;
+
       if (
-        evaluation.status ===
-          "Needs Review" &&
-        evaluation.candidate
+        alreadyAssigned &&
+        brief.laxisNoteId
       ) {
-        await updateOpportunityBriefByRecordId(
-          context.env,
-          evaluation.recordId,
-          {
-            "Transcript Status":
-              "Needs Review",
-            "Candidate Laxis Note ID":
-              evaluation
-                .candidate
-                .laxisId,
-            "Candidate Laxis URL":
-              evaluation
-                .candidate
-                .noteUrl,
-            "Candidate Laxis Title":
-              evaluation
-                .candidate
-                .title,
-            "Match Reason":
-              evaluation.reason
-          }
-        );
+        const transcriptResult =
+          await tryAttachTranscript(
+            env,
+            brief,
+            brief.laxisNoteId
+          );
 
         updates.push({
           briefId:
-            evaluation.briefId,
+            brief.briefId,
           status:
-            "Needs Review"
+            transcriptResult.success
+              ? "Ready"
+              : "Discovered",
+          laxisNoteId:
+            brief.laxisNoteId,
+          transcript:
+            transcriptResult
         });
+
+        continue;
       }
 
       if (
-        evaluation.status ===
+        status ===
           "Discovered" &&
-        evaluation.candidate
+        meeting?.id
       ) {
         await updateOpportunityBriefByRecordId(
-          context.env,
-          evaluation.recordId,
+          env,
+          brief.recordId,
           {
             "Transcript Status":
               "Discovered",
             "Transcript Source":
               "Laxis",
             "Laxis Note ID":
-              evaluation
-                .candidate
-                .laxisId,
+              meeting.id,
             "Laxis URL":
-              evaluation
-                .candidate
-                .noteUrl,
+              meeting.noteUrl ||
+              `https://app.laxis.tech/notes/${meeting.id}`,
             "Candidate Laxis Note ID":
               "",
             "Candidate Laxis URL":
@@ -575,66 +857,141 @@ export async function onRequestPost(
             "Candidate Laxis Title":
               "",
             "Match Reason":
-              evaluation.reason
+              reason
+          }
+        );
+
+        const transcriptResult =
+          await tryAttachTranscript(
+            env,
+            brief,
+            meeting.id
+          );
+
+        updates.push({
+          briefId:
+            brief.briefId,
+          status:
+            transcriptResult.success
+              ? "Ready"
+              : "Discovered",
+          laxisNoteId:
+            meeting.id,
+          reason,
+          transcript:
+            transcriptResult
+        });
+
+        continue;
+      }
+
+      if (
+        status ===
+          "Needs Review" &&
+        meeting?.id
+      ) {
+        await updateOpportunityBriefByRecordId(
+          env,
+          brief.recordId,
+          {
+            "Transcript Status":
+              "Needs Review",
+            "Transcript Source":
+              null,
+            "Candidate Laxis Note ID":
+              meeting.id,
+            "Candidate Laxis URL":
+              meeting.noteUrl ||
+              `https://app.laxis.tech/notes/${meeting.id}`,
+            "Candidate Laxis Title":
+              meeting.title ||
+              "",
+            "Match Reason":
+              reason
           }
         );
 
         updates.push({
           briefId:
-            evaluation.briefId,
+            brief.briefId,
           status:
-            "Discovered"
+            "Needs Review",
+          candidateLaxisNoteId:
+            meeting.id,
+          reason
         });
+
+        continue;
       }
+
+      await updateOpportunityBriefByRecordId(
+        env,
+        brief.recordId,
+        {
+          "Transcript Status":
+            "Pending",
+          "Candidate Laxis Note ID":
+            "",
+          "Candidate Laxis URL":
+            "",
+          "Candidate Laxis Title":
+            "",
+          "Match Reason":
+            reason
+        }
+      );
+
+      updates.push({
+        briefId:
+          brief.briefId,
+        status:
+          "Pending",
+        reason
+      });
     }
 
-    console.log(
-      "[Laxis Discovery]",
-      {
-        meetings,
-        availableMeetings,
-        assignedMeetings,
-        pendingBriefs,
-        evaluations,
-        updates
-      }
-    );
-
-    return Response.json(
-      {
-        success: true,
-        received:
-          meetings.length,
-        availableMeetings:
-          availableMeetings.length,
-        pendingBriefs:
-          pendingBriefs.length,
-        evaluations,
-        updates
-      },
-      {
-        status: 200,
-        headers:
-          corsHeaders(origin)
-      }
-    );
+    return Response.json({
+      success: true,
+      received:
+        meetings.length,
+      availableMeetings:
+        availableMeetings.length,
+      pendingBriefs:
+        pendingBriefs.length,
+      evaluations:
+        allEvaluations.map(
+          item => ({
+            briefId:
+              item.brief
+                ?.briefId,
+            meetingId:
+              item.meeting
+                ?.id || null,
+            meetingTitle:
+              item.meeting
+                ?.title ||
+              null,
+            status:
+              item.status,
+            reason:
+              item.reason,
+            score:
+              item.score
+          })
+        ),
+      updates
+    });
   } catch (error) {
-    console.error(
-      "Laxis discovery error:",
-      error
-    );
-
     return Response.json(
       {
         success: false,
         error:
-          error.message ||
-          "Unable to process Laxis discovery."
+          error instanceof Error
+            ? error.message
+            : String(error)
       },
       {
-        status: 500,
-        headers:
-          corsHeaders(origin)
+        status: 500
       }
     );
   }

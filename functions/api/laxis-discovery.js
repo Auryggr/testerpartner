@@ -633,7 +633,11 @@ async function tryAttachTranscript(
         "Transcript Source":
           "Laxis",
         "Transcript Status":
-          "Ready"
+          "Ready",
+        "Laxis Note ID":
+          noteId,
+        "Laxis URL":
+          `https://app.laxis.tech/notes/${noteId}`
       }
     );
 
@@ -653,6 +657,16 @@ async function tryAttachTranscript(
           : String(error)
     };
   }
+}
+
+function isReadyButMissingTranscript(
+  brief
+) {
+  return (
+    brief.transcriptStatus ===
+      "Ready" &&
+    !brief.transcript?.trim()
+  );
 }
 
 export async function onRequestPost(
@@ -701,12 +715,75 @@ export async function onRequestPost(
           )
       );
 
-    const allEvaluations =
+    const updates = [];
+
+    const briefsForDiscovery =
       [];
 
     for (
       const brief
       of pendingBriefs
+    ) {
+      const needsRecovery =
+        isReadyButMissingTranscript(
+          brief
+        );
+
+      if (
+        needsRecovery &&
+        brief.laxisNoteId
+      ) {
+        const transcriptResult =
+          await tryAttachTranscript(
+            env,
+            brief,
+            brief.laxisNoteId
+          );
+
+        updates.push({
+          briefId:
+            brief.briefId,
+          recovery: true,
+          recoveryType:
+            "existing-laxis-id",
+          status:
+            transcriptResult.success
+              ? "Ready"
+              : "Discovered",
+          laxisNoteId:
+            brief.laxisNoteId,
+          transcript:
+            transcriptResult
+        });
+
+        continue;
+      }
+
+      if (
+        needsRecovery &&
+        !brief.laxisNoteId
+      ) {
+        briefsForDiscovery.push({
+          ...brief,
+          transcriptStatus:
+            "Pending",
+          recovery: true
+        });
+
+        continue;
+      }
+
+      briefsForDiscovery.push(
+        brief
+      );
+    }
+
+    const allEvaluations =
+      [];
+
+    for (
+      const brief
+      of briefsForDiscovery
     ) {
       if (
         brief.transcriptStatus ===
@@ -791,8 +868,6 @@ export async function onRequestPost(
       )
     );
 
-    const updates = [];
-
     for (
       const evaluation
       of allEvaluations
@@ -819,6 +894,10 @@ export async function onRequestPost(
         updates.push({
           briefId:
             brief.briefId,
+          recovery:
+            Boolean(
+              brief.recovery
+            ),
           status:
             transcriptResult.success
               ? "Ready"
@@ -857,7 +936,9 @@ export async function onRequestPost(
             "Candidate Laxis Title":
               "",
             "Match Reason":
-              reason
+              brief.recovery
+                ? `Recovered after missing Airtable transcript. ${reason}`
+                : reason
           }
         );
 
@@ -871,6 +952,14 @@ export async function onRequestPost(
         updates.push({
           briefId:
             brief.briefId,
+          recovery:
+            Boolean(
+              brief.recovery
+            ),
+          recoveryType:
+            brief.recovery
+              ? "rediscovery"
+              : null,
           status:
             transcriptResult.success
               ? "Ready"
@@ -907,13 +996,19 @@ export async function onRequestPost(
               meeting.title ||
               "",
             "Match Reason":
-              reason
+              brief.recovery
+                ? `Recovery candidate. ${reason}`
+                : reason
           }
         );
 
         updates.push({
           briefId:
             brief.briefId,
+          recovery:
+            Boolean(
+              brief.recovery
+            ),
           status:
             "Needs Review",
           candidateLaxisNoteId:
@@ -930,6 +1025,18 @@ export async function onRequestPost(
         {
           "Transcript Status":
             "Pending",
+          "Transcript Source":
+            null,
+          "Laxis Note ID":
+            brief.recovery
+              ? ""
+              : brief.laxisNoteId ||
+                "",
+          "Laxis URL":
+            brief.recovery
+              ? ""
+              : brief.laxisUrl ||
+                "",
           "Candidate Laxis Note ID":
             "",
           "Candidate Laxis URL":
@@ -937,13 +1044,19 @@ export async function onRequestPost(
           "Candidate Laxis Title":
             "",
           "Match Reason":
-            reason
+            brief.recovery
+              ? `Recovery pending. ${reason}`
+              : reason
         }
       );
 
       updates.push({
         briefId:
           brief.briefId,
+        recovery:
+          Boolean(
+            brief.recovery
+          ),
         status:
           "Pending",
         reason
@@ -964,6 +1077,11 @@ export async function onRequestPost(
             briefId:
               item.brief
                 ?.briefId,
+            recovery:
+              Boolean(
+                item.brief
+                  ?.recovery
+              ),
             meetingId:
               item.meeting
                 ?.id || null,

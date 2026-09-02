@@ -79,12 +79,16 @@ function parseLaxisMeetingDateFromTitle(
   return {
     year:
       Number(match[1]),
+
     month:
       Number(match[2]),
+
     day:
       Number(match[3]),
+
     hour:
       Number(match[4]),
+
     minute:
       Number(match[5])
   };
@@ -110,16 +114,22 @@ function getLocalMeetingParts(
       {
         timeZone:
           "America/Argentina/Buenos_Aires",
+
         year:
           "numeric",
+
         month:
           "2-digit",
+
         day:
           "2-digit",
+
         hour:
           "2-digit",
+
         minute:
           "2-digit",
+
         hour12:
           false
       }
@@ -132,7 +142,10 @@ function getLocalMeetingParts(
 
   const map = {};
 
-  for (const part of parts) {
+  for (
+    const part
+    of parts
+  ) {
     map[part.type] =
       part.value;
   }
@@ -140,12 +153,16 @@ function getLocalMeetingParts(
   return {
     year:
       Number(map.year),
+
     month:
       Number(map.month),
+
     day:
       Number(map.day),
+
     hour:
       Number(map.hour),
+
     minute:
       Number(map.minute)
   };
@@ -170,7 +187,9 @@ function compareMeetingTitleTime(
     !meetingParts
   ) {
     return {
-      matchesDate: false,
+      matchesDate:
+        false,
+
       differenceMinutes:
         Infinity
     };
@@ -186,7 +205,9 @@ function compareMeetingTitleTime(
 
   if (!matchesDate) {
     return {
-      matchesDate: false,
+      matchesDate:
+        false,
+
       differenceMinutes:
         Infinity
     };
@@ -201,7 +222,9 @@ function compareMeetingTitleTime(
     meetingParts.minute;
 
   return {
-    matchesDate: true,
+    matchesDate:
+      true,
+
     differenceMinutes:
       Math.abs(
         titleMinutes -
@@ -255,7 +278,9 @@ function getExpectedFallbackTime(
   meetingTime
 ) {
   const start =
-    new Date(meetingTime);
+    new Date(
+      meetingTime
+    );
 
   if (
     Number.isNaN(
@@ -290,6 +315,60 @@ function provisionalGraceExpired(
   return (
     Date.now() >=
     fallbackTime.getTime()
+  );
+}
+
+function needsRepair(
+  brief
+) {
+  if (!brief.meetingTime) {
+    return false;
+  }
+
+  if (
+    !brief.transcriptStatus
+  ) {
+    return true;
+  }
+
+  if (
+    brief.transcriptStatus ===
+      "Ready" &&
+    !brief.transcript
+  ) {
+    return true;
+  }
+
+  if (
+    brief.transcript &&
+    (
+      !brief.transcriptSource ||
+      !brief.laxisNoteId ||
+      !brief.laxisUrl
+    )
+  ) {
+    return true;
+  }
+
+  if (
+    brief.transcriptSource ===
+      "Laxis" &&
+    (
+      !brief.laxisNoteId ||
+      !brief.laxisUrl
+    )
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+function canRecoverDirectly(
+  brief
+) {
+  return Boolean(
+    brief.laxisNoteId
   );
 }
 
@@ -335,7 +414,8 @@ function evaluateMeeting(
 
   if (
     titleTime.matchesDate &&
-    titleTime.differenceMinutes <=
+    titleTime
+      .differenceMinutes <=
       AUTO_MATCH_WINDOW_MINUTES
   ) {
     score += 60;
@@ -349,8 +429,9 @@ function evaluateMeeting(
   }
 
   if (
-    Number(meeting.duration) >
-    60
+    Number(
+      meeting.duration
+    ) > 60
   ) {
     score += 10;
   }
@@ -380,7 +461,8 @@ function evaluateMeeting(
   } else if (
     genericTitle &&
     titleTime.matchesDate &&
-    titleTime.differenceMinutes <=
+    titleTime
+      .differenceMinutes <=
       AUTO_MATCH_WINDOW_MINUTES
   ) {
     if (
@@ -432,8 +514,10 @@ function evaluateMeeting(
     canonicalNameMatch,
     genericTitle,
     createdDifference,
+
     titleTimeDifference:
-      titleTime.differenceMinutes
+      titleTime
+        .differenceMinutes
   };
 }
 
@@ -481,21 +565,26 @@ function compareEvaluations(
     first.genericTitle !==
     second.genericTitle
   ) {
-    return first.genericTitle
+    return first
+      .genericTitle
       ? 1
       : -1;
   }
 
   const firstTime =
     Math.min(
-      first.createdDifference,
-      first.titleTimeDifference
+      first
+        .createdDifference,
+      first
+        .titleTimeDifference
     );
 
   const secondTime =
     Math.min(
-      second.createdDifference,
-      second.titleTimeDifference
+      second
+        .createdDifference,
+      second
+        .titleTimeDifference
     );
 
   if (
@@ -541,13 +630,17 @@ function resolveDuplicateMeetings(
     of evaluations
   ) {
     if (
-      !evaluation.meeting?.id
+      !evaluation
+        .meeting
+        ?.id
     ) {
       continue;
     }
 
     const meetingId =
-      evaluation.meeting.id;
+      evaluation
+        .meeting
+        .id;
 
     if (
       !grouped.has(
@@ -605,14 +698,17 @@ function resolveDuplicateMeetings(
   return evaluations;
 }
 
-async function tryAttachTranscript(
+async function attachAndRepairTranscript(
   env,
   brief,
-  noteId
+  noteId,
+  noteUrl = ""
 ) {
   if (!noteId) {
     return {
-      success: false,
+      success:
+        false,
+
       reason:
         "No Laxis Note ID available."
     };
@@ -624,49 +720,81 @@ async function tryAttachTranscript(
         noteId
       );
 
+    const transcript =
+      result.transcript ||
+      brief.transcript ||
+      "";
+
+    if (!transcript) {
+      return {
+        success:
+          false,
+
+        noteId,
+
+        reason:
+          "Laxis returned no transcript."
+      };
+    }
+
     await updateOpportunityBriefByRecordId(
       env,
       brief.recordId,
       {
         Transcript:
-          result.transcript,
+          transcript,
+
         "Transcript Source":
           "Laxis",
+
         "Transcript Status":
           "Ready",
+
         "Laxis Note ID":
           noteId,
+
         "Laxis URL":
-          `https://app.laxis.tech/notes/${noteId}`
+          noteUrl ||
+          `https://app.laxis.tech/notes/${noteId}`,
+
+        "Candidate Laxis Note ID":
+          "",
+
+        "Candidate Laxis URL":
+          "",
+
+        "Candidate Laxis Title":
+          "",
+
+        "Match Reason":
+          brief.recovery
+            ? "Laxis data restored automatically after detecting missing Airtable fields."
+            : "Laxis transcript attached successfully."
       }
     );
 
     return {
-      success: true,
+      success:
+        true,
+
       noteId,
+
       transcriptLength:
-        result.transcript.length
+        transcript.length
     };
   } catch (error) {
     return {
-      success: false,
+      success:
+        false,
+
       noteId,
+
       reason:
         error instanceof Error
           ? error.message
           : String(error)
     };
   }
-}
-
-function isReadyButMissingTranscript(
-  brief
-) {
-  return (
-    brief.transcriptStatus ===
-      "Ready" &&
-    !brief.transcript?.trim()
-  );
 }
 
 export async function onRequestPost(
@@ -688,7 +816,7 @@ export async function onRequestPost(
         ? body.meetings
         : [];
 
-    const pendingBriefs =
+    const briefs =
       await getPendingOpportunityBriefs(
         env
       );
@@ -700,19 +828,12 @@ export async function onRequestPost(
 
     const assignedIds =
       new Set(
-        assigned.map(
-          item =>
-            item.laxisNoteId
-        )
-      );
-
-    const availableMeetings =
-      meetings.filter(
-        meeting =>
-          meeting?.id &&
-          !assignedIds.has(
-            meeting.id
+        assigned
+          .map(
+            item =>
+              item.laxisNoteId
           )
+          .filter(Boolean)
       );
 
     const updates = [];
@@ -722,61 +843,78 @@ export async function onRequestPost(
 
     for (
       const brief
-      of pendingBriefs
+      of briefs
     ) {
-      const needsRecovery =
-        isReadyButMissingTranscript(
+      const repair =
+        needsRepair(
           brief
         );
 
+      if (repair) {
+        brief.recovery =
+          true;
+      }
+
       if (
-        needsRecovery &&
-        brief.laxisNoteId
+        repair &&
+        canRecoverDirectly(
+          brief
+        )
       ) {
-        const transcriptResult =
-          await tryAttachTranscript(
+        const result =
+          await attachAndRepairTranscript(
             env,
             brief,
-            brief.laxisNoteId
+            brief.laxisNoteId,
+            brief.laxisUrl
           );
 
         updates.push({
           briefId:
             brief.briefId,
-          recovery: true,
+
+          recovery:
+            true,
+
           recoveryType:
             "existing-laxis-id",
+
           status:
-            transcriptResult.success
+            result.success
               ? "Ready"
               : "Discovered",
+
           laxisNoteId:
             brief.laxisNoteId,
+
           transcript:
-            transcriptResult
+            result
         });
 
-        continue;
-      }
-
-      if (
-        needsRecovery &&
-        !brief.laxisNoteId
-      ) {
-        briefsForDiscovery.push({
-          ...brief,
-          transcriptStatus:
-            "Pending",
-          recovery: true
-        });
-
-        continue;
+        if (
+          result.success
+        ) {
+          continue;
+        }
       }
 
       briefsForDiscovery.push(
         brief
       );
     }
+
+    const availableMeetings =
+      meetings.filter(
+        meeting => {
+          if (
+            !meeting?.id
+          ) {
+            return false;
+          }
+
+          return true;
+        }
+      );
 
     const allEvaluations =
       [];
@@ -786,32 +924,46 @@ export async function onRequestPost(
       of briefsForDiscovery
     ) {
       if (
+        !brief.recovery &&
         brief.transcriptStatus ===
           "Discovered" &&
         brief.laxisNoteId
       ) {
         allEvaluations.push({
           brief,
+
           meeting: {
             id:
               brief.laxisNoteId,
+
             noteUrl:
               brief.laxisUrl
           },
+
           status:
             "Discovered",
+
           reason:
             "Brief already has a definitive Laxis meeting assigned.",
-          autoMatch: true,
-          score: 999,
+
+          autoMatch:
+            true,
+
+          score:
+            999,
+
           canonicalNameMatch:
             true,
+
           genericTitle:
             false,
+
           createdDifference:
             0,
+
           titleTimeDifference:
             0,
+
           alreadyAssigned:
             true
         });
@@ -820,13 +972,30 @@ export async function onRequestPost(
       }
 
       const evaluations =
-        availableMeetings.map(
-          meeting =>
-            evaluateMeeting(
-              brief,
-              meeting
-            )
-        );
+        availableMeetings
+          .filter(
+            meeting => {
+              if (
+                !assignedIds.has(
+                  meeting.id
+                )
+              ) {
+                return true;
+              }
+
+              return (
+                brief.laxisNoteId ===
+                meeting.id
+              );
+            }
+          )
+          .map(
+            meeting =>
+              evaluateMeeting(
+                brief,
+                meeting
+              )
+          );
 
       const best =
         chooseBestEvaluation(
@@ -840,20 +1009,31 @@ export async function onRequestPost(
       } else {
         allEvaluations.push({
           brief,
-          meeting: null,
+
+          meeting:
+            null,
+
           status:
             "Pending",
+
           reason:
             "No available Laxis meetings.",
+
           autoMatch:
             false,
-          score: 0,
+
+          score:
+            0,
+
           canonicalNameMatch:
             false,
+
           genericTitle:
             false,
+
           createdDifference:
             Infinity,
+
           titleTimeDifference:
             Infinity
         });
@@ -885,25 +1065,30 @@ export async function onRequestPost(
         brief.laxisNoteId
       ) {
         const transcriptResult =
-          await tryAttachTranscript(
+          await attachAndRepairTranscript(
             env,
             brief,
-            brief.laxisNoteId
+            brief.laxisNoteId,
+            brief.laxisUrl
           );
 
         updates.push({
           briefId:
             brief.briefId,
+
           recovery:
             Boolean(
               brief.recovery
             ),
+
           status:
             transcriptResult.success
               ? "Ready"
               : "Discovered",
+
           laxisNoteId:
             brief.laxisNoteId,
+
           transcript:
             transcriptResult
         });
@@ -922,51 +1107,65 @@ export async function onRequestPost(
           {
             "Transcript Status":
               "Discovered",
+
             "Transcript Source":
               "Laxis",
+
             "Laxis Note ID":
               meeting.id,
+
             "Laxis URL":
               meeting.noteUrl ||
               `https://app.laxis.tech/notes/${meeting.id}`,
+
             "Candidate Laxis Note ID":
               "",
+
             "Candidate Laxis URL":
               "",
+
             "Candidate Laxis Title":
               "",
+
             "Match Reason":
               brief.recovery
-                ? `Recovered after missing Airtable transcript. ${reason}`
+                ? `Recovered Laxis meeting. ${reason}`
                 : reason
           }
         );
 
         const transcriptResult =
-          await tryAttachTranscript(
+          await attachAndRepairTranscript(
             env,
             brief,
-            meeting.id
+            meeting.id,
+            meeting.noteUrl
           );
 
         updates.push({
           briefId:
             brief.briefId,
+
           recovery:
             Boolean(
               brief.recovery
             ),
+
           recoveryType:
             brief.recovery
               ? "rediscovery"
               : null,
+
           status:
             transcriptResult.success
               ? "Ready"
               : "Discovered",
+
           laxisNoteId:
             meeting.id,
+
           reason,
+
           transcript:
             transcriptResult
         });
@@ -985,16 +1184,24 @@ export async function onRequestPost(
           {
             "Transcript Status":
               "Needs Review",
+
             "Transcript Source":
-              null,
+              brief.transcript
+                ? brief.transcriptSource ||
+                  ""
+                : null,
+
             "Candidate Laxis Note ID":
               meeting.id,
+
             "Candidate Laxis URL":
               meeting.noteUrl ||
               `https://app.laxis.tech/notes/${meeting.id}`,
+
             "Candidate Laxis Title":
               meeting.title ||
               "",
+
             "Match Reason":
               brief.recovery
                 ? `Recovery candidate. ${reason}`
@@ -1005,111 +1212,142 @@ export async function onRequestPost(
         updates.push({
           briefId:
             brief.briefId,
+
           recovery:
             Boolean(
               brief.recovery
             ),
+
           status:
             "Needs Review",
+
           candidateLaxisNoteId:
             meeting.id,
+
           reason
         });
 
         continue;
       }
 
+      const pendingFields = {
+        "Transcript Status":
+          "Pending",
+
+        "Candidate Laxis Note ID":
+          "",
+
+        "Candidate Laxis URL":
+          "",
+
+        "Candidate Laxis Title":
+          "",
+
+        "Match Reason":
+          brief.recovery
+            ? `Recovery pending. ${reason}`
+            : reason
+      };
+
+      /*
+       * Important:
+       * Do not destroy surviving data
+       * during a recovery attempt.
+       */
+
+      if (
+        !brief.transcript
+      ) {
+        pendingFields[
+          "Transcript Source"
+        ] = null;
+      }
+
       await updateOpportunityBriefByRecordId(
         env,
         brief.recordId,
-        {
-          "Transcript Status":
-            "Pending",
-          "Transcript Source":
-            null,
-          "Laxis Note ID":
-            brief.recovery
-              ? ""
-              : brief.laxisNoteId ||
-                "",
-          "Laxis URL":
-            brief.recovery
-              ? ""
-              : brief.laxisUrl ||
-                "",
-          "Candidate Laxis Note ID":
-            "",
-          "Candidate Laxis URL":
-            "",
-          "Candidate Laxis Title":
-            "",
-          "Match Reason":
-            brief.recovery
-              ? `Recovery pending. ${reason}`
-              : reason
-        }
+        pendingFields
       );
 
       updates.push({
         briefId:
           brief.briefId,
+
         recovery:
           Boolean(
             brief.recovery
           ),
+
         status:
           "Pending",
+
         reason
       });
     }
 
     return Response.json({
-      success: true,
+      success:
+        true,
+
       received:
         meetings.length,
+
       availableMeetings:
         availableMeetings.length,
+
       pendingBriefs:
-        pendingBriefs.length,
+        briefs.length,
+
       evaluations:
         allEvaluations.map(
           item => ({
             briefId:
               item.brief
                 ?.briefId,
+
             recovery:
               Boolean(
                 item.brief
                   ?.recovery
               ),
+
             meetingId:
               item.meeting
-                ?.id || null,
+                ?.id ||
+              null,
+
             meetingTitle:
               item.meeting
                 ?.title ||
               null,
+
             status:
               item.status,
+
             reason:
               item.reason,
+
             score:
               item.score
           })
         ),
+
       updates
     });
   } catch (error) {
     return Response.json(
       {
-        success: false,
+        success:
+          false,
+
         error:
           error instanceof Error
             ? error.message
             : String(error)
       },
       {
-        status: 500
+        status:
+          500
       }
     );
   }

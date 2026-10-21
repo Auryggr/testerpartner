@@ -12,6 +12,11 @@ import {
   sendBookingConfirmation
 } from "../../lib/email.js";
 
+// NUEVO: disparo del motor de research.
+import {
+  triggerResearchSafe
+} from "../../lib/research-dispatch.js";
+
 
 function addMinutes(
   date,
@@ -59,6 +64,61 @@ function createBriefId() {
     .randomUUID()
     .split("-")[0]
     .toUpperCase()}`;
+}
+
+
+function normalizeCompanyType(value) {
+  if (!value) return null;
+
+  const v = String(value)
+    .trim()
+    .toLowerCase();
+
+  const map = {
+    devtool: "DevTool",
+    developer: "DevTool",
+    "developer tool": "DevTool",
+    api: "DevTool",
+    sdk: "DevTool",
+
+    consumer: "Consumer",
+    "consumer product": "Consumer",
+    physical: "Consumer",
+    ecommerce: "Consumer",
+    "e-commerce": "Consumer",
+
+    saas: "SaaS",
+    "b2b saas": "SaaS",
+    software: "SaaS",
+    platform: "SaaS",
+
+    service: "Service",
+    "local service": "Service",
+    agency: "Service",
+    consulting: "Service"
+  };
+
+  return map[v] || null;
+}
+
+function deriveBrandFromWebsite(website) {
+  if (!website) return null;
+
+  try {
+    const host = new URL(
+      website.startsWith("http")
+        ? website
+        : `https://${website}`
+    ).hostname;
+
+    return (
+      host
+        .replace(/^www\./, "")
+        .split(".")[0] || null
+    );
+  } catch {
+    return null;
+  }
 }
 
 
@@ -145,7 +205,8 @@ export async function onRequestPost(
       meetingTime,
       name = "",
       email = "",
-      website = ""
+      website = "",
+      companyType = ""   
     } = body;
 
 
@@ -306,6 +367,11 @@ export async function onRequestPost(
     const briefId =
       createBriefId();
 
+    const normalizedType =
+      normalizeCompanyType(
+        companyType
+      );
+
 
     calendarEvent =
       await createCalendarEvent(
@@ -353,6 +419,9 @@ export async function onRequestPost(
       "Transcript Status":
         "Pending",
 
+      "Research Status":
+        "Pending",
+
       "Decision":
         conversation.trim(),
 
@@ -387,12 +456,59 @@ export async function onRequestPost(
         future;
     }
 
+    if (normalizedType) {
+      fields["Company Type"] =
+        normalizedType;
+    }
+
 
     airtableRecord =
       await createOpportunityBrief(
         context.env,
         fields
       );
+
+
+    let researchResult = {
+      dispatched: false,
+      error: null
+    };
+
+    try {
+      researchResult =
+        await triggerResearchSafe(
+          context.env,
+          {
+            briefId,
+
+            website:
+              website.trim(),
+
+            companyType:
+              normalizedType,
+
+            brand:
+              deriveBrandFromWebsite(
+                website.trim()
+              )
+          }
+        );
+
+    } catch (researchError) {
+      // Defensa extra: triggerResearchSafe ya no lanza, pero por las dudas
+      // no dejamos que nada acá tumbe la reserva.
+      console.error(
+        "Research dispatch error:",
+        researchError
+      );
+
+      researchResult = {
+        dispatched: false,
+        error:
+          researchError.message ||
+          "Unable to dispatch research."
+      };
+    }
 
 
     let emailResult = {
@@ -488,7 +604,11 @@ export async function onRequestPost(
         },
 
         email:
-          emailResult
+          emailResult,
+
+     
+        research:
+          researchResult
       },
       {
         status: 201

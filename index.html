@@ -92,8 +92,8 @@
   <div class="container">
     <div class="section-intro">
       <span class="section-kicker">A BREAKDOWN IN ACTION</span>
-      <h2>Sometimes the opportunity is hiding in how customers describe the product.</h2>
-      <p>An anonymized example based on a previous positioning analysis. The goal wasn't to invent a better headline. It was to understand what customers were already telling us.</p>
+      <h2>The right next move starts with the right question.</h2>
+      <p>An anonymized positioning example. Rather than guessing which message would work, we started with a specific question and examined what customers were already saying.</p>
     </div>
     <div class="case-layout">
       <div class="case-question"><span class="case-label">THE QUESTION</span><h3>What should this security product lead with?</h3><p>The category had several plausible messages: advanced technology, wireless convenience, easy installation and protection.</p></div>
@@ -145,23 +145,32 @@
   <div class="breakdown-shell">
     <button id="closeModal" class="modal-close" type="button" aria-label="Close">×</button>
     <div class="wizard-progress"><div class="chapter"><span class="chapter-number">01</span><span class="chapter-title">Your Challenge</span></div><div class="progress-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>
-    <section class="wizard-screen active" data-step="1"><div class="wizard-content"><span class="wizard-kicker">The Positioning Breakdown</span><h2>What growth decision is your agency facing with a client?</h2><p>This is the first clue for our research. One or two sentences are enough.</p><textarea id="challenge" rows="7" placeholder="Example:\n\nWe keep debating whether we need a better headline, but we're not sure the message is the real problem."></textarea><div class="wizard-tip"><strong>What happens next?</strong>Your answer helps us decide which customer and competitive signals to review before we meet.</div></div><div class="wizard-actions"><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
-    <section class="wizard-screen" data-step="2"><div class="wizard-content"><span class="wizard-kicker">Current Situation</span><h2>What makes this conversation difficult?</h2><p>Choose the one that feels closest.</p><div class="option-grid"><label class="option-card"><input type="radio" name="difficulty" value="Alignment"><div><strong>We don't agree internally.</strong><span>Different teams see the problem differently.</span></div></label><label class="option-card"><input type="radio" name="difficulty" value="Evidence"><div><strong>We don't have enough evidence.</strong><span>We're making assumptions.</span></div></label><label class="option-card"><input type="radio" name="difficulty" value="Customer"><div><strong>We're unsure what customers actually care about.</strong><span>Our story doesn't seem to connect.</span></div></label><label class="option-card"><input type="radio" name="difficulty" value="Direction"><div><strong>There are too many possible directions.</strong><span>Everything sounds reasonable.</span></div></label></div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
-    <section class="wizard-screen" data-step="3"><div class="wizard-content"><span class="wizard-kicker">Desired Outcome</span><h2>What would help you understand this situation better?</h2><p>Choose the outcome that matters most.</p><div class="option-grid"><label class="option-card"><input type="radio" name="outcome" value="Direction"><div><strong>One clearer direction.</strong></div></label><label class="option-card"><input type="radio" name="outcome" value="Opportunity"><div><strong>A clearer understanding of the opportunity.</strong></div></label><label class="option-card"><input type="radio" name="outcome" value="Recommendation"><div><strong>A realistic path to investigate.</strong></div></label><label class="option-card"><input type="radio" name="outcome" value="Confidence"><div><strong>Clarity about what can be tested.</strong></div></label></div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
-    <section class="wizard-screen" data-step="4"><div class="wizard-content reflection-screen"><span class="wizard-kicker">04 · Reflection</span><h2>Here's what I'm hearing.</h2><p>Before we choose a time, let's make sure we're investigating the right challenge.</p><div class="reflection-card"><div class="reflection-item"><span>YOUR CONVERSATION</span><p id="summaryChallenge">—</p></div><div class="reflection-item"><span>CURRENT SITUATION</span><p id="summaryDifficulty">—</p></div><div class="reflection-item"><span>YOU'D LIKE TO LEAVE WITH</span><p id="summaryOutcome">—</p></div></div><div class="reflection-note"><strong>This becomes our research starting point.</strong>Before the call, we'll look for relevant public customer language, recurring use cases and competitive signals connected to this question.</div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Yes, this feels right →</button></div></section>
+    <section class="wizard-screen active" data-step="1"><div class="wizard-content"><span class="wizard-kicker">01 · THE DECISION</span><h2>What decision is your agency trying to make for a client?</h2><p>Describe one real decision. No confidential details needed.</p><textarea id="challenge" rows="7" placeholder="Example: Should we prioritize the product page, rethink the offer, or investigate checkout friction?"></textarea><div class="wizard-tip"><strong>Why we ask:</strong> A concrete client decision gives our pre-session research a useful starting point.</div></div><div class="wizard-actions"><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
+    <section class="wizard-screen" data-step="2"><div class="wizard-content"><span class="wizard-kicker">02 · THE CONSTRAINT</span><h2>What's preventing you from making that decision confidently?</h2><p>Choose the biggest obstacle right now.</p><div class="option-grid">
+      <label class="option-card"><input type="radio" name="difficulty" value="Low traffic"><div><strong>Not enough traffic or conversions for a reliable A/B test.</strong></div></label>
+      <label class="option-card"><input type="radio" name="difficulty" value="Incomplete data"><div><strong>Conflicting or incomplete data.</strong></div></label>
+      <label class="option-card"><input type="radio" name="difficulty" value="Competing hypotheses"><div><strong>Several competing hypotheses.</strong></div></label>
+      <label class="option-card"><input type="radio" name="difficulty" value="Time pressure"><div><strong>Pressure to recommend an action quickly.</strong></div></label>
+      <label class="option-card"><input type="radio" name="difficulty" value="Unclear problem"><div><strong>We're not sure what the real problem is.</strong></div></label>
+    </div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
+    <section class="wizard-screen" data-step="3"><div class="wizard-content"><span class="wizard-kicker">03 · THE SESSION</span><h2>What would make our 30-minute session valuable?</h2><p>Choose the situation you'd most like to make progress on.</p><div class="option-grid">
+      <label class="option-card"><input type="radio" name="outcome" value="Investigate first"><div><strong>Identify what we should investigate first.</strong><span>We have a problem, but don't know where to start looking.</span></div></label>
+      <label class="option-card"><input type="radio" name="outcome" value="Test feasibility"><div><strong>Understand whether testing is feasible.</strong><span>We need to know if traffic, conversions and timeline support an experiment.</span></div></label>
+      <label class="option-card"><input type="radio" name="outcome" value="Conflicting priorities"><div><strong>Resolve conflicting priorities between teams.</strong><span>Different stakeholders are pushing for different solutions.</span></div></label>
+      <label class="option-card"><input type="radio" name="outcome" value="Stalled performance"><div><strong>Understand why performance isn't improving.</strong><span>We've tried changes, but the results haven't moved as expected.</span></div></label>
+    </div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
+    <section class="wizard-screen" data-step="4"><div class="wizard-content reflection-screen"><span class="wizard-kicker">04 · Review your brief</span><h2>Here's the client decision we're mapping.</h2><p>Before we choose a time, let's make sure we're investigating the right challenge.</p><div class="reflection-card"><div class="reflection-item"><span>YOUR CONVERSATION</span><p id="summaryChallenge">—</p></div><div class="reflection-item"><span>CURRENT SITUATION</span><p id="summaryDifficulty">—</p></div><div class="reflection-item"><span>YOU'D LIKE TO LEAVE WITH</span><p id="summaryOutcome">—</p></div></div><div class="reflection-note"><strong>This becomes our research starting point.</strong>Before the call, we'll look for relevant public customer language, recurring use cases and competitive signals connected to this question.</div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Yes, this feels right →</button></div></section>
     <section class="wizard-screen" data-step="5">
       <div class="wizard-content">
-        <span class="wizard-kicker">05 · Looking Ahead</span>
-        <h2>If this conversation went really well... what would change next week?</h2>
-        <p>Choose the outcome that feels most valuable.</p>
-
+        <span class="wizard-kicker">05 · CLIENT CONTEXT</span>
+        <h2>What kind of client are we looking at?</h2>
+        <p>Choose the business type for this case.</p>
         <div class="option-grid">
-          <label class="option-card"><input type="radio" name="future" value="Move"><div><strong>We'd finally move forward.</strong></div></label>
-          <label class="option-card"><input type="radio" name="future" value="Stop debating"><div><strong>We'd stop debating.</strong></div></label>
-          <label class="option-card"><input type="radio" name="future" value="Know"><div><strong>We'd know what to investigate, fix or test.</strong></div></label>
-          <label class="option-card"><input type="radio" name="future" value="Align"><div><strong>We'd align around one direction.</strong></div></label>
+          <label class="option-card"><input type="radio" name="future" value="Consumer"><div><strong>Ecommerce / DTC brand</strong></div></label>
+          <label class="option-card"><input type="radio" name="future" value="SaaS"><div><strong>B2B SaaS</strong></div></label>
+          <label class="option-card"><input type="radio" name="future" value="Service"><div><strong>Service business</strong></div></label>
+          <label class="option-card"><input type="radio" name="future" value="Other"><div><strong>Other / mixed portfolio</strong></div></label>
         </div>
-
         <div class="client-details">
           <div class="client-details-header">
             <span class="client-details-eyebrow">YOUR DETAILS</span>
@@ -192,14 +201,18 @@
             </div>
         
             <div class="form-field">
-              <label for="website">Client ecommerce website</label>
+              <label for="website">Agency website</label>
               <input
                 type="url"
                 id="website"
                 name="website"
-                placeholder="yourcompany.com"
+                placeholder="youragency.com"
                 autocomplete="url"
               >
+            </div>
+            <div class="form-field">
+              <label for="clientWebsite">Client website (optional)</label>
+              <input type="url" id="clientWebsite" name="clientWebsite" placeholder="clientbrand.com" autocomplete="off">
             </div>
           </div>
         </div>

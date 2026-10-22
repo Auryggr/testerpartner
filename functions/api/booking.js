@@ -206,6 +206,7 @@ export async function onRequestPost(
       name = "",
       email = "",
       website = "",
+      clientWebsite = "",
       companyType = ""   
     } = body;
 
@@ -453,7 +454,7 @@ export async function onRequestPost(
 
     if (future) {
       fields["Next Step"] =
-        future;
+        clientWebsite ? `Client type: ${future}; Client website: ${clientWebsite}` : `Client type: ${future}`;
     }
 
     if (normalizedType) {
@@ -482,7 +483,7 @@ export async function onRequestPost(
             briefId,
 
             website:
-              website.trim(),
+              (clientWebsite || website).trim(),
 
             companyType:
               normalizedType,

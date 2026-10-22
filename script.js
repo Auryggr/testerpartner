@@ -103,6 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
     name: "",
     email: "",
     website: "",
+    clientWebsite: "",
 
     meetingDay: "",
     meetingTime: "",
@@ -297,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!state.future) {
         window.alert(
-          "Choose what would ideally change after the Breakdown."
+          "Choose the type of client we are looking at."
         );
 
         return false;
@@ -364,8 +365,16 @@ state.email = email;
         return false;
       }
 
+      const clientWebsiteInput = $("#clientWebsite")?.value.trim() || "";
+      const clientWebsite = clientWebsiteInput ? normalizeWebsite(clientWebsiteInput) : "";
+      if (clientWebsiteInput && !clientWebsite) {
+        window.alert("Please enter a valid client website or leave it blank.");
+        $("#clientWebsite")?.focus();
+        return false;
+      }
       state.name = name;
       state.website = website;
+      state.clientWebsite = clientWebsite;
 
       /*
        * Keep the normalized URL visible
@@ -826,6 +835,12 @@ state.email = email;
 
       website:
         state.website,
+
+      clientWebsite:
+        state.clientWebsite,
+
+      companyType:
+        state.future === "Other" ? "" : state.future,
 
       meetingDay:
         state.meetingDay,

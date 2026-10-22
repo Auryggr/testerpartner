@@ -129,6 +129,10 @@ document.addEventListener("DOMContentLoaded", () => {
     meetingDay: "",
     meetingTime: "",
 
+    privacyAccepted: false,
+    recordingConsent: false,
+    marketingOptIn: false,
+
     availability: []
   };
 
@@ -424,6 +428,22 @@ state.email = email;
         $("#clientWebsite")?.focus();
         return false;
       }
+      const privacyCheckbox = $("#consentPrivacy");
+
+      if (privacyCheckbox && !privacyCheckbox.checked) {
+        window.alert(
+          "Please accept the Privacy Policy to book your session."
+        );
+
+        privacyCheckbox.focus();
+
+        return false;
+      }
+
+      state.privacyAccepted = Boolean(privacyCheckbox?.checked);
+      state.recordingConsent = Boolean($("#consentRecording")?.checked);
+      state.marketingOptIn = Boolean($("#consentMarketing")?.checked);
+
       state.name = name;
       state.website = website;
       state.clientWebsite = clientWebsite;
@@ -894,7 +914,16 @@ state.email = email;
         state.meetingDay,
 
       meetingTime:
-        state.meetingTime
+        state.meetingTime,
+
+      privacyAccepted:
+        state.privacyAccepted,
+
+      recordingConsent:
+        state.recordingConsent,
+
+      marketingOptIn:
+        state.marketingOptIn
     };
 
     try {
@@ -971,7 +1000,7 @@ state.email = email;
 
       confirmBooking.textContent =
         previousText ||
-        "Book The Positioning Breakdown →";
+        "Book the Mapping Session →";
     }
   }
 

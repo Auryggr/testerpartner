@@ -18,6 +18,13 @@ import {
 } from "../../lib/research-dispatch.js";
 
 
+/*
+ * Version of the Privacy Policy the visitor accepted.
+ * Update it whenever the policy's effective date changes.
+ */
+const PRIVACY_POLICY_VERSION = "2026-10-22";
+
+
 function addMinutes(
   date,
   minutes
@@ -172,8 +179,28 @@ export async function onRequestPost(
       email = "",
       website = "",
       partnerType = "",
-      clientWebsite = ""
+      clientWebsite = "",
+      privacyAccepted = false,
+      recordingConsent = false,
+      marketingOptIn = false
     } = body;
+
+
+    if (privacyAccepted !== true) {
+      return Response.json(
+        {
+          success: false,
+          error:
+            "Please accept the Privacy Policy to book your session."
+        },
+        {
+          status: 400
+        }
+      );
+    }
+
+    const consentTimestamp =
+      new Date().toISOString();
 
 
     if (!conversation?.trim()) {
@@ -283,7 +310,7 @@ export async function onRequestPost(
       Number(
         context.env
           .SESSION_DURATION ||
-          30
+          15
       );
 
 
@@ -419,6 +446,23 @@ export async function onRequestPost(
         targetWebsite,
 
       "Partner Type": partnerType,
+
+      // Consent record (create these fields in Airtable first).
+      "Privacy Accepted":
+        true,
+
+      "Privacy Policy Version":
+        PRIVACY_POLICY_VERSION,
+
+      "Recording Consent":
+        recordingConsent === true,
+
+      "Marketing Opt-in":
+        marketingOptIn === true,
+
+      "Consent Timestamp":
+        consentTimestamp,
+
       ...(partnerType === "Agency" ? {
         "Agency Website": website.trim(),
         "Client Website": targetWebsite

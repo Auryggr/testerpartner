@@ -939,13 +939,12 @@ state.email = email;
 
       /*
        * GA4 recommended event for a completed lead.
-       * Only answer categories are sent, never personal data.
+       * Form answers (difficulty, outcome, challenge) are NOT sent:
+       * they stay in our own booking records.
        */
       track("generate_lead", {
         lead_source: "positioning_breakdown",
-        partner_type: state.partnerType,
-        difficulty: state.difficulty,
-        desired_outcome: state.outcome
+        partner_type: state.partnerType
       });
 
       showStep(8);

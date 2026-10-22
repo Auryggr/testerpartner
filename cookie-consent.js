@@ -16,8 +16,18 @@
    */
   var SHOW_DECLINE_ON_FIRST_LAYER = true;
 
+  /*
+   * Countries (ISO codes) where analytics runs by default with an opt-out.
+   * Keep this list short: only add a country after checking its rules.
+   */
+  var OPT_OUT_COUNTRIES = ['US'];
+
   var STORAGE_KEY = 'tp_cookie_consent'; // 'granted' | 'denied'
+  var REGION_CACHE_KEY = 'tp_cookie_country';
   var POLICY_URL = '/privacy-policy/';
+
+  // 'optin' (strict, default) or 'optout'. Set after detection.
+  var mode = 'optin';
 
   /* ------------------------------------------------------------------
      STORAGE (safe if blocked)
@@ -28,6 +38,79 @@
   }
   function saveChoice(value) {
     try { localStorage.setItem(STORAGE_KEY, value); } catch (e) { /* ignore */ }
+  }
+
+  /* ------------------------------------------------------------------
+     REGION DETECTION
+     ------------------------------------------------------------------ */
+
+  function hasGlobalPrivacyControl() {
+    return navigator.globalPrivacyControl === true;
+  }
+
+  function browserTimeZoneIsEurope() {
+    try {
+      var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      return tz.indexOf('Europe/') === 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function countryFromUrl() {
+    var match = /[?&]cookie_region=([A-Za-z]{2})\b/.exec(location.search);
+    return match ? match[1].toUpperCase() : '';
+  }
+
+  // Resolves with a 2-letter country code, or '' when unknown.
+  function detectCountry() {
+    var forced = countryFromUrl();
+    if (forced) return Promise.resolve(forced);
+
+    try {
+      var cached = sessionStorage.getItem(REGION_CACHE_KEY);
+      if (cached) return Promise.resolve(cached);
+    } catch (e) { /* ignore */ }
+
+    if (!window.fetch) return Promise.resolve('');
+
+    return new Promise(function (resolve) {
+      var finished = false;
+      function finish(country) {
+        if (finished) return;
+        finished = true;
+        if (country) {
+          try { sessionStorage.setItem(REGION_CACHE_KEY, country); } catch (e) { /* ignore */ }
+        }
+        resolve(country);
+      }
+
+      // Never keep the visitor waiting: unknown after 1.5 s means strict mode.
+      setTimeout(function () { finish(''); }, 1500);
+
+      fetch('/cdn-cgi/trace', { cache: 'no-store', credentials: 'omit' })
+        .then(function (response) { return response.ok ? response.text() : ''; })
+        .then(function (text) {
+          var match = /^loc=([A-Z]{2})$/m.exec(text || '');
+          finish(match ? match[1] : '');
+        })
+        .catch(function () { finish(''); });
+    });
+  }
+
+  function resolveMode(country) {
+    if (!country) return 'optin';
+    if (browserTimeZoneIsEurope()) return 'optin';
+    return OPT_OUT_COUNTRIES.indexOf(country) !== -1 ? 'optout' : 'optin';
+  }
+
+  // Is analytics allowed right now for this visitor?
+  function analyticsAllowed() {
+    var choice = readChoice();
+    if (choice === 'granted') return true;
+    if (choice === 'denied') return false;
+    if (mode === 'optout') return !hasGlobalPrivacyControl();
+    return false;
   }
 
   /* ------------------------------------------------------------------
@@ -216,9 +299,10 @@
       views[i].hidden = views[i].getAttribute('data-tp-cc-view') !== name;
     }
     if (name === 'prefs') {
-      // Default is "necessary only": analytics stays off unless already granted.
+      // Reflects the visitor's real current state:
+      // opt-in regions start off; opt-out regions start on (unless GPC or declined).
       var toggle = root.querySelector('[data-tp-cc="analytics-toggle"]');
-      if (toggle) toggle.checked = readChoice() === 'granted';
+      if (toggle) toggle.checked = analyticsAllowed();
       var save = root.querySelector('[data-tp-cc="save"]');
       if (save) save.focus();
     } else {
@@ -260,9 +344,24 @@
       }
       return;
     }
+    // A visitor who already chose doesn't need the region at all.
     var choice = readChoice();
-    if (choice === 'granted') loadAnalytics();
-    else if (choice !== 'denied') showBanner('summary');
+    if (choice === 'granted') { loadAnalytics(); return; }
+    if (choice === 'denied') return;
+
+    detectCountry().then(function (country) {
+      mode = resolveMode(country);
+
+      if (mode === 'optout') {
+        // US: on by default, no banner. GPC means "off".
+        if (analyticsAllowed()) loadAnalytics();
+        return;
+      }
+
+      // Everyone else: ask first. A GPC signal counts as a "no".
+      if (hasGlobalPrivacyControl()) return;
+      showBanner('summary');
+    });
   }
 
   if (document.readyState === 'loading') {

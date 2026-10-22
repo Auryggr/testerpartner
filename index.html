@@ -9,6 +9,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+<style>
+/* Light outcome section: explicit contrast independent of inherited dark styles */
+.outcome-light .outcome-grid-label { color: #a94320; font-size: .75rem; font-weight: 800; letter-spacing: .12em; margin: 2rem 0 1rem; }
+.outcome-light .outcome-continuation-note { color: #171b27; background: #fffaf3; border: 1px solid #d8d1c7; border-radius: 4px; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.outcome-light .outcome-continuation-note strong { color: #171b27; }
+.outcome-light .outcome-continuation-note span { color: #485366; }
+@media (max-width: 720px) { .outcome-light .outcome-continuation-note { flex-direction: column; align-items: flex-start; } }
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -95,20 +103,21 @@
     <div class="case-takeaway"><span>THE POINT</span><strong>Reviews weren't the answer. They were the clue that made a better positioning hypothesis possible.</strong></div>
   </div>
 </section>
-<section id="outcome" class="outcome studio-outcome">
+<section id="outcome" class="outcome studio-outcome outcome-light">
   <div class="container">
     <div class="section-intro">
       <span class="section-kicker">AFTER THE BREAKDOWN</span>
       <h2>One question rarely ends the conversation.</h2>
-      <p>Your first session helps map the challenge. From there, we can keep investigating, testing when feasible, and turning what we learn into better decisions for your clients.</p>
+      <p>Your first session maps one challenge. An ongoing partnership helps your agency turn that starting point into a repeatable decision-making process across client accounts.</p>
     </div>
+    <p class="outcome-grid-label">WHAT CONTINUED WORK COULD LOOK LIKE</p>
     <div class="outcome-grid">
       <article class="outcome-card"><div class="outcome-number">01</div><h3>Keep investigating</h3><p>Explore the questions that remain open and gather evidence where it matters.</p></article>
       <article class="outcome-card"><div class="outcome-number">02</div><h3>Prioritize the next move</h3><p>Decide what to investigate, fix, monitor or test based on feasibility and impact.</p></article>
       <article class="outcome-card"><div class="outcome-number">03</div><h3>Test when it makes sense</h3><p>Design experiments around clear hypotheses and realistic traffic and time constraints.</p></article>
       <article class="outcome-card"><div class="outcome-number">04</div><h3>Learn and repeat</h3><p>Use each outcome to inform the next decision instead of treating a test as the finish line.</p></article>
     </div>
-    <div class="process-note"><strong>A starting point for a future experimentation partnership.</strong><span>Continuation is optional and scoped separately.</span></div>
+    <div class="process-note outcome-continuation-note"><strong>Built for agencies that want to offer more than recommendations.</strong><span>An ongoing experimentation partnership, scoped to your clients’ needs and available evidence. Continuation is optional.</span></div>
   </div>
 </section>
 <section id="final-cta" class="final-cta studio-final-cta"><div class="container"><div class="cta-card"><span class="section-kicker">YOUR TURN</span><h2>Your next recommendation deserves a better starting point.</h2><p>Bring a real ecommerce client challenge. We will map what the available evidence can—and cannot—tell us.</p><button class="btn btn-primary js-book-breakdown" type="button">Start Your Free Breakdown →</button><div class="cta-trust">5-minute brief <span>•</span> Focused pre-session research <span>•</span> Mapping Session</div></div></div></section>

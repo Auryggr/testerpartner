@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var GA_ID = ''; // e.g. 'G-XXXXXXXXXX'
+  var GA_ID = 'G-1N54NNMXGP'; // e.g. 'G-XXXXXXXXXX'
   var STORAGE_KEY = 'tp_cookie_consent'; // 'granted' | 'denied'
   var POLICY_URL = '/privacy-policy/';
 

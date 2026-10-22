@@ -6,7 +6,7 @@ pages_build_output_dir = "./"
 
 [vars]
 TIMEZONE = "America/Argentina/Buenos_Aires"
-SESSION_DURATION = "30"
+SESSION_DURATION = "15"
 BUFFER_MINUTES = "15"
 
 AIRTABLE_BASE_ID = "appbys02ktQ1emdKV"

@@ -1412,3 +1412,7 @@ body { background:var(--studio-ink); }
 @media (prefers-reduced-motion:reduce) {
   .btn,.studio-problem .problem-card { transition:none; }
 }
+
+/* Fourth methodological stage */
+.studio-tag-d { top:31%; right:8%; transform:rotate(-6deg); }
+@media(max-width:440px){.studio-tag-d{right:5%;top:32%;}}

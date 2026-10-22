@@ -16,6 +16,16 @@
 .outcome-light .outcome-continuation-note strong { color: #171b27; }
 .outcome-light .outcome-continuation-note span { color: #485366; }
 @media (max-width: 720px) { .outcome-light .outcome-continuation-note { flex-direction: column; align-items: flex-start; } }
+
+/* Commercial partnership phases — scoped to the outcome section */
+.outcome-light .partnership-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+.outcome-light .partnership-card { display: flex; flex-direction: column; min-width: 0; }
+.outcome-light .partnership-card .outcome-number { font-size: .76rem; letter-spacing: .1em; font-weight: 800; color: #a94320; }
+.outcome-light .partnership-card h3 { line-height: 1.3; }
+.outcome-light .partnership-deliverables { margin-top: auto; padding-top: 1.35rem; border-top: 1px solid #ded6cc; }
+.outcome-light .partnership-deliverables strong { display: block; color: #171b27; margin-bottom: .5rem; }
+.outcome-light .partnership-deliverables p { margin: 0; color: #485366; }
+@media (max-width: 720px) { .outcome-light .partnership-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -113,17 +123,25 @@
   <div class="container">
     <div class="section-intro">
       <span class="section-kicker">AFTER THE MAPPING SESSION</span>
-      <h2>One question rarely ends the conversation.</h2>
-      <p>Your Mapping Session examines the preliminary evidence around one client challenge. An ongoing partnership helps your agency turn that starting point into a repeatable decision-making process across client accounts.</p>
+      <h2>Start with the evidence. Build the practice together.</h2>
+      <p>Your free Mapping Session is the starting point. If there’s a good fit, we can begin with a focused three-month strategy partnership and expand into hands-on experimentation as we build confidence together.</p>
     </div>
-    <p class="outcome-grid-label">WHAT CONTINUED WORK COULD LOOK LIKE</p>
-    <div class="outcome-grid">
-      <article class="outcome-card"><div class="outcome-number">01</div><h3>Keep investigating</h3><p>Explore the questions that remain open and gather evidence where it matters.</p></article>
-      <article class="outcome-card"><div class="outcome-number">02</div><h3>Prioritize the next move</h3><p>Decide what to investigate, fix, monitor or test based on feasibility and impact.</p></article>
-      <article class="outcome-card"><div class="outcome-number">03</div><h3>Test when it makes sense</h3><p>Design experiments around clear hypotheses and realistic traffic and time constraints.</p></article>
-      <article class="outcome-card"><div class="outcome-number">04</div><h3>Learn and repeat</h3><p>Use each outcome to inform the next decision instead of treating a test as the finish line.</p></article>
+    <p class="outcome-grid-label">TWO WAYS TO BUILD TOGETHER</p>
+    <div class="outcome-grid partnership-grid">
+      <article class="outcome-card partnership-card">
+        <div class="outcome-number">PHASE 01 · 3 MONTHS</div>
+        <h3>Research &amp; Experimentation Strategy</h3>
+        <p>We investigate your client's challenges, prioritize opportunities, and design feasible experiments. Your agency leads execution.</p>
+        <div class="partnership-deliverables"><strong>What we build together</strong><p>Evidence map · Prioritized backlog · Experiment designs · Learning reviews</p></div>
+      </article>
+      <article class="outcome-card partnership-card">
+        <div class="outcome-number">PHASE 02 · 6 MORE MONTHS</div>
+        <h3>Experimentation Partnership</h3>
+        <p>If we decide to continue, we expand into experiment implementation, QA, analysis, and building a repeatable experimentation practice.</p>
+        <div class="partnership-deliverables"><strong>What we build together</strong><p>Experiment execution · Quality assurance · Shared learning · Repeatable processes</p></div>
+      </article>
     </div>
-    <div class="process-note outcome-continuation-note"><strong>Built for agencies that want to offer more than recommendations.</strong><span>An ongoing experimentation partnership, scoped to your clients’ needs and available evidence. The conversation comes first. The partnership comes only if it makes sense.</span></div>
+    <div class="process-note outcome-continuation-note"><strong>The conversation comes first. The partnership comes only if it makes sense.</strong><span>Each phase has its own scope and agreement. Continuing beyond the first three months is optional.</span></div>
   </div>
 </section>
 <section id="final-cta" class="final-cta studio-final-cta"><div class="container"><div class="cta-card"><span class="section-kicker">YOUR TURN</span><h2>Your next recommendation deserves a better starting point.</h2><p>Bring a real ecommerce client challenge. We’ll bring preliminary evidence to examine together in the Mapping Session.</p><button class="btn btn-primary js-book-breakdown" type="button">Book Your Free Mapping Session →</button><div class="cta-trust">5-minute questionnaire <span>•</span> Preliminary evidence <span>•</span> 15-minute Mapping Session</div></div></div></section>

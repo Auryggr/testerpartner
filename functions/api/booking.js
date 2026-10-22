@@ -400,7 +400,10 @@ export async function onRequestPost(
             email.trim(),
 
           website:
-            website.trim()
+            website.trim(),
+
+          recordingConsent:
+            recordingConsent === true
         }
       );
 
@@ -651,17 +654,25 @@ export async function onRequestPost(
     }
 
 
+    /*
+     * Expected problems (e.g. 409 slot taken) keep their message.
+     * Internal errors (Google, Airtable…) stay in the logs and the
+     * visitor sees a friendly message instead of technical details.
+     */
+    const status =
+      error.status ||
+      500;
+
     return Response.json(
       {
         success: false,
         error:
-          error.message ||
-          "Unable to complete booking."
+          status < 500 && error.message
+            ? error.message
+            : "We couldn’t complete your booking right now. Please try again in a few minutes or email hello@testerpartner.com."
       },
       {
-        status:
-          error.status ||
-          500
+        status
       }
     );
   }

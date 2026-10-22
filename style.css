@@ -1297,7 +1297,7 @@ body { background:var(--studio-ink); }
 }
 .studio-art::before { content:""; position:absolute; inset:3%; border:1px solid rgba(22,18,26,.38); pointer-events:none; }
 .studio-art-top,.studio-art-bottom {
-  position:absolute; left:7%; right:7%; display:flex; justify-content:space-between;
+  position:absolute; left:7%; right:7%; display:flex; justify-content:space-between; align-items: center;
   font-size:clamp(8px,.8vw,12px); font-weight:800; letter-spacing:.13em; z-index:3;
 }
 .studio-art-top { top:8%; }
@@ -1402,6 +1402,9 @@ body { background:var(--studio-ink); }
 }
 @media (max-width:440px) {
   .mobile-hidden {display:none !important;}
+  .logo {
+  font-size: 1.5rem!important;
+}
   .studio-hero .studio-hero-copy h1 { font-size:clamp(2.8rem,11.3vw,3.7rem); }
   .studio-hero .studio-art { aspect-ratio:.9; }
   .studio-center { font-size:clamp(2.9rem,10.2vw,4.2rem); }

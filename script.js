@@ -39,6 +39,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =========================================================
+     ANALYTICS EVENTS
+     ---------------------------------------------------------
+     Uses the gtag() function defined in /cookie-consent.js.
+     Nothing reaches Google unless the visitor accepted
+     analytics cookies. Never send names, emails, websites
+     or the free-text challenge here.
+     ========================================================= */
+
+  function track(eventName, params = {}) {
+    if (typeof window.gtag !== "function") {
+      return;
+    }
+
+    try {
+      window.gtag("event", eventName, params);
+    } catch {
+      /* Analytics must never break the booking flow. */
+    }
+  }
+
+  /* =========================================================
      HERO QUESTION ROTATOR
      ========================================================= */
 
@@ -186,9 +207,23 @@ document.addEventListener("DOMContentLoaded", () => {
     if (step === 6) {
       loadAvailability();
     }
+
+    track("breakdown_step_view", {
+      step_number: step,
+      step_name: chapter ? chapter[1] : String(step)
+    });
   }
 
-  function openModal() {
+  function openModal(event) {
+    const button = event?.currentTarget;
+
+    track("breakdown_open", {
+      cta_location:
+        button?.dataset?.ctaLocation ||
+        button?.textContent?.trim().slice(0, 60) ||
+        "unknown"
+    });
+
     showStep(1);
 
     if (
@@ -206,6 +241,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function closeModal() {
+    track("breakdown_close", {
+      step_number: state.step,
+      completed: state.step === 8
+    });
+
     if (
       typeof modal.close === "function" &&
       modal.open
@@ -578,6 +618,8 @@ state.email = email;
         error
       );
 
+      track("availability_error");
+
       dayGrid.innerHTML =
         '<div class="availability-status">We couldn’t load availability right now. Please refresh and try again.</div>';
     }
@@ -895,12 +937,25 @@ state.email = email;
         result
       );
 
+      /*
+       * GA4 recommended event for a completed lead.
+       * Only answer categories are sent, never personal data.
+       */
+      track("generate_lead", {
+        lead_source: "positioning_breakdown",
+        partner_type: state.partnerType,
+        difficulty: state.difficulty,
+        desired_outcome: state.outcome
+      });
+
       showStep(8);
     } catch (error) {
       console.error(
         "TesterPartner booking error:",
         error
       );
+
+      track("booking_error");
 
       /*
        * Show the actual backend error.

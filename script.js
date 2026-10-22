@@ -147,6 +147,59 @@ document.addEventListener("DOMContentLoaded", () => {
     8: ["08", "Booked"]
   };
 
+  /* =========================================================
+     CONSENT DEFAULTS BY REGION
+     ---------------------------------------------------------
+     United States: recording + marketing start checked
+     (allowed there; the recording is always confirmed again
+     at the start of the call).
+     Everywhere else, unknown country or Global Privacy
+     Control: both start unchecked. The Privacy Policy box
+     is never pre-checked.
+     ========================================================= */
+
+  const optionalConsentIds = ["consentRecording", "consentMarketing"];
+  const touchedConsents = new Set();
+  let consentDefaultsRequested = false;
+
+  optionalConsentIds.forEach((id) => {
+    $(`#${id}`)?.addEventListener("change", () => {
+      touchedConsents.add(id);
+    });
+  });
+
+  function applyConsentDefaults() {
+    if (consentDefaultsRequested) {
+      return;
+    }
+
+    consentDefaultsRequested = true;
+
+    if (typeof window.tpGetRegion !== "function") {
+      return;
+    }
+
+    window
+      .tpGetRegion()
+      .then((region) => {
+        if (region?.mode !== "optout" || region?.gpc) {
+          return;
+        }
+
+        optionalConsentIds.forEach((id) => {
+          const checkbox = $(`#${id}`);
+
+          // Never override a box the visitor already changed.
+          if (checkbox && !touchedConsents.has(id)) {
+            checkbox.checked = true;
+          }
+        });
+      })
+      .catch(() => {
+        /* Unknown region: keep both unchecked. */
+      });
+  }
+
   function updateParticipantFields() {
     const isBrand = selectedRadio("partnerType") === "DTC / Ecommerce Brand";
     const clientField = $("#clientWebsiteField");
@@ -206,6 +259,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (step === 4) {
       renderReflection();
+    }
+
+    if (step === 5) {
+      applyConsentDefaults();
     }
 
     if (step === 6) {

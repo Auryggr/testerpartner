@@ -5,7 +5,7 @@
      CONFIG
      ------------------------------------------------------------------ */
 
-  var GA_ID = 'G-1N54NNMXGP'; // e.g. 'G-XXXXXXXXXX'
+  var GA_ID = ''; // e.g. 'G-XXXXXXXXXX'
 
   /*
    * true  (recommended): the first layer shows a discreet
@@ -103,6 +103,32 @@
     if (browserTimeZoneIsEurope()) return 'optin';
     return OPT_OUT_COUNTRIES.indexOf(country) !== -1 ? 'optout' : 'optin';
   }
+
+  /*
+   * Shared region lookup for other scripts (e.g. the booking form).
+   * Runs at most once per page, even if GA_ID is empty.
+   *   window.tpGetRegion().then(function (r) {
+   *     r.country -> 'US', 'DE', '' (unknown)
+   *     r.mode    -> 'optout' | 'optin'
+   *     r.gpc     -> true if the browser sends Global Privacy Control
+   *   });
+   */
+  var regionPromise = null;
+
+  function getRegion() {
+    if (!regionPromise) {
+      regionPromise = detectCountry().then(function (country) {
+        return {
+          country: country,
+          mode: resolveMode(country),
+          gpc: hasGlobalPrivacyControl()
+        };
+      });
+    }
+    return regionPromise;
+  }
+
+  window.tpGetRegion = getRegion;
 
   // Is analytics allowed right now for this visitor?
   function analyticsAllowed() {
@@ -349,8 +375,8 @@
     if (choice === 'granted') { loadAnalytics(); return; }
     if (choice === 'denied') return;
 
-    detectCountry().then(function (country) {
-      mode = resolveMode(country);
+    getRegion().then(function (region) {
+      mode = region.mode;
 
       if (mode === 'optout') {
         // US: on by default, no banner. GPC means "off".

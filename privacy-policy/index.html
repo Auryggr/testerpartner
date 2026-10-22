@@ -1,281 +1,373 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="TesterPartner Privacy Policy">
-  <title>Privacy Policy | TesterPartner</title>
-  <style>
-    :root {
-      --bg: #ffffff;
-      --text: #1d1d1f;
-      --muted: #5f6368;
-      --line: #e3e3e6;
-      --soft: #f6f6f8;
-      --accent: #ff9455;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #111214;
-        --text: #ececee;
-        --muted: #a3a6ad;
-        --line: #2c2e33;
-        --soft: #1a1c1f;
-        --accent: #ffb384;
-      }
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-    main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
-    a { color: var(--accent); }
-    .topnav { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 14px; margin-bottom: 32px; }
-    .topnav a { text-decoration: none; }
-    h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }
-    h2 { font-size: 1.25rem; margin: 40px 0 8px; padding-top: 8px; border-top: 1px solid var(--line); }
-    h3 { font-size: 1rem; margin: 20px 0 4px; }
-    .meta { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
-    .summary { background: var(--soft); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; }
-    .summary ul { margin: 8px 0 0; padding-left: 20px; }
-    table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 12px 0; }
-    th, td { text-align: left; vertical-align: top; padding: 10px 8px; border-bottom: 1px solid var(--line); }
-    th { font-weight: 600; background: var(--soft); }
-    .table-wrap { overflow-x: auto; }
-    .legal-es { font-size: 14px; color: var(--muted); }
-    footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Help your agency make better growth decisions with customer research, evidence-led experimentation strategy, and a free Mapping Session.">
+  <title>TesterPartner | Experimentation Strategy for Growth Agencies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <script src="/cookie-consent.js" defer></script>
+<style>
+/* Participant-specific booking fields */
+.participant-selector { margin: 1.25rem 0; }
+#clientWebsiteField[hidden] { display: none !important; }
+/* Consent checkboxes (step 05) — inherit the modal's font and text color */
+.consent-group { margin: 1.5rem 0 1rem; padding: 0; border: 0; min-width: 0; display: grid; gap: .75rem; }
+.consent-group legend { padding: 0; margin-bottom: .25rem; }
+.consent-item { display: grid; grid-template-columns: 18px 1fr; gap: .65rem; align-items: start; font-size: .9rem; line-height: 1.5; cursor: pointer; }
+.consent-item input { width: 18px; height: 18px; margin: .15rem 0 0; accent-color: #f19962; cursor: pointer; }
+.consent-item input:focus-visible { outline: 3px solid #ff975b; outline-offset: 2px; }
+.consent-item a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.consent-required { margin-left: .25rem; font-style: normal; font-size: .78rem; opacity: .6; }
+/* Light outcome section: explicit contrast independent of inherited dark styles */
+.outcome-light .outcome-grid-label { color: #a94320; font-size: .75rem; font-weight: 800; letter-spacing: .12em; margin: 2rem 0 1rem; }
+.outcome-light .outcome-continuation-note { color: #171b27; background: #fffaf3; border: 1px solid #d8d1c7; border-radius: 4px; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.outcome-light .outcome-continuation-note strong { color: #171b27; }
+.outcome-light .outcome-continuation-note span { color: #485366; }
+@media (max-width: 720px) { .outcome-light .outcome-continuation-note { flex-direction: column; align-items: flex-start; } }
+
+/* Commercial partnership phases — scoped to the outcome section */
+.outcome-light .partnership-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+.outcome-light .partnership-card { display: flex; flex-direction: column; min-width: 0; }
+.outcome-light .partnership-card .outcome-number { font-size: .76rem; letter-spacing: .1em; font-weight: 800; color: #a94320; }
+.outcome-light .partnership-card h3 { line-height: 1.3; }
+.outcome-light .partnership-deliverables { margin-top: auto; padding-top: 1.35rem; border-top: 1px solid #ded6cc; }
+.outcome-light .partnership-deliverables strong { display: block; color: #171b27; margin-bottom: .5rem; }
+.outcome-light .partnership-deliverables p { margin: 0; color: #485366; }
+@media (max-width: 720px) { .outcome-light .partnership-grid { grid-template-columns: 1fr; } }
+
+/* Mobile-only flip card. Desktop hero and existing CTAs remain untouched. */
+.tp-mobile-hero { display: none; }
+@media (max-width: 720px) {
+  .studio-hero .studio-hero-grid { display: none !important; }
+  .studio-hero .tp-mobile-hero { display: flex; flex-direction: column; gap: 1rem; padding-top: 1.25rem; padding-bottom: 2rem; }
+  .tp-flip-card { perspective: 1200px; width: 100%; }
+  .tp-flip-inner { display: grid; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.2,.75,.25,1); }
+  .tp-flip-card.is-flipped .tp-flip-inner { transform: rotateY(180deg); }
+  .tp-flip-face { grid-area: 1 / 1; min-width: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .tp-flip-front { padding: 1.2rem 0 1rem; display: flex; flex-direction: column; justify-content: center; }
+  .tp-flip-front h1 { margin-top: 0; }
+  .tp-flip-front .studio-description { margin-bottom: 0; }
+  .tp-flip-back { transform: rotateY(180deg); display: flex; align-items: center; }
+  .tp-flip-back .studio-art { width: 100%; margin: 0; }
+  .tp-flip-back .studio-art-bottom { display: flex; align-items: center; justify-content: space-between; }
+  .tp-flip-toggle { align-self: center; background: transparent; border: 1px solid rgba(255,255,255,.38); border-radius: 999px; padding: .7rem 1.1rem; color: #fff; font: inherit; font-size: .9rem; cursor: pointer; }
+  .tp-flip-toggle:focus-visible { outline: 3px solid #ff975b; outline-offset: 3px; }
+  .tp-mobile-hero .hero-actions { display: flex; flex-direction: column; gap: .75rem; }
+  .tp-mobile-hero .hero-actions .btn { width: 100%; text-align: center; }
+  .tp-mobile-hero .hero-trust { margin-top: .25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tp-flip-inner { transition: none !important; }
+}
+</style>
 </head>
 <body>
+<header class="site-header">
+  <div class="container header-content">
+    <a href="#hero" class="logo">Tester<span>Partner</span></a>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <a href="#problem">Who it's for</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#example">Example</a>
+      <a href="#outcome">What comes next</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <button class="btn btn-primary js-book-breakdown" type="button">Book a Free Session</button>
+  </div>
+</header>
 <main>
-
-  <nav class="topnav">
-    <a href="https://testerpartner.pages.dev/">← TesterPartner</a>
-    <span><a href="https://testerpartner.pages.dev/privacy-policy/">Privacy</a> · <a href="https://testerpartner.pages.dev/terms/">Terms</a></span>
-  </nav>
-
-  <h1>Privacy Policy</h1>
-  <p class="meta">Effective date: October 22, 2026</p>
-
-  <div class="summary">
-    <strong>The short version</strong>
-    <ul>
-      <li>We collect only what we need to prepare and run your Mapping Session: your answers to the booking questions, your name, work email, your website, your client’s website if you are an agency, and booking details.</li>
-      <li>Sessions are recorded and transcribed only with your prior agreement. You can say no and still have your session.</li>
-      <li>If you decide not to continue after the free session, we delete your session data within 72 hours.</li>
-      <li>We never sell your personal information.</li>
-      <li>You can ask us to access, correct or delete your data at any time: <a href="mailto:hello@testerpartner.com">hello@testerpartner.com</a>.</li>
-    </ul>
+<section id="hero" class="hero studio-hero">
+  <div class="container studio-hero-grid">
+    <div class="studio-hero-copy">
+      <h1>Less guessing.<br><em>Better</em> growth<br>decisions<span class="studio-period">.</span></h1>
+      <p class="studio-lead">Your clients need answers. Their traffic can't always provide them.</p>
+      <p class="studio-description">Turn customer language, market research and performance evidence into a repeatable way to decide what to <strong>investigate, fix, test or monitor</strong> — even when A/B testing isn't viable yet.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary js-book-breakdown" type="button">Book a Free Mapping Session <span aria-hidden="true"></span></button>
+        <a href="#how-it-works" class="btn btn-secondary">Explore the method ↓</a>
+      </div>
+      <div class="hero-trust"><span>Tell us where you're stuck. We'll bring the evidence to your Mapping Session.</span></div>
+    </div>
+    <div class="studio-art" aria-label="Illustration of the TesterPartner decision method">
+      <div class="studio-art-top"><span>OUR DECISION SYSTEM</span><span>01 — 04</span></div>
+      <div class="studio-orbit studio-orbit-one"></div>
+      <div class="studio-orbit studio-orbit-two"></div>
+      <div class="studio-center">WHAT<br>DO WE<br><i>KNOW?</i></div>
+      <div class="studio-tag studio-tag-a">01 / QUESTION</div>
+      <div class="studio-tag studio-tag-b">03 / FEASIBILITY</div>
+      <div class="studio-tag studio-tag-c">04 / NEXT MOVE</div>
+      <div class="studio-tag studio-tag-d">02 / EVIDENCE</div>
+      <div class="studio-art-bottom"><span>QUESTION → SIGNAL → DECISION → ACTION</span><span>⥀</span></div>
+    </div>
   </div>
-
-  <h2>1. Who is responsible for your data</h2>
-  <p>TesterPartner is a trade name operated by <strong>Aurysmar Guerra</strong>, an independent professional based in Buenos Aires, Argentina (“TesterPartner”, “we”, “us”). Aurysmar Guerra is the data controller responsible for the personal information described in this policy.</p>
-  <p>Contact for any privacy question or request: <a href="mailto:hello@testerpartner.com">hello@testerpartner.com</a>.</p>
-
-  <h2>2. What this policy covers</h2>
-  <p>This policy explains how we handle personal information when you visit our website, answer our booking questions, book and attend a free Mapping Session, receive any notes we share after it, receive emails from us, or become a client for a paid engagement, such as our Research &amp; Experimentation Strategy or Experimentation Partnership.</p>
-  <p><strong>Paid engagements.</strong> In paid work we may access data that you or your client authorize, such as analytics, campaign results or behavioral data. That work is governed by a separate written agreement. Where we process personal data on your or your client’s behalf, we act as a service provider (processor) under the data processing terms included in that agreement, and this policy does not apply to that data.</p>
-  <p>Our services are offered to businesses and professionals. They are not directed to children, and we do not knowingly collect information from anyone under 18.</p>
-
-  <h2>3. Information we collect</h2>
-
-  <h3>Information you give us</h3>
-  <ul>
-    <li><strong>Your booking answers:</strong> the growth decision you are trying to make, what is preventing you from making it confidently, and what would make the session valuable.</li>
-    <li><strong>Client information (agencies):</strong> the website and business challenge of the client you bring to the session. Share only what your client has authorized, and do not include personal data about their customers.</li>
-    <li><strong>Contact and business details:</strong> your name, work email and company (or client) website.</li>
-    <li><strong>Booking details:</strong> the date and time you choose and calendar information needed to send the invitation.</li>
-    <li><strong>Correspondence:</strong> emails and messages you exchange with us.</li>
-    <li><strong>Session content:</strong> what is discussed during the session and, with your agreement, its recording and transcript (see section 6).</li>
-  </ul>
-  <p>Please do not send us passwords, payment card details, confidential customer lists or sensitive personal information (such as health, political or religious data). We do not need them to provide the service.</p>
-
-  <h3>Information collected automatically</h3>
-  <ul>
-    <li><strong>Technical data:</strong> our hosting provider processes standard technical information such as IP address, browser type and request logs to deliver and secure the website.</li>
-    <li><strong>Analytics data:</strong> where analytics is enabled for you (see section 8), Google Analytics 4 collects information about how you use the website (pages viewed, referral source, interactions). See section 8.</li>
-  </ul>
-
-  <h3>Public information used in our research</h3>
-  <p>To prepare your session, we review publicly available information related to your question, such as public product reviews, customer comments, testimonials, product pages and competitor messaging. This content can occasionally include names or usernames of the people who wrote it. We use it only to identify recurring themes; we do not try to identify, profile or contact those individuals, and in our deliverables we paraphrase or anonymize what they wrote.</p>
-
-  <h2>4. How and why we use your information</h2>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>Purpose</th><th>Information used</th><th>Legal basis*</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Prepare the pre-session research, run your session and share any follow-up notes</td>
-          <td>Brief, contact and business details, session content</td>
-          <td>Taking steps at your request / performing our agreement with you</td>
-        </tr>
-        <tr>
-          <td>Schedule, confirm, reschedule and remind you of sessions</td>
-          <td>Name, email, booking details</td>
-          <td>Performing our agreement with you</td>
-        </tr>
-        <tr>
-          <td>Record and transcribe the session</td>
-          <td>Audio, video, transcript</td>
-          <td>Your consent</td>
-        </tr>
-        <tr>
-          <td>Follow up after the session about the outcome and possible next steps</td>
-          <td>Name, email, session notes</td>
-          <td>Our legitimate interest in following up on a service you requested</td>
-        </tr>
-        <tr>
-          <td>Send marketing emails (insights, resources, offers)</td>
-          <td>Name, email</td>
-          <td>Your consent</td>
-        </tr>
-        <tr>
-          <td>Provide paid services and keep billing records</td>
-          <td>Contact details, engagement information, invoices</td>
-          <td>Performing our contract; legal and tax obligations</td>
-        </tr>
-        <tr>
-          <td>Understand how the website is used</td>
-          <td>Analytics data</td>
-          <td>Your consent (outside the United States)</td>
-        </tr>
-        <tr>
-          <td>Keep the website secure and working</td>
-          <td>Technical data</td>
-          <td>Our legitimate interest in operating a secure website</td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Mobile-only flip card: CTAs remain outside the rotating card. -->
+  <div class="container tp-mobile-hero">
+    <div class="tp-flip-card" id="tpFlipCard">
+      <div class="tp-flip-inner">
+        <div class="tp-flip-face tp-flip-front">
+          <h1>Less guessing.<br><em>Better</em> growth<br>decisions<span class="studio-period">.</span></h1>
+          <p class="studio-lead">Your clients need answers. Their traffic can't always provide them.</p>
+          <p class="studio-description">Turn customer language, market research and performance evidence into a repeatable way to decide what to <strong>investigate, fix, test or monitor</strong> — even when A/B testing isn't viable yet.</p>
+        </div>
+        <div class="tp-flip-face tp-flip-back" aria-hidden="true" inert>
+          <div class="studio-art" aria-label="Illustration of the TesterPartner decision method">
+            <div class="studio-art-top"><span>OUR DECISION SYSTEM</span><span>01 — 04</span></div>
+            <div class="studio-orbit studio-orbit-one"></div>
+            <div class="studio-orbit studio-orbit-two"></div>
+            <div class="studio-center">WHAT<br>DO WE<br><i>KNOW?</i></div>
+            <div class="studio-tag studio-tag-a">01 / QUESTION</div>
+            <div class="studio-tag studio-tag-b">03 / FEASIBILITY</div>
+            <div class="studio-tag studio-tag-c">04 / NEXT MOVE</div>
+            <div class="studio-tag studio-tag-d">02 / EVIDENCE</div>
+            <div class="studio-art-bottom"><span>QUESTION → SIGNAL → DECISION → ACTION</span><span>⥀</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="tp-flip-toggle" id="tpFlipToggle" type="button" aria-controls="tpFlipCard" aria-pressed="false">Explore our decision system ↻</button>
+    <div class="hero-actions">
+      <button class="btn btn-primary js-book-breakdown" type="button">Book a Free Mapping Session <span aria-hidden="true"></span></button>
+      <a href="#how-it-works" class="btn btn-secondary">Explore the method ↓</a>
+    </div>
+    <div class="hero-trust"><span>Tell us where you're stuck. We'll bring the evidence to your Mapping Session.</span></div>
   </div>
-  <p class="meta">*Legal bases are listed for visitors in jurisdictions that require them, such as the European Union and the United Kingdom.</p>
-  <p>We do not use your information to make automated decisions that have legal or similarly significant effects on you.</p>
-
-  <h2>5. Anonymized examples</h2>
-  <p>We may use what we learn from past analyses to create anonymized examples that illustrate our method, such as the example on our website. These examples never identify you, your company or your clients, and never include recordings, transcripts or quotes from your session. We will not publish a case study that identifies you or your company without your separate written permission. If you prefer that your analysis is not used even in anonymized form, tell us at any time.</p>
-
-  <h2>6. Session recordings and transcripts</h2>
-  <ul>
-    <li>We ask for your agreement before any session is recorded, both when you book and again at the start of the call, before recording begins.</li>
-    <li>Recording is <strong>optional</strong>. If you do not agree, the session takes place without recording and we take written notes instead. Declining does not affect your access to the session.</li>
-    <li>If other people join the call, we ask all participants before recording.</li>
-    <li>We use Laxis, an AI-powered meeting assistant, to record, transcribe and summarize sessions. Its participation in the call is visible to all participants.</li>
-    <li>Recordings and transcripts are used only to prepare your deliverables and follow-up. We never publish them or use them in marketing.</li>
-    <li>You can withdraw your consent at any time, including during the call, and ask us to delete the recording.</li>
-  </ul>
-
-  <h2>7. Emails from us</h2>
-  <ul>
-    <li><strong>Service emails:</strong> booking confirmations, reminders, any session notes and a follow-up about next steps. These are part of the service you requested.</li>
-    <li><strong>Marketing emails:</strong> occasional insights, resources and offers. We send these only if you opted in. Every marketing email includes an unsubscribe link, and you can also unsubscribe by writing to <a href="mailto:hello@testerpartner.com">hello@testerpartner.com</a>.</li>
-  </ul>
-
-  <h2>8. Cookies and analytics</h2>
-  <p>Our website uses only the cookies needed to work and stay secure, plus optional analytics cookies. How analytics works for you depends on where you are visiting from:</p>
-  <ul>
-    <li><strong>United States:</strong> analytics is on by default, and you can turn it off at any time through the “Cookie settings” link at the bottom of every page. If your browser sends a Global Privacy Control signal, we treat it as a request to turn analytics off.</li>
-    <li><strong>All other regions</strong>, including the European Union, the United Kingdom and Latin America: analytics stays off until you accept it in our cookie banner.</li>
-  </ul>
-  <p>We estimate your country from your connection, as reported by our hosting provider. We do not keep it on our side; your browser only remembers it until you close the tab. If we cannot determine it, we apply the stricter, consent-first option.</p>
-  <ul>
-    <li><strong>Strictly necessary:</strong> cookies our hosting provider (Cloudflare) may set for security and performance, and a small record in your browser’s local storage that remembers your cookie choice. They do not require consent.</li>
-    <li><strong>Analytics (optional):</strong> Google Analytics 4 cookies (such as <code>_ga</code> and <code>_ga_*</code>), which can last up to 2 years. You can change your choice at any time through the “Cookie settings” link at the bottom of every page; turning analytics off deletes these cookies.</li>
-  </ul>
-  <p>We do not use advertising or retargeting cookies, and we do not send personal information such as your name or email to Google Analytics.</p>
-
-  <h2>9. Who we share information with</h2>
-  <p><strong>We do not sell your personal information, and we do not share it for targeted advertising.</strong> We share it only with service providers that help us operate, under agreements that limit their use of the data to providing their service to us:</p>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>Provider</th><th>What they do for us</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Cloudflare</td><td>Website hosting, delivery and security</td></tr>
-        <tr><td>Google (Workspace, Calendar)</td><td>Email, scheduling and calendar invitations</td></tr>
-        <tr><td>Google Analytics</td><td>Website analytics, as described in section 8</td></tr>
-        <tr><td>Airtable</td><td>Storing booking answers, booking records and client records</td></tr>
-        <tr><td>Laxis</td><td>Recording, transcription and summaries of sessions, only with your consent</td></tr>
-        <tr><td>GitHub</td><td>Running code automations that support our research workflow</td></tr>
-      </tbody>
-    </table>
+  <div class="container studio-bottom-strip mobile-hidden"><span>RESEARCH FIRST.</span><span>TEST WHEN IT MAKES SENSE.</span><span>LEARN EITHER WAY.</span></div>
+</section>
+<section id="problem" class="problem studio-problem">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-kicker">THE CHALLENGE FOR THE TEAMS BEHIND THE GROWTH</span>
+      <h2>Your clients can't always wait for statistical certainty.</h2>
+      <p>Limited traffic, fragmented evidence and monthly expectations make evidence-led growth decisions difficult.</p>
+    </div>
+    <div class="problem-grid">
+      <article class="problem-card"><div class="problem-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M8 10h8M8 14h5"/><path d="M7 18l-3 2v-4a8 8 0 1 1 3 2Z"/></svg></div><h3>Not enough traffic</h3><p>Even growing ecommerce brands may need months to detect modest improvements through A/B testing.</p></article>
+      <article class="problem-card"><div class="problem-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M14.5 5.5l4 4"/><path d="M4 20l4.5-1 10-10a2.8 2.8 0 0 0-4-4l-10 10L4 20Z"/></svg></div><h3>Pressure to show progress</h3><p>Clients expect useful recommendations even when a test cannot yet produce a conclusive result.</p></article>
+      <article class="problem-card"><div class="problem-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M5 20V11M12 20V4M19 20v-7"/></svg></div><h3>Fragmented evidence</h3><p>Campaign results, customer feedback and behavioral data each show only part of the picture.</p></article>
+      <article class="problem-card"><div class="problem-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14"/><path d="m15 8 4 4-4 4"/></svg></div><h3>Testing without a clear question</h3><p>Sometimes the right next step is to investigate or fix—not to launch another variation.</p></article>
+    </div>
+    <div class="problem-closing" style="margin-top: 3rem; max-width: 800px;">
+      <span class="section-kicker">SOUND FAMILIAR?</span>
+      <h3 style="font-size: clamp(1.6rem, 3vw, 2.35rem); line-height: 1.2; margin: .8rem 0 1rem;">If your agency faces these decisions, you're in the right place.</h3>
+      <p style="font-size: 1.05rem; line-height: 1.65; color: #495367;">TesterPartner helps you make sense of the evidence, navigate uncertainty, and decide what to investigate, fix, monitor, or test next.</p>
+    </div>
   </div>
-  <p>We may also disclose information if required by law or a valid request from a public authority, or to protect our rights in a legal claim.</p>
-
-  <h2>10. International transfers</h2>
-  <p>TesterPartner is operated from Argentina, and our service providers process information mainly in the United States and in other countries where they operate. These countries may have data protection laws different from those of your country.</p>
-  <p>When you book a session, you agree that your information may be transferred and processed in those countries. For information about people in the European Union, the United Kingdom or other regions with transfer rules, we rely on the safeguards offered by our providers, such as Standard Contractual Clauses or certification under recognized data privacy frameworks.</p>
-
-  <h2>11. How long we keep your information</h2>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>Situation</th><th>What we keep and for how long</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>You decide not to continue after the free session</td>
-          <td>We delete your booking answers, session notes, recording, transcript and related records within 72 hours of you telling us.</td>
-        </tr>
-        <tr>
-          <td>You don’t tell us your decision</td>
-          <td>We delete the same data 30 days after the session.</td>
-        </tr>
-        <tr>
-          <td>You become a client</td>
-          <td>We keep your data for the duration of the engagement and delete it within 30 days after it ends, except billing and tax records, which we keep for the period required by law.</td>
-        </tr>
-        <tr>
-          <td>You subscribed to marketing emails</td>
-          <td>We keep your name and email until you unsubscribe. After that, we keep only your email address on a suppression list so we can respect your choice.</td>
-        </tr>
-        <tr>
-          <td>Analytics data</td>
-          <td>Kept in Google Analytics for 2 months.</td>
-        </tr>
-      </tbody>
-    </table>
+</section>
+<section id="how-it-works" class="how-it-works studio-process">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-kicker">RESEARCH BEFORE THE SESSION</span>
+      <h2>We explore the evidence before we meet.</h2>
+      <p>We examine customer feedback, market research, and available evidence to identify questions worth investigating. Then, in your free Mapping Session, we assess what that evidence can—and cannot—tell us about your client’s next growth decision.</p>
+    </div>
+    <div class="process-grid">
+      <article class="process-card"><span class="process-number">01</span><span class="process-time">≈ 5 MIN</span><h3>Share a client challenge</h3><p>If you’re an agency, choose one client to focus on. If you’re a brand, bring one business challenge. No confidential details needed.</p><div class="mini-tool"><span>YOUR CLIENT CHALLENGE</span><strong>“We keep debating whether our problem is the message or the offer.”</strong></div></article>
+      <article class="process-card featured"><span class="process-number">02</span><span class="process-time">BEFORE WE MEET</span><h3>We examine the evidence</h3><p>We review relevant public sources and prepare preliminary evidence to share before the session. We explore its relevance and limitations together.</p><div class="signal-list"><span>Customer language</span><span>Specific use cases</span><span>Recurring friction</span><span>Competitor claims</span></div></article>
+      <article class="process-card"><span class="process-number">03</span><span class="process-time">15 MIN</span><h3>Map the situation together</h3><p>We evaluate the preliminary evidence against the client’s context, constraints and available information, then map what remains unknown.</p><div class="mini-tool"><span>THE CONVERSATION STARTS HERE</span><strong>“Customers may value the outcome differently than the category describes it.”</strong></div></article>
+    </div>
+    <div class="process-note"><strong>No long discovery call.</strong><span>Question → Evidence → Context → Unknowns → Next step</span></div>
   </div>
-  <p>Deletion from our active systems happens within the periods above. Residual copies in our providers’ backups are removed through their regular deletion cycles, normally within 30 days. You keep your own copy of any deliverable we sent you.</p>
-
-  <h2>12. How we protect your information</h2>
-  <p>We use reasonable technical and organizational measures to protect your information, including access limited to the people who need it, two-factor authentication on our accounts and providers with established security programs. No online service can guarantee absolute security. If a security incident affects your information, we will notify you and the relevant authorities as required by law.</p>
-
-  <h2>13. Your rights</h2>
-  <p>Depending on where you live, you may have the right to:</p>
-  <ul>
-    <li>Access the personal information we hold about you and receive a copy</li>
-    <li>Correct inaccurate or incomplete information</li>
-    <li>Delete your information</li>
-    <li>Object to or restrict certain uses of your information</li>
-    <li>Receive your information in a portable format</li>
-    <li>Withdraw your consent at any time (for recordings, marketing or analytics), or opt out of analytics where it is on by default, without affecting what we did before</li>
-    <li>File a complaint with a data protection authority</li>
-  </ul>
-  <p>To exercise any of these rights, email <a href="mailto:hello@testerpartner.com">hello@testerpartner.com</a>. We may ask you to confirm your identity before acting on a request. We respond within the time limits set by applicable law (for example, within 10 calendar days for access requests under Argentine law). We will not treat you differently for exercising your rights.</p>
-  <p>You can contact the authority in your country: in Argentina, the Agencia de Acceso a la Información Pública (AAIP); in the European Union or the United Kingdom, your local data protection authority; in the United States, the privacy regulator or Attorney General of your state.</p>
-
-  <h3>Notice required under Argentine law</h3>
-  <p class="legal-es">El titular de los datos personales tiene la facultad de ejercer el derecho de acceso a los mismos en forma gratuita a intervalos no inferiores a seis meses, salvo que se acredite un interés legítimo al efecto conforme lo establecido en el artículo 14, inciso 3 de la Ley Nº 25.326. La AGENCIA DE ACCESO A LA INFORMACIÓN PÚBLICA, en su carácter de Órgano de Control de la Ley Nº 25.326, tiene la atribución de atender las denuncias y reclamos que interpongan quienes resulten afectados en sus derechos por incumplimiento de las normas vigentes en materia de protección de datos personales.</p>
-  <p class="meta">In English: you may access your personal data free of charge at intervals of no less than six months, unless you show a legitimate interest in accessing it sooner (Article 14(3), Law 25,326). The AAIP, as the supervisory authority under Law 25,326, handles complaints from anyone whose data protection rights have been affected.</p>
-
-  <h2>14. Changes to this policy</h2>
-  <p>We may update this policy when our services or practices change. We will change the effective date above and, for material changes, notify active clients and subscribers by email before they take effect. If TesterPartner is later incorporated as a company, that company will become the data controller; we will update this policy and inform you.</p>
-
-  <h2>15. Contact</h2>
-  <p>Aurysmar Guerra — TesterPartner<br>
-  Buenos Aires, Argentina<br>
-  <a href="mailto:hello@testerpartner.com">hello@testerpartner.com</a></p>
-
-  <footer>
-    <a href="https://testerpartner.pages.dev/">TesterPartner</a> · <a href="mailto:hello@testerpartner.com">hello@testerpartner.com</a><span data-cookie-settings-wrap> · <a href="#" data-cookie-settings>Cookie settings</a></span>
-  </footer>
-
+</section>
+<section id="example" class="example studio-example">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-kicker">A GLIMPSE OF THE EVIDENCE WE EXPLORE FOR YOUR CHOSEN CLIENT</span>
+      <h2>The right next move starts with the right question.</h2>
+      <p>Every Mapping Session focuses on one selected business challenge. Customer feedback is just one of the sources we may explore. This anonymized example shows how a recurring theme can help uncover a more useful direction.</p>
+    </div>
+    <div class="case-layout">
+      <div class="case-question"><span class="case-label">THE QUESTION</span><h3>What should this security product lead with?</h3><p>The category had several plausible messages: advanced technology, wireless convenience, easy installation and protection.</p></div>
+      <div class="case-research"><span class="case-label">WHAT WE LOOKED AT</span><div class="review-stack"><blockquote>“I needed cameras where there was no Wi-Fi or existing wiring.”</blockquote><blockquote>“Installation was the reason this worked for my property.”</blockquote><blockquote>“I wanted something I could use in a remote location without building new infrastructure.”</blockquote></div><p class="case-disclaimer">Representative paraphrases of recurring review themes used to illustrate the research method.</p></div>
+      <div class="case-insight"><span class="case-label">THE SIGNAL</span><h3>The differentiator may not be “better security.”</h3><p>The more specific story was freedom from infrastructure: surveillance in places where traditional systems become difficult to install or maintain.</p></div>
+    </div>
+    <div class="case-takeaway"><span>THE POINT</span><strong>Reviews weren't the answer. They were the clue that made a better positioning hypothesis possible.</strong></div>
+  </div>
+</section>
+<section id="outcome" class="outcome studio-outcome outcome-light">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-kicker">AFTER THE MAPPING SESSION</span>
+      <h2>Start with the evidence. Build the practice together.</h2>
+      <p>Your free Mapping Session is the starting point. If there’s a good fit, we can begin with a focused three-month strategy partnership and expand into hands-on experimentation as we build confidence together.</p>
+    </div>
+    <p class="outcome-grid-label">TWO WAYS TO BUILD TOGETHER</p>
+    <div class="outcome-grid partnership-grid">
+      <article class="outcome-card partnership-card">
+        <div class="outcome-number">PHASE 01 · 3 MONTHS</div>
+        <h3>Research &amp; Experimentation Strategy</h3>
+        <p>We investigate the selected business challenge, prioritize opportunities, and design feasible experiments. Your team leads execution.</p>
+        <div class="partnership-deliverables"><strong>What we build together</strong><p>Evidence map · Prioritized backlog · Experiment designs · Learning reviews</p></div>
+      </article>
+      <article class="outcome-card partnership-card">
+        <div class="outcome-number">PHASE 02 · 6 MORE MONTHS</div>
+        <h3>Experimentation Partnership</h3>
+        <p>If we decide to continue, we expand into experiment implementation, QA, analysis, and building a repeatable experimentation practice.</p>
+        <div class="partnership-deliverables"><strong>What we build together</strong><p>Experiment execution · Quality assurance · Shared learning · Repeatable processes</p></div>
+      </article>
+    </div>
+    <div class="process-note outcome-continuation-note"><strong>The conversation comes first. The partnership comes only if it makes sense.</strong><span>Each phase has its own scope and agreement. Continuing beyond the first three months is optional.</span></div>
+  </div>
+</section>
+<section id="final-cta" class="final-cta studio-final-cta"><div class="container"><div class="cta-card"><span class="section-kicker">YOUR TURN</span><h2>Your next recommendation deserves a better starting point.</h2><p>Bring a real ecommerce client challenge. We’ll bring preliminary evidence to examine together in the Mapping Session.</p><button class="btn btn-primary js-book-breakdown" type="button">Book Your Free Mapping Session →</button><div class="cta-trust">5-minute questionnaire <span>•</span> Preliminary evidence <span>•</span> 15-minute Mapping Session</div></div></div></section>
+<section id="faq" class="faq studio-faq">
+  <div class="container">
+    <div class="section-intro"><span class="section-kicker">QUESTIONS</span><h2>A few things you might be wondering.</h2></div>
+    <div class="faq-list">
+      <details><summary>What happens after I complete the questionnaire?</summary><p>We use your answers to investigate relevant public evidence and prepare preliminary evidence. We share what we found, along with uncertainties, before the Mapping Session. This evidence is a starting point to examine together, not a validated conclusion.</p></details>
+      <details><summary>Why do you research before the session?</summary><p>Your client challenge gives us a focused question to investigate. The goal is to arrive with preliminary evidence and open questions, so we can examine both in light of business context and constraints.</p></details>
+      <details><summary>Do I need to prepare anything?</summary><p>Only the short questionnaire. Share the client decision you’re facing and enough context to guide our initial research.</p></details>
+      <details><summary>Will you always find customer reviews?</summary><p>No. Reviews are one useful source when they exist, but the method is broader. We may use public customer comments, testimonials, product pages, competitor claims or other relevant public evidence. The source depends on the question.</p></details>
+      <details><summary>What is preliminary evidence?</summary><p>Information gathered from an initial review of relevant sources. It may suggest patterns, tensions or unanswered questions, but it does not establish validated conclusions. We examine its relevance and limitations together in the Mapping Session.</p></details>
+      <details><summary>Why is the Mapping Session free?</summary><p>Because this first step helps determine whether there is a meaningful opportunity to pursue and whether structured experimentation would actually reduce uncertainty.</p></details>
+      <details><summary>Does every Mapping Session lead to a partnership?</summary><p>No. The Mapping Session helps us understand the client challenge and assess whether continued investigation or experimentation would be useful. A partnership is only considered if it makes sense for both sides.</p></details>
+      <details><summary>What if a client does not have enough traffic for A/B testing?</summary><p>We assess test feasibility and realistic timelines before recommending experiments. Customer research, funnel diagnosis, behavioral analysis, confirmed fixes or monitoring may be better next steps.</p></details>
+      <details><summary>Will the first session deliver a complete strategy?</summary><p>No. Preliminary research helps us begin with evidence; the 15-minute Mapping Session is for understanding the client's context, constraints, assumptions and next questions.</p></details>
+      <details><summary>Can our agency apply this with multiple clients?</summary><p>Yes. We start with one selected client challenge, then can scope additional accounts separately. The free Mapping Session focuses on one client.</p></details>
+      <details><summary>Are you a DTC brand rather than an agency?</summary><p>You’re welcome here, too. While TesterPartner is primarily built for agencies, we also work directly with ecommerce brands facing growth decisions. Bring one challenge to a free Mapping Session, and we’ll explore the evidence together.</p></details>
+      <details><summary>Do you guarantee conversion uplift?</summary><p>No. Our approach supports better-informed decisions and honest learning, not guaranteed outcomes or statistical certainty.</p></details>
+    </div>
+  </div>
+</section>
 </main>
+<footer class="footer"><div class="container footer-content"><div><strong>TesterPartner</strong><p>Evidence before assumptions.</p></div><nav><a href="#problem">Who it's for</a><a href="#how-it-works">How it works</a><a href="#example">Example</a><a href="#outcome">What comes next</a><a href="#faq">FAQ</a><a href="/privacy-policy/">Privacy</a><a href="/terms/">Terms</a><a href="#" data-cookie-settings>Cookie settings</a></nav><div class="footer-meta">© 2026 TesterPartner</div></div></footer>
+<dialog id="breakdownModal" class="breakdown-modal">
+  <div class="breakdown-shell">
+    <button id="closeModal" class="modal-close" type="button" aria-label="Close">×</button>
+    <div class="wizard-progress"><div class="chapter"><span class="chapter-number">01</span><span class="chapter-title">Your Challenge</span></div><div class="progress-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>
+    <section class="wizard-screen active" data-step="1"><div class="wizard-content"><span class="wizard-kicker">01 · THE DECISION</span><h2>What growth decision are you trying to make?</h2><p>Describe one real decision. No confidential details needed.</p><textarea id="challenge" rows="7" placeholder="Example: Should we prioritize the product page, rethink the offer, or investigate checkout friction?"></textarea><div class="wizard-tip"><strong>Why we ask:</strong> A concrete client decision gives our pre-session research a useful starting point.</div></div><div class="wizard-actions"><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
+    <section class="wizard-screen" data-step="2"><div class="wizard-content"><span class="wizard-kicker">02 · THE CONSTRAINT</span><h2>What's preventing you from making that decision confidently?</h2><p>Choose the biggest obstacle right now.</p><div class="option-grid">
+      <label class="option-card"><input type="radio" name="difficulty" value="Low traffic"><div><strong>Not enough traffic or conversions for a reliable A/B test.</strong></div></label>
+      <label class="option-card"><input type="radio" name="difficulty" value="Incomplete data"><div><strong>Conflicting or incomplete data.</strong></div></label>
+      <label class="option-card"><input type="radio" name="difficulty" value="Competing hypotheses"><div><strong>Several competing hypotheses.</strong></div></label>
+      <label class="option-card"><input type="radio" name="difficulty" value="Time pressure"><div><strong>Pressure to recommend an action quickly.</strong></div></label>
+      <label class="option-card"><input type="radio" name="difficulty" value="Unclear problem"><div><strong>We're not sure what the real problem is.</strong></div></label>
+    </div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
+    <section class="wizard-screen" data-step="3"><div class="wizard-content"><span class="wizard-kicker">03 · THE SESSION</span><h2>What would make our 15-minute session valuable?</h2><p>Choose the situation you'd most like to make progress on.</p><div class="option-grid">
+      <label class="option-card"><input type="radio" name="outcome" value="Investigation Priorities"><div><strong>Identify what we should investigate first.</strong><span>We have a problem, but don't know where to start looking.</span></div></label>
+      <label class="option-card"><input type="radio" name="outcome" value="Test feasibility"><div><strong>Understand whether testing is feasible.</strong><span>We need to know if traffic, conversions and timeline support an experiment.</span></div></label>
+      <label class="option-card"><input type="radio" name="outcome" value="Conflicting Team Priorities"><div><strong>Resolve conflicting priorities between teams.</strong><span>Different stakeholders are pushing for different solutions.</span></div></label>
+      <label class="option-card"><input type="radio" name="outcome" value="Stalled performance"><div><strong>Understand why performance isn't improving.</strong><span>We've tried changes, but the results haven't moved as expected.</span></div></label>
+    </div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
+    <section class="wizard-screen" data-step="4"><div class="wizard-content reflection-screen"><span class="wizard-kicker">04 · Review your answers</span><h2>Here's the client decision we're mapping.</h2><p>Before we choose a time, let's make sure we're investigating the right challenge.</p><div class="reflection-card"><div class="reflection-item"><span>YOUR CONVERSATION</span><p id="summaryChallenge">—</p></div><div class="reflection-item"><span>CURRENT SITUATION</span><p id="summaryDifficulty">—</p></div><div class="reflection-item"><span>YOU'D LIKE TO LEAVE WITH</span><p id="summaryOutcome">—</p></div></div><div class="reflection-note"><strong>These answers guide our initial research.</strong>Before the call, we’ll look for relevant public evidence and prepare preliminary evidence to discuss—not conclusions to accept without question.</div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button class="btn btn-primary next-step" type="button">Yes, this feels right →</button></div></section>
+    <section class="wizard-screen" data-step="5">
+      <div class="wizard-content">
+        <span class="wizard-kicker">05 · CLIENT CONTEXT</span>
+        <h2>Tell us who we’re researching.</h2>
+        <p>Agencies: select one client for this Mapping Session. Brands: we’ll focus on your own business.</p>
+        <div class="participant-selector" role="group" aria-label="Who are you joining as?">
+          <span class="client-details-eyebrow">ARE YOU JOINING AS AN AGENCY OR A BRAND?</span>
+          <div class="option-grid">
+            <label class="option-card"><input type="radio" name="partnerType" value="Agency"><div><strong>Agency</strong><span>I’m bringing one client challenge.</span></div></label>
+            <label class="option-card"><input type="radio" name="partnerType" value="DTC / Ecommerce Brand"><div><strong>DTC / Ecommerce Brand</strong><span>I’m researching my own brand.</span></div></label>
+          </div>
+        </div>
+        <div class="client-details">
+          <div class="client-details-header">
+            <span class="client-details-eyebrow">YOUR DETAILS</span>
+            <span class="client-details-note">For the calendar invite & pre-session research</span>
+          </div>
+        
+          <div class="client-fields">
+            <div class="form-field">
+              <label for="name">Your name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Jane Smith"
+                autocomplete="name"
+              >
+            </div>
+        
+            <div class="form-field">
+              <label for="email">Work email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@company.com"
+                autocomplete="email"
+              >
+            </div>
+        
+            <div class="form-field">
+              <label for="website" id="websiteLabel">Agency website</label>
+              <input
+                type="url"
+                id="website"
+                name="website"
+                placeholder="youragency.com"
+                autocomplete="url"
+              >
+            </div>
+            <div class="form-field" id="clientWebsiteField">
+              <label for="clientWebsite">Selected client website (required for agencies)</label>
+              <input type="url" id="clientWebsite" name="clientWebsite" placeholder="selectedclient.com" autocomplete="off">
+            </div>
+          </div>
+        </div>
+
+        <fieldset class="consent-group">
+          <legend class="client-details-eyebrow">BEFORE WE BOOK</legend>
+
+          <label class="consent-item">
+            <input type="checkbox" id="consentPrivacy" name="consentPrivacy" required>
+            <span>
+              I agree to the <a href="/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a>
+              and to my information being processed in the United States and other countries.
+              <em class="consent-required">Required</em>
+            </span>
+          </label>
+
+          <label class="consent-item">
+            <input type="checkbox" id="consentRecording" name="consentRecording">
+            <span>
+              The session may be recorded and transcribed to prepare my session notes.
+              I can change my mind at the start of the call.
+            </span>
+          </label>
+
+          <label class="consent-item">
+            <input type="checkbox" id="consentMarketing" name="consentMarketing">
+            <span>
+              Send me occasional insights and offers from TesterPartner. Unsubscribe anytime.
+            </span>
+          </label>
+        </fieldset>
+
+        <div class="wizard-tip">After you book, we’ll use your answers to prepare preliminary evidence to examine together in the 15-minute Mapping Session.</div>
+      </div>
+
+      <div class="wizard-actions">
+        <button class="btn btn-secondary previous-step" type="button">← Back</button>
+        <button class="btn btn-primary next-step" type="button">Continue →</button>
+      </div>
+    </section>
+    <section class="wizard-screen" data-step="6"><div class="wizard-content"><span class="wizard-kicker">06 · Choose a Day</span><h2>When would you like to have your Mapping Session?</h2><p>These are the next available conversations.</p><div id="dayGrid" class="day-grid"></div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button id="continueDay" class="btn btn-primary next-step" type="button" disabled>Continue →</button></div></section>
+    <section class="wizard-screen" data-step="7"><div class="wizard-content"><span class="wizard-kicker">07 · Choose a Time</span><h2>What time works best?</h2><p>Every Mapping Session lasts around 15 minutes.</p><div id="timeGrid" class="time-grid"></div></div><div class="wizard-actions"><button class="btn btn-secondary previous-step" type="button">← Back</button><button id="confirmBooking" class="btn btn-primary" type="button" disabled>Book the Mapping Session →</button></div></section>
+    <section class="wizard-screen" data-step="8"><div class="success-screen"><div class="success-icon">✓</div><span class="wizard-kicker">You're booked</span><h2>We'll take it from here.</h2><p>Before we meet, we’ll review relevant public evidence and prepare preliminary evidence. In the Mapping Session, we’ll assess them together against your client’s context and constraints.</p><div class="success-card"><div><strong>Your free experience includes</strong></div><ul><li>Focused pre-session research</li><li>15-minute Mapping Session</li><li>Preliminary evidence (subject to validation)</li><li>Potential tensions to explore</li><li>Open questions and assumptions</li><li>Possible next steps, when appropriate</li><li>Shared context and constraints</li></ul></div><button id="closeSuccess" class="btn btn-primary" type="button">Perfect. See you soon →</button></div></section>
+  </div>
+</dialog>
+<script src="script.js"></script>
+<script>
+(function () {
+  const card = document.getElementById('tpFlipCard');
+  const toggle = document.getElementById('tpFlipToggle');
+  if (!card || !toggle) return;
+  const front = card.querySelector('.tp-flip-front');
+  const back = card.querySelector('.tp-flip-back');
+  toggle.addEventListener('click', function () {
+    const flipped = card.classList.toggle('is-flipped');
+    toggle.setAttribute('aria-pressed', String(flipped));
+    toggle.textContent = flipped ? 'Back to the introduction ↶' : 'Explore our decision system ↻';
+    front.setAttribute('aria-hidden', String(flipped));
+    back.setAttribute('aria-hidden', String(!flipped));
+  });
+})();
+</script>
 </body>
 </html>

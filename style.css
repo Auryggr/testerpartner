@@ -1301,7 +1301,7 @@ body { background:var(--studio-ink); }
   font-size:clamp(8px,.8vw,12px); font-weight:800; letter-spacing:.13em; z-index:3;
 }
 .studio-art-top { top:8%; }
-.studio-art-bottom { bottom:7%; }
+.studio-art-bottom { bottom:5%; }
 .studio-art-bottom span:last-child { font-size:28px; line-height:1; }
 .studio-orbit {
   position:absolute; border:2px solid #181522; border-radius:50%;
@@ -1401,6 +1401,7 @@ body { background:var(--studio-ink); }
   .studio-hero .hero-actions .btn { text-align:center; }
 }
 @media (max-width:440px) {
+  .mobile-hidden {display:none !important;}
   .studio-hero .studio-hero-copy h1 { font-size:clamp(2.8rem,11.3vw,3.7rem); }
   .studio-hero .studio-art { aspect-ratio:.9; }
   .studio-center { font-size:clamp(2.9rem,10.2vw,4.2rem); }

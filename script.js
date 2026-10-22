@@ -98,7 +98,6 @@ document.addEventListener("DOMContentLoaded", () => {
     challenge: "",
     difficulty: "",
     outcome: "",
-    future: "",
     partnerType: "",
     clientWebsite: "",
 
@@ -117,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
     2: ["02", "Current Situation"],
     3: ["03", "Desired Outcome"],
     4: ["04", "Reflection"],
-    5: ["05", "Looking Ahead"],
+    5: ["05", "Your Details"],
     6: ["06", "Choose a Day"],
     7: ["07", "Choose a Time"],
     8: ["08", "Booked"]
@@ -310,18 +309,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (step === 5) {
-      state.future = selectedRadio("future");
       state.partnerType = selectedRadio("partnerType");
       if (!state.partnerType) {
         window.alert("Choose whether you’re joining as an agency or a brand.");
-        return false;
-      }
-
-      if (!state.future) {
-        window.alert(
-          "Choose the type of business we are researching."
-        );
-
         return false;
       }
 
@@ -846,12 +836,8 @@ state.email = email;
       outcome:
         state.outcome,
 
-      future:
-        state.future,
-
       partnerType: state.partnerType,
       clientWebsite: state.clientWebsite,
-      companyType: state.future,
 
       name:
         state.name,

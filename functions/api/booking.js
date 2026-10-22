@@ -67,40 +67,6 @@ function createBriefId() {
 }
 
 
-function normalizeCompanyType(value) {
-  if (!value) return null;
-
-  const v = String(value)
-    .trim()
-    .toLowerCase();
-
-  const map = {
-    devtool: "DevTool",
-    developer: "DevTool",
-    "developer tool": "DevTool",
-    api: "DevTool",
-    sdk: "DevTool",
-
-    consumer: "Consumer",
-    "consumer product": "Consumer",
-    physical: "Consumer",
-    ecommerce: "Consumer",
-    "e-commerce": "Consumer",
-
-    saas: "SaaS",
-    "b2b saas": "SaaS",
-    software: "SaaS",
-    platform: "SaaS",
-
-    service: "Service",
-    "local service": "Service",
-    agency: "Service",
-    consulting: "Service"
-  };
-
-  return map[v] || null;
-}
-
 function deriveBrandFromWebsite(website) {
   if (!website) return null;
 
@@ -200,13 +166,11 @@ export async function onRequestPost(
       conversation,
       difficulty,
       outcome,
-      future,
       meetingDay,
       meetingTime,
       name = "",
       email = "",
       website = "",
-      companyType = "",
       partnerType = "",
       clientWebsite = ""
     } = body;
@@ -381,12 +345,6 @@ export async function onRequestPost(
     const briefId =
       createBriefId();
 
-    const normalizedType =
-      normalizeCompanyType(
-        companyType || future
-      );
-
-
     calendarEvent =
       await createCalendarEvent(
         context.env,
@@ -407,9 +365,6 @@ export async function onRequestPost(
 
           desiredOutcome:
             outcome || "",
-
-          future:
-            future || "",
 
           attendeeName:
             name.trim(),
@@ -471,14 +426,6 @@ export async function onRequestPost(
     };
 
 
-    // "future" is the business type from the form, not a post-session next step.
-
-    if (normalizedType) {
-      fields["Company Type"] =
-        normalizedType;
-    }
-
-
     airtableRecord =
       await createOpportunityBrief(
         context.env,
@@ -501,8 +448,8 @@ export async function onRequestPost(
             website:
               targetWebsite,
 
-            companyType:
-              normalizedType,
+            // Company Type is classified by the research workflow, not guessed at booking.
+            companyType: null,
 
             brand:
               deriveBrandFromWebsite(

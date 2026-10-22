@@ -29,6 +29,31 @@
 .outcome-light .partnership-deliverables strong { display: block; color: #171b27; margin-bottom: .5rem; }
 .outcome-light .partnership-deliverables p { margin: 0; color: #485366; }
 @media (max-width: 720px) { .outcome-light .partnership-grid { grid-template-columns: 1fr; } }
+
+/* Mobile-only flip card. Desktop hero and existing CTAs remain untouched. */
+.tp-mobile-hero { display: none; }
+@media (max-width: 720px) {
+  .studio-hero .studio-hero-grid { display: none !important; }
+  .studio-hero .tp-mobile-hero { display: flex; flex-direction: column; gap: 1rem; padding-top: 1.25rem; padding-bottom: 2rem; }
+  .tp-flip-card { perspective: 1200px; width: 100%; }
+  .tp-flip-inner { display: grid; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.2,.75,.25,1); }
+  .tp-flip-card.is-flipped .tp-flip-inner { transform: rotateY(180deg); }
+  .tp-flip-face { grid-area: 1 / 1; min-width: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .tp-flip-front { padding: 1.2rem 0 1.5rem; display: flex; flex-direction: column; justify-content: center; }
+  .tp-flip-front h1 { margin-top: 0; }
+  .tp-flip-front .studio-description { margin-bottom: 0; }
+  .tp-flip-back { transform: rotateY(180deg); display: flex; align-items: center; }
+  .tp-flip-back .studio-art { width: 100%; margin: 0; }
+  .tp-flip-back .studio-art-bottom { display: flex; align-items: center; justify-content: space-between; }
+  .tp-flip-toggle { align-self: center; background: transparent; border: 1px solid rgba(255,255,255,.38); border-radius: 999px; padding: .7rem 1.1rem; color: #fff; font: inherit; font-size: .9rem; cursor: pointer; }
+  .tp-flip-toggle:focus-visible { outline: 3px solid #ff975b; outline-offset: 3px; }
+  .tp-mobile-hero .hero-actions { display: flex; flex-direction: column; gap: .75rem; }
+  .tp-mobile-hero .hero-actions .btn { width: 100%; text-align: center; }
+  .tp-mobile-hero .hero-trust { margin-top: .25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tp-flip-inner { transition: none !important; }
+}
 </style>
 </head>
 <body>
@@ -53,7 +78,7 @@
       <p class="studio-lead">Your clients need answers. Their traffic can't always provide them.</p>
       <p class="studio-description">Turn customer language, market research and performance evidence into a repeatable way to decide what to <strong>investigate, fix, test or monitor</strong> — even when A/B testing isn't viable yet.</p>
       <div class="hero-actions">
-        <button class="btn btn-primary js-book-breakdown" type="button">Book a Free Mapping Session <span aria-hidden="true"></span></button>
+        <button class="btn btn-primary js-book-breakdown" type="button">Book a Free Mapping Session <span aria-hidden="true">↗</span></button>
         <a href="#how-it-works" class="btn btn-secondary">Explore the method ↓</a>
       </div>
       <div class="hero-trust"><span>Tell us where you're stuck. We'll bring the evidence to your Mapping Session.</span></div>
@@ -69,6 +94,37 @@
       <div class="studio-tag studio-tag-d">02 / EVIDENCE</div>
       <div class="studio-art-bottom"><span>QUESTION → SIGNAL → DECISION → ACTION</span><span>⥀</span></div>
     </div>
+  </div>
+  <!-- Mobile-only flip card: CTAs remain outside the rotating card. -->
+  <div class="container tp-mobile-hero">
+    <div class="tp-flip-card" id="tpFlipCard">
+      <div class="tp-flip-inner">
+        <div class="tp-flip-face tp-flip-front">
+          <h1>Less guessing.<br><em>Better</em> growth<br>decisions<span class="studio-period">.</span></h1>
+          <p class="studio-lead">Your clients need answers. Their traffic can't always provide them.</p>
+          <p class="studio-description">Turn customer language, market research and performance evidence into a repeatable way to decide what to <strong>investigate, fix, test or monitor</strong> — even when A/B testing isn't viable yet.</p>
+        </div>
+        <div class="tp-flip-face tp-flip-back" aria-hidden="true" inert>
+          <div class="studio-art" aria-label="Illustration of the TesterPartner decision method">
+            <div class="studio-art-top"><span>OUR DECISION SYSTEM</span><span>01 — 04</span></div>
+            <div class="studio-orbit studio-orbit-one"></div>
+            <div class="studio-orbit studio-orbit-two"></div>
+            <div class="studio-center">WHAT<br>DO WE<br><i>KNOW?</i></div>
+            <div class="studio-tag studio-tag-a">01 / QUESTION</div>
+            <div class="studio-tag studio-tag-b">03 / FEASIBILITY</div>
+            <div class="studio-tag studio-tag-c">04 / NEXT MOVE</div>
+            <div class="studio-tag studio-tag-d">02 / EVIDENCE</div>
+            <div class="studio-art-bottom"><span>QUESTION → SIGNAL → DECISION → ACTION</span><span>⥀</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="tp-flip-toggle" id="tpFlipToggle" type="button" aria-controls="tpFlipCard" aria-pressed="false">Explore our decision system ↻</button>
+    <div class="hero-actions">
+      <button class="btn btn-primary js-book-breakdown" type="button">Book a Free Mapping Session <span aria-hidden="true">↗</span></button>
+      <a href="#how-it-works" class="btn btn-secondary">Explore the method ↓</a>
+    </div>
+    <div class="hero-trust"><span>Tell us where you're stuck. We'll bring the evidence to your Mapping Session.</span></div>
   </div>
   <div class="container studio-bottom-strip mobile-hidden"><span>RESEARCH FIRST.</span><span>TEST WHEN IT MAKES SENSE.</span><span>LEARN EITHER WAY.</span></div>
 </section>
@@ -260,5 +316,21 @@
   </div>
 </dialog>
 <script src="script.js"></script>
+<script>
+(function () {
+  const card = document.getElementById('tpFlipCard');
+  const toggle = document.getElementById('tpFlipToggle');
+  if (!card || !toggle) return;
+  const front = card.querySelector('.tp-flip-front');
+  const back = card.querySelector('.tp-flip-back');
+  toggle.addEventListener('click', function () {
+    const flipped = card.classList.toggle('is-flipped');
+    toggle.setAttribute('aria-pressed', String(flipped));
+    toggle.textContent = flipped ? 'Back to the introduction ↶' : 'Explore our decision system ↻';
+    front.setAttribute('aria-hidden', String(flipped));
+    back.setAttribute('aria-hidden', String(!flipped));
+  });
+})();
+</script>
 </body>
 </html>

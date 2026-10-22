@@ -206,8 +206,9 @@ export async function onRequestPost(
       name = "",
       email = "",
       website = "",
-      clientWebsite = "",
-      companyType = ""   
+      companyType = "",
+      partnerType = "",
+      clientWebsite = ""
     } = body;
 
 
@@ -270,6 +271,18 @@ export async function onRequestPost(
       );
     }
 
+
+    if (!["Agency", "DTC / Ecommerce Brand"].includes(partnerType)) {
+      return Response.json({success:false,error:"Select Agency or DTC / Ecommerce Brand."},{status:400});
+    }
+    if (partnerType === "Agency" && !clientWebsite?.trim()) {
+      return Response.json({success:false,error:"Selected client website is required for agencies."},{status:400});
+    }
+    const targetWebsite = partnerType === "Agency" ? clientWebsite.trim() : website.trim();
+    const validUrl = value => { try { const url = new URL(value); return ["http:","https:"].includes(url.protocol) && url.hostname.includes("."); } catch { return false; } };
+    if (!validUrl(targetWebsite) || !validUrl(website.trim())) {
+      return Response.json({success:false,error:"Enter valid website URLs."},{status:400});
+    }
 
     if (!website?.trim()) {
       return Response.json(
@@ -370,7 +383,7 @@ export async function onRequestPost(
 
     const normalizedType =
       normalizeCompanyType(
-        companyType
+        companyType || future
       );
 
 
@@ -448,14 +461,17 @@ export async function onRequestPost(
         email.trim(),
 
       "Website":
-        website.trim()
+        targetWebsite,
+
+      "Partner Type": partnerType,
+      ...(partnerType === "Agency" ? {
+        "Agency Website": website.trim(),
+        "Client Website": targetWebsite
+      } : {})
     };
 
 
-    if (future) {
-      fields["Next Step"] =
-        clientWebsite ? `Client type: ${future}; Client website: ${clientWebsite}` : `Client type: ${future}`;
-    }
+    // "future" is the business type from the form, not a post-session next step.
 
     if (normalizedType) {
       fields["Company Type"] =
@@ -483,14 +499,14 @@ export async function onRequestPost(
             briefId,
 
             website:
-              (clientWebsite || website).trim(),
+              targetWebsite,
 
             companyType:
               normalizedType,
 
             brand:
               deriveBrandFromWebsite(
-                website.trim()
+                targetWebsite
               )
           }
         );
@@ -533,7 +549,7 @@ export async function onRequestPost(
               email.trim(),
 
             website:
-              website.trim(),
+              targetWebsite,
 
             decision:
               conversation.trim(),

@@ -99,11 +99,12 @@ document.addEventListener("DOMContentLoaded", () => {
     difficulty: "",
     outcome: "",
     future: "",
+    partnerType: "",
+    clientWebsite: "",
 
     name: "",
     email: "",
     website: "",
-    clientWebsite: "",
 
     meetingDay: "",
     meetingTime: "",
@@ -121,6 +122,22 @@ document.addEventListener("DOMContentLoaded", () => {
     7: ["07", "Choose a Time"],
     8: ["08", "Booked"]
   };
+
+  function updateParticipantFields() {
+    const isBrand = selectedRadio("partnerType") === "DTC / Ecommerce Brand";
+    const clientField = $("#clientWebsiteField");
+    const clientInput = $("#clientWebsite");
+    const websiteLabel = $("#websiteLabel");
+    const websiteInput = $("#website");
+    if (clientField) clientField.hidden = isBrand;
+    if (clientInput) clientInput.required = !isBrand;
+    if (websiteLabel) websiteLabel.textContent = isBrand ? "Your brand website" : "Agency website";
+    if (websiteInput) websiteInput.placeholder = isBrand ? "yourbrand.com" : "youragency.com";
+  }
+  $$("input[name='partnerType']", modal).forEach(input => {
+    input.addEventListener("change", updateParticipantFields);
+  });
+  updateParticipantFields();
 
   /* =========================================================
      MODAL
@@ -293,12 +310,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (step === 5) {
-      state.future =
-        selectedRadio("future");
+      state.future = selectedRadio("future");
+      state.partnerType = selectedRadio("partnerType");
+      if (!state.partnerType) {
+        window.alert("Choose whether you’re joining as an agency or a brand.");
+        return false;
+      }
 
       if (!state.future) {
         window.alert(
-          "Choose the type of client we are looking at."
+          "Choose the type of business we are researching."
         );
 
         return false;
@@ -365,10 +386,11 @@ state.email = email;
         return false;
       }
 
-      const clientWebsiteInput = $("#clientWebsite")?.value.trim() || "";
-      const clientWebsite = clientWebsiteInput ? normalizeWebsite(clientWebsiteInput) : "";
-      if (clientWebsiteInput && !clientWebsite) {
-        window.alert("Please enter a valid client website or leave it blank.");
+      const isAgency = state.partnerType === "Agency";
+      const clientInput = $("#clientWebsite")?.value.trim() || "";
+      const clientWebsite = isAgency ? normalizeWebsite(clientInput) : website;
+      if (isAgency && !clientWebsite) {
+        window.alert("Enter a valid website for the client you selected.");
         $("#clientWebsite")?.focus();
         return false;
       }
@@ -827,6 +849,10 @@ state.email = email;
       future:
         state.future,
 
+      partnerType: state.partnerType,
+      clientWebsite: state.clientWebsite,
+      companyType: state.future,
+
       name:
         state.name,
         
@@ -835,12 +861,6 @@ state.email = email;
 
       website:
         state.website,
-
-      clientWebsite:
-        state.clientWebsite,
-
-      companyType:
-        state.future === "Other" ? "" : state.future,
 
       meetingDay:
         state.meetingDay,

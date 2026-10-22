@@ -10,6 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 <style>
+/* Participant-specific booking fields */
+.participant-selector { margin: 1.25rem 0; }
+#clientWebsiteField[hidden] { display: none !important; }
 /* Light outcome section: explicit contrast independent of inherited dark styles */
 .outcome-light .outcome-grid-label { color: #a94320; font-size: .75rem; font-weight: 800; letter-spacing: .12em; margin: 2rem 0 1rem; }
 .outcome-light .outcome-continuation-note { color: #171b27; background: #fffaf3; border: 1px solid #d8d1c7; border-radius: 4px; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
@@ -97,7 +100,7 @@
       <p>We examine customer feedback, market research, and available evidence to identify questions worth investigating. Then, in your free Mapping Session, we assess what that evidence can—and cannot—tell us about your client’s next growth decision.</p>
     </div>
     <div class="process-grid">
-      <article class="process-card"><span class="process-number">01</span><span class="process-time">≈ 5 MIN</span><h3>Share a client challenge</h3><p>Describe a real ecommerce growth decision your agency is facing with a client.</p><div class="mini-tool"><span>YOUR CLIENT CHALLENGE</span><strong>“We keep debating whether our problem is the message or the offer.”</strong></div></article>
+      <article class="process-card"><span class="process-number">01</span><span class="process-time">≈ 5 MIN</span><h3>Share a client challenge</h3><p>If you’re an agency, choose one client to focus on. If you’re a brand, bring one business challenge. No confidential details needed.</p><div class="mini-tool"><span>YOUR CLIENT CHALLENGE</span><strong>“We keep debating whether our problem is the message or the offer.”</strong></div></article>
       <article class="process-card featured"><span class="process-number">02</span><span class="process-time">BEFORE WE MEET</span><h3>We examine the evidence</h3><p>We review relevant public sources and prepare preliminary evidence to share before the session. We explore its relevance and limitations together.</p><div class="signal-list"><span>Customer language</span><span>Specific use cases</span><span>Recurring friction</span><span>Competitor claims</span></div></article>
       <article class="process-card"><span class="process-number">03</span><span class="process-time">30 MIN</span><h3>Map the situation together</h3><p>We evaluate the preliminary evidence against the client’s context, constraints and available information, then map what remains unknown.</p><div class="mini-tool"><span>THE CONVERSATION STARTS HERE</span><strong>“Customers may value the outcome differently than the category describes it.”</strong></div></article>
     </div>
@@ -107,9 +110,9 @@
 <section id="example" class="example studio-example">
   <div class="container">
     <div class="section-intro">
-      <span class="section-kicker">ONE EXAMPLE OF WHAT WE LOOK FOR</span>
+      <span class="section-kicker">A GLIMPSE OF THE EVIDENCE WE EXPLORE FOR YOUR CHOSEN CLIENT</span>
       <h2>The right next move starts with the right question.</h2>
-      <p>Customer feedback is just one source we explore before your Mapping Session. This anonymized positioning example shows how a recurring theme can help shape a more useful question—not provide a definitive answer.</p>
+      <p>Every Mapping Session focuses on one selected business challenge. Customer feedback is just one of the sources we may explore. This anonymized example shows how a recurring theme can help shape a more useful question—not provide a definitive answer.</p>
     </div>
     <div class="case-layout">
       <div class="case-question"><span class="case-label">THE QUESTION</span><h3>What should this security product lead with?</h3><p>The category had several plausible messages: advanced technology, wireless convenience, easy installation and protection.</p></div>
@@ -131,7 +134,7 @@
       <article class="outcome-card partnership-card">
         <div class="outcome-number">PHASE 01 · 3 MONTHS</div>
         <h3>Research &amp; Experimentation Strategy</h3>
-        <p>We investigate your client's challenges, prioritize opportunities, and design feasible experiments. Your agency leads execution.</p>
+        <p>We investigate the selected business challenge, prioritize opportunities, and design feasible experiments. Your team leads execution.</p>
         <div class="partnership-deliverables"><strong>What we build together</strong><p>Evidence map · Prioritized backlog · Experiment designs · Learning reviews</p></div>
       </article>
       <article class="outcome-card partnership-card">
@@ -158,7 +161,7 @@
       <details><summary>Does every Mapping Session lead to a partnership?</summary><p>No. The Mapping Session helps us understand the client challenge and assess whether continued investigation or experimentation would be useful. A partnership is only considered if it makes sense for both sides.</p></details>
       <details><summary>What if a client does not have enough traffic for A/B testing?</summary><p>We assess test feasibility and realistic timelines before recommending experiments. Customer research, funnel diagnosis, behavioral analysis, confirmed fixes or monitoring may be better next steps.</p></details>
       <details><summary>Will the first session deliver a complete strategy?</summary><p>No. Preliminary research helps us begin with evidence; the 15-minute Mapping Session is for understanding the client's context, constraints, assumptions and next questions.</p></details>
-      <details><summary>Can our agency apply this with multiple clients?</summary><p>That is the direction of our future Testing Partnership. Scope, access and delivery terms will be agreed separately; the free session focuses on one challenge.</p></details>
+      <details><summary>Can our agency apply this with multiple clients?</summary><p>Yes. We start with one selected client challenge, then can scope additional accounts separately. The free Mapping Session focuses on one client.</p></details>
       <details><summary>Do you guarantee conversion uplift?</summary><p>No. Our approach supports better-informed decisions and honest learning, not guaranteed outcomes or statistical certainty.</p></details>
     </div>
   </div>
@@ -169,7 +172,7 @@
   <div class="breakdown-shell">
     <button id="closeModal" class="modal-close" type="button" aria-label="Close">×</button>
     <div class="wizard-progress"><div class="chapter"><span class="chapter-number">01</span><span class="chapter-title">Your Challenge</span></div><div class="progress-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>
-    <section class="wizard-screen active" data-step="1"><div class="wizard-content"><span class="wizard-kicker">01 · THE DECISION</span><h2>What decision is your agency trying to make for a client?</h2><p>Describe one real decision. No confidential details needed.</p><textarea id="challenge" rows="7" placeholder="Example: Should we prioritize the product page, rethink the offer, or investigate checkout friction?"></textarea><div class="wizard-tip"><strong>Why we ask:</strong> A concrete client decision gives our pre-session research a useful starting point.</div></div><div class="wizard-actions"><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
+    <section class="wizard-screen active" data-step="1"><div class="wizard-content"><span class="wizard-kicker">01 · THE DECISION</span><h2>What growth decision are you trying to make?</h2><p>Describe one real decision. No confidential details needed.</p><textarea id="challenge" rows="7" placeholder="Example: Should we prioritize the product page, rethink the offer, or investigate checkout friction?"></textarea><div class="wizard-tip"><strong>Why we ask:</strong> A concrete client decision gives our pre-session research a useful starting point.</div></div><div class="wizard-actions"><button class="btn btn-primary next-step" type="button">Continue →</button></div></section>
     <section class="wizard-screen" data-step="2"><div class="wizard-content"><span class="wizard-kicker">02 · THE CONSTRAINT</span><h2>What's preventing you from making that decision confidently?</h2><p>Choose the biggest obstacle right now.</p><div class="option-grid">
       <label class="option-card"><input type="radio" name="difficulty" value="Low traffic"><div><strong>Not enough traffic or conversions for a reliable A/B test.</strong></div></label>
       <label class="option-card"><input type="radio" name="difficulty" value="Incomplete data"><div><strong>Conflicting or incomplete data.</strong></div></label>
@@ -187,8 +190,16 @@
     <section class="wizard-screen" data-step="5">
       <div class="wizard-content">
         <span class="wizard-kicker">05 · CLIENT CONTEXT</span>
-        <h2>What kind of client are we looking at?</h2>
-        <p>Choose the business type for this case.</p>
+        <h2>Tell us who we’re researching.</h2>
+        <p>Agencies: select one client for this Mapping Session. Brands: we’ll focus on your own business.</p>
+        <div class="participant-selector" role="group" aria-label="Who are you joining as?">
+          <span class="client-details-eyebrow">ARE YOU JOINING AS AN AGENCY OR A BRAND?</span>
+          <div class="option-grid">
+            <label class="option-card"><input type="radio" name="partnerType" value="Agency"><div><strong>Agency</strong><span>I’m bringing one client challenge.</span></div></label>
+            <label class="option-card"><input type="radio" name="partnerType" value="DTC / Ecommerce Brand"><div><strong>DTC / Ecommerce Brand</strong><span>I’m researching my own brand.</span></div></label>
+          </div>
+        </div>
+        <p class="client-type-intro" style="margin-top:1rem">What type of business are we researching?</p>
         <div class="option-grid">
           <label class="option-card"><input type="radio" name="future" value="Consumer"><div><strong>Ecommerce / DTC brand</strong></div></label>
           <label class="option-card"><input type="radio" name="future" value="SaaS"><div><strong>B2B SaaS</strong></div></label>
@@ -225,7 +236,7 @@
             </div>
         
             <div class="form-field">
-              <label for="website">Agency website</label>
+              <label for="website" id="websiteLabel">Agency website</label>
               <input
                 type="url"
                 id="website"
@@ -234,9 +245,9 @@
                 autocomplete="url"
               >
             </div>
-            <div class="form-field">
-              <label for="clientWebsite">Client website (optional)</label>
-              <input type="url" id="clientWebsite" name="clientWebsite" placeholder="clientbrand.com" autocomplete="off">
+            <div class="form-field" id="clientWebsiteField">
+              <label for="clientWebsite">Selected client website (required for agencies)</label>
+              <input type="url" id="clientWebsite" name="clientWebsite" placeholder="selectedclient.com" autocomplete="off">
             </div>
           </div>
         </div>

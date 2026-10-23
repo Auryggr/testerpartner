@@ -64,6 +64,9 @@ console.log(`\nTesterPartner smoke tests → ${BASE_URL}\n`);
 
 await check("Home loads with the booking form", async () => {
   const res = await get("/");
+  if (res.status === 503 && (await res.clone().text()).includes("Staging access is not configured")) {
+    throw new Error("Staging is closed: add STAGING_PASSWORD (and the other secrets) to Cloudflare's Preview environment, then redeploy");
+  }
   assert(res.status === 200, `Expected 200, got ${res.status}`);
   const html = await res.text();
   assert(html.includes("breakdownModal"), "Booking form (#breakdownModal) not found in the home page");
@@ -167,6 +170,10 @@ await check("Internal endpoints reject requests without the key", async () => {
 if (IS_STAGING) {
   await check("Staging is protected with a password", async () => {
     const res = await get("/", { auth: false });
+    assert(
+      res.status !== 503,
+      "Staging is closed: STAGING_USER / STAGING_PASSWORD are missing in Cloudflare's Preview environment"
+    );
     assert(res.status === 401, `Expected 401 without credentials, got ${res.status} — staging is public!`);
   });
 

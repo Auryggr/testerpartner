@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const value = (params.get(`utm_${key}`) || "").trim();
         if (value) result[key] = value.slice(0, 100);
       });
+      // Page that sent the visitor here, e.g. ref=lab_story_03 (blog CTA).
+      const ref = (params.get("ref") || "").trim();
+      if (ref) result.ref = ref.slice(0, 100);
     } catch (error) {
       /* ignore */
     }
@@ -1092,4 +1095,21 @@ state.email = email;
      ========================================================= */
 
   showStep(1);
+
+  /*
+   * Links like /?ref=lab_story_01#book (blog CTAs) open the booking
+   * form directly. The hash is removed so a reload doesn't reopen it.
+   */
+  if (window.location.hash === "#book") {
+    history.replaceState(
+      null,
+      "",
+      window.location.pathname + window.location.search
+    );
+    openModal({
+      currentTarget: {
+        dataset: { ctaLocation: campaign.ref || "direct_link" }
+      }
+    });
+  }
 });

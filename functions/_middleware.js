@@ -11,7 +11,21 @@
  * - Staging responses also send "noindex" so search engines never list them.
  */
 
+import { handleLabStory, isLabPreview } from "../lib/lab-gate.js";
+
 const STAGING_HOST_SUFFIX = ".pages.dev";
+
+/*
+ * Civic Friction Lab stories go live on their date (lib/lab-posts.js).
+ * Returns the story response, or the normal one for any other URL.
+ */
+async function serve(context) {
+  const story = await handleLabStory(
+    context,
+    isLabPreview(context.request, context.env)
+  );
+  return story || context.next();
+}
 
 /*
  * Security headers for every response (pages and API).
@@ -94,12 +108,12 @@ function unauthorized(message = "Authentication required.") {
 }
 
 export async function onRequest(context) {
-  const { request, env, next } = context;
+  const { request, env } = context;
   const { hostname } = new URL(request.url);
 
   // Production domain: serve normally.
   if (!hostname.endsWith(STAGING_HOST_SUFFIX)) {
-    return withSecurityHeaders(await next());
+    return withSecurityHeaders(await serve(context));
   }
 
   const expectedUser = env.STAGING_USER;
@@ -139,7 +153,7 @@ export async function onRequest(context) {
     return unauthorized("Invalid username or password.");
   }
 
-  const response = await next();
+  const response = await serve(context);
   const protectedResponse = withSecurityHeaders(response);
   protectedResponse.headers.set("X-Robots-Tag", "noindex, nofollow");
   protectedResponse.headers.set("Cache-Control", "no-store");

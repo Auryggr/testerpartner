@@ -72,7 +72,8 @@ const CAMPAIGN_FIELDS = {
   medium: "UTM Medium",
   campaign: "UTM Campaign",
   content: "UTM Content",
-  term: "UTM Term"
+  term: "UTM Term",
+  ref: "Ref"
 };
 
 function campaignToFields(campaign) {

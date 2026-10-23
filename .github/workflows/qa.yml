@@ -39,6 +39,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Civic Friction Lab scheduling (unit tests)
+        run: node tests/lab-schedule.test.mjs
+
       - name: Choose the URL to test
         run: |
           if [ "$TARGET" = "staging" ]; then

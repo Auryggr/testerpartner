@@ -177,6 +177,18 @@ await check("Security headers are sent", async () => {
   assert(csp.includes("frame-ancestors 'none'"), "Content-Security-Policy missing");
 });
 
+await check("Civic Friction Lab, sitemap, robots and /podcast respond", async () => {
+  const lab = await get("/lab/");
+  assert(lab.status === 200, `/lab/ returned ${lab.status}`);
+  assert((await lab.text()).includes("Civic Friction"), "/lab/ is not the Lab index");
+  const sitemap = await get("/sitemap.xml");
+  assert(sitemap.status === 200 && (await sitemap.text()).includes("<urlset"), `/sitemap.xml returned ${sitemap.status}`);
+  const robots = await get("/robots.txt");
+  assert(robots.status === 200 && (await robots.text()).includes("Sitemap:"), `/robots.txt returned ${robots.status}`);
+  const pod = await get("/podcast");
+  assert(pod.status === 302 && (pod.headers.get("location") || "").includes("utm_source=spotify"), `/podcast returned ${pod.status}`);
+});
+
 await check("No links point to pages.dev", async () => {
   for (const path of ["/", "/privacy-policy/", "/terms/"]) {
     const html = await (await get(path)).text();

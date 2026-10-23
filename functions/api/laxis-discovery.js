@@ -1,4 +1,8 @@
 import {
+  requireInternalKey
+} from "../../lib/internal-auth.js";
+
+import {
   getPendingOpportunityBriefs,
   getAssignedLaxisMeetings,
   updateOpportunityBriefByRecordId
@@ -800,6 +804,13 @@ async function attachAndRepairTranscript(
 export async function onRequestPost(
   context
 ) {
+  const denied =
+    requireInternalKey(context);
+
+  if (denied) {
+    return denied;
+  }
+
   try {
     const {
       request,

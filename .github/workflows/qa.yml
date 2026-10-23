@@ -1,0 +1,73 @@
+name: QA — smoke tests & booking form
+
+on:
+  # Every hour against production (GitHub only runs schedules from main).
+  schedule:
+    - cron: "17 * * * *"
+
+  # After every push to main or staging, against that environment.
+  push:
+    branches: [main, staging]
+
+  # Manual run from the Actions tab.
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Environment to test"
+        type: choice
+        options: [production, staging]
+        default: production
+
+concurrency:
+  group: qa-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || (github.ref_name == 'staging' && 'staging' || 'production') }}
+      STAGING_USER: ${{ secrets.STAGING_USER }}
+      STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Choose the URL to test
+        run: |
+          if [ "$TARGET" = "staging" ]; then
+            echo "BASE_URL=https://staging.testerpartner.pages.dev" >> "$GITHUB_ENV"
+          else
+            echo "BASE_URL=https://testerpartner.com" >> "$GITHUB_ENV"
+          fi
+
+      - name: Wait for the Cloudflare deployment
+        if: github.event_name == 'push'
+        run: sleep 150
+
+      - name: Smoke tests (pages, API, protection, redirects)
+        run: node tests/smoke.mjs
+
+      - name: Install Playwright
+        if: always()
+        run: |
+          npm install --no-save --no-package-lock playwright@1.48.2
+          npx playwright install --with-deps chromium
+
+      - name: Booking form shows dates and times
+        if: always()
+        run: node tests/e2e-booking.mjs
+
+      - name: Upload screenshot on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-screenshots
+          path: tests/artifacts/
+          if-no-files-found: ignore

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Page not found | TesterPartner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #111520;
+      --orange: #f19962;
+      --cream: #f1ede6;
+      --muted: rgba(241, 237, 230, .7);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: var(--navy);
+      color: var(--cream);
+      font-family: Inter, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+      padding: 32px 16px;
+    }
+    main { max-width: 560px; }
+    .eyebrow {
+      margin: 0 0 16px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+    h1 {
+      margin: 0 0 16px;
+      font-size: clamp(2.2rem, 7vw, 3.5rem);
+      line-height: 1;
+      letter-spacing: -.04em;
+      font-weight: 800;
+    }
+    h1 span { color: var(--orange); }
+    p { margin: 0 0 28px; color: var(--muted); line-height: 1.6; }
+    a.button {
+      display: inline-block;
+      padding: 12px 20px;
+      border-radius: 3px;
+      background: var(--orange);
+      color: var(--navy);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    a.button:focus-visible { outline: 3px solid var(--cream); outline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">404 · Page not found</p>
+    <h1>No evidence<br>of this page<span>.</span></h1>
+    <p>The page you’re looking for doesn’t exist or has moved. Let’s get you back to where the useful questions are.</p>
+    <a class="button" href="/">Back to TesterPartner →</a>
+  </main>
+</body>
+</html>

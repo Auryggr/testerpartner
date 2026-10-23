@@ -1,4 +1,8 @@
 import {
+  requireInternalKey
+} from "../../lib/internal-auth.js";
+
+import {
   normalizeLaxisTranscript
 } from "../../lib/transcript.js";
 
@@ -7,6 +11,13 @@ import {
 } from "../../lib/airtable.js";
 
 export async function onRequestPost(context) {
+  const denied =
+    requireInternalKey(context);
+
+  if (denied) {
+    return denied;
+  }
+
   try {
     const briefId =
       context.request.headers.get("X-Brief-ID");

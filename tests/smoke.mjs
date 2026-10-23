@@ -123,6 +123,47 @@ await check("No links point to pages.dev", async () => {
   }
 });
 
+await check("Internal files are not published", async () => {
+  const internal = [
+    ["/wrangler.toml", "compatibility_date"],
+    ["/lib/airtable.js", "export"],
+    ["/functions/api/booking.js", "export"],
+    ["/DEPLOYMENT_NOTES.md", "TesterPartner"],
+    ["/package.json", "wrangler"],
+    ["/.vscode/mcp.json", "servers"],
+    ["/tests/smoke.mjs", "smoke"]
+  ];
+  for (const [path, marker] of internal) {
+    const res = await get(path);
+    const text = await res.text();
+    assert(!(res.status === 200 && text.includes(marker)), `${path} is publicly downloadable`);
+  }
+});
+
+await check("Unknown pages return 404 (not the home)", async () => {
+  const res = await get("/this-page-does-not-exist-qa/");
+  assert(res.status === 404, `Expected 404, got ${res.status}`);
+});
+
+await check("Test endpoints are removed", async () => {
+  for (const path of ["/api/airtable-test", "/api/transcript-test"]) {
+    const res = await get(path);
+    const text = await res.text();
+    assert(!text.includes('"connected"') && !text.includes('"transcript"'), `${path} is still active`);
+  }
+});
+
+await check("Internal endpoints reject requests without the key", async () => {
+  for (const path of ["/api/transcript", "/api/laxis-discovery"]) {
+    const res = await fetch(BASE_URL + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Brief-ID": "QA-PROBE", ...authHeaders },
+      body: JSON.stringify({ meetings: [] })
+    });
+    assert([401, 503].includes(res.status), `${path} answered ${res.status} without the internal key`);
+  }
+});
+
 if (IS_STAGING) {
   await check("Staging is protected with a password", async () => {
     const res = await get("/", { auth: false });

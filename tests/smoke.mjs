@@ -140,6 +140,8 @@ await check("Google Analytics ID is configured (Cookie settings visible)", async
   const match = js.match(/var GA_ID = '([^']*)'/);
   assert(match, "GA_ID line not found in cookie-consent.js");
   assert(/^G-[A-Z0-9]+$/.test(match[1]), `GA_ID is "${match[1]}" — analytics is off and Cookie settings is hidden`);
+  const cache = res.headers.get("cache-control") || "";
+  assert(/max-age=0|no-cache|must-revalidate/.test(cache), `cookie-consent.js is cached ("${cache}") — new deploys won't show up`);
 });
 
 await check("Visitors only see slots at least 48 h ahead", async () => {

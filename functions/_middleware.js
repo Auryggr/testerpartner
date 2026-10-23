@@ -43,11 +43,25 @@ const SECURITY_HEADERS = {
   "Content-Security-Policy-Report-Only": CSP
 };
 
+/*
+ * Pages, scripts and styles must always be revalidated, so a new deploy
+ * is visible immediately (no stale cookie-consent.js after a change).
+ * Unchanged files are answered with 304 via ETag, so it stays fast.
+ */
+const REVALIDATE_TYPES = /text\/html|javascript|text\/css/;
+
 function withSecurityHeaders(response) {
   const secured = new Response(response.body, response);
 
   for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
     secured.headers.set(name, value);
+  }
+
+  const type = secured.headers.get("Content-Type") || "";
+  const cache = secured.headers.get("Cache-Control") || "";
+
+  if (REVALIDATE_TYPES.test(type) && !/no-store|private/.test(cache)) {
+    secured.headers.set("Cache-Control", "public, max-age=0, must-revalidate");
   }
 
   return secured;

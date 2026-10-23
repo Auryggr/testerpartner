@@ -133,6 +133,15 @@ await check(`Session length is ${EXPECTED_SESSION_DURATION} min, offered every $
   assert(slotInterval === EXPECTED_SLOT_INTERVAL, `slotInterval is ${slotInterval} (check SLOT_INTERVAL / lib/scheduler.js)`);
 });
 
+await check("Google Analytics ID is configured (Cookie settings visible)", async () => {
+  const res = await get("/cookie-consent.js");
+  assert(res.status === 200, `cookie-consent.js returned ${res.status}`);
+  const js = await res.text();
+  const match = js.match(/var GA_ID = '([^']*)'/);
+  assert(match, "GA_ID line not found in cookie-consent.js");
+  assert(/^G-[A-Z0-9]+$/.test(match[1]), `GA_ID is "${match[1]}" — analytics is off and Cookie settings is hidden`);
+});
+
 await check("No links point to pages.dev", async () => {
   for (const path of ["/", "/privacy-policy/", "/terms/"]) {
     const html = await (await get(path)).text();

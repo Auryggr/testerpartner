@@ -35,6 +35,14 @@ Responsable: Aurysmar Guerra. Idioma de trabajo con la responsable: español.
 
 ## Integración con Laxis
 
+**Quién llama a los endpoints hoy:** el userscript de Tampermonkey
+`scripts/tampermonkey/laxis-meeting-discovery.user.js`, que corre en el
+navegador de la responsable al abrir app.laxis.tech y envía las reuniones
+transcriptas a `https://testerpartner.com/api/laxis-discovery`. La clave se
+guarda en el almacenamiento de Tampermonkey (menú → "Set TesterPartner key"),
+nunca en el archivo. Si cambiás el userscript, subí `@version`.
+
+
 `/api/laxis-discovery` y `/api/transcript` exigen la clave `INTERNAL_API_KEY`
 en el header `X-TesterPartner-Key`. **No los llames con curl ni fetch directo:**
 usá siempre el script, que lee la clave de `.dev.vars` sin mostrarla.

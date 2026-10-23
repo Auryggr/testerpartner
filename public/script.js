@@ -11,6 +11,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const $$ = (selector, scope = document) =>
     Array.from(scope.querySelectorAll(selector));
 
+  /*
+   * Campaign tags (utm_*) from the link the visitor arrived with.
+   * Read once and kept in memory only: nothing is stored in the
+   * browser, so no cookie consent is needed. Sent with the booking.
+   */
+  const campaign = (() => {
+    const result = {};
+    try {
+      const params = new URLSearchParams(window.location.search);
+      ["source", "medium", "campaign", "content", "term"].forEach((key) => {
+        const value = (params.get(`utm_${key}`) || "").trim();
+        if (value) result[key] = value.slice(0, 100);
+      });
+    } catch (error) {
+      /* ignore */
+    }
+    return result;
+  })();
+
   function normalizeWebsite(value) {
     let website = value.trim();
 
@@ -980,7 +999,9 @@ state.email = email;
         state.recordingConsent,
 
       marketingOptIn:
-        state.marketingOptIn
+        state.marketingOptIn,
+
+      campaign
     };
 
     try {

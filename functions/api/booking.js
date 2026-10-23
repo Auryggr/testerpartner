@@ -26,7 +26,7 @@ import {
  * Version of the Privacy Policy the visitor accepted.
  * Update it whenever the policy's effective date changes.
  */
-const PRIVACY_POLICY_VERSION = "2026-10-22";
+const PRIVACY_POLICY_VERSION = "2026-10-23";
 
 
 function addMinutes(
@@ -62,6 +62,34 @@ function overlaps(
   );
 }
 
+
+/*
+ * utm_* tags sent by the form -> Airtable fields.
+ * Only short, plain values are kept; anything else is dropped.
+ */
+const CAMPAIGN_FIELDS = {
+  source: "UTM Source",
+  medium: "UTM Medium",
+  campaign: "UTM Campaign",
+  content: "UTM Content",
+  term: "UTM Term"
+};
+
+function campaignToFields(campaign) {
+  const fields = {};
+  if (!campaign || typeof campaign !== "object" || Array.isArray(campaign)) {
+    return fields;
+  }
+  for (const [key, fieldName] of Object.entries(CAMPAIGN_FIELDS)) {
+    const value = campaign[key];
+    if (typeof value !== "string") continue;
+    const clean = value.trim().slice(0, 100);
+    if (clean && /^[\p{L}\p{N} ._+\-|/:]+$/u.test(clean)) {
+      fields[fieldName] = clean;
+    }
+  }
+  return fields;
+}
 
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
@@ -186,8 +214,12 @@ export async function onRequestPost(
       clientWebsite = "",
       privacyAccepted = false,
       recordingConsent = false,
-      marketingOptIn = false
+      marketingOptIn = false,
+      campaign = {}
     } = body;
+
+    const campaignFields =
+      campaignToFields(campaign);
 
 
     if (privacyAccepted !== true) {
@@ -499,6 +531,9 @@ export async function onRequestPost(
 
       "Consent Timestamp":
         consentTimestamp,
+
+      // Where the visitor came from (utm_* tags of the link), if any.
+      ...campaignFields,
 
       ...(partnerType === "Agency" ? {
         "Agency Website": website.trim(),

@@ -8,6 +8,7 @@ pages_build_output_dir = "./public"
 TIMEZONE = "America/Argentina/Buenos_Aires"
 SESSION_DURATION = "15"
 BUFFER_MINUTES = "15"
+MIN_NOTICE_HOURS = "48"
 
 AIRTABLE_BASE_ID = "appbys02ktQ1emdKV"
 AIRTABLE_TABLE_NAME = "tbl6SfrEDkobf8FlP"

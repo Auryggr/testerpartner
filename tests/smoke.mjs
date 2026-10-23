@@ -140,6 +140,53 @@ await check("Google Analytics ID is configured (Cookie settings visible)", async
   const match = js.match(/var GA_ID = '([^']*)'/);
   assert(match, "GA_ID line not found in cookie-consent.js");
   assert(/^G-[A-Z0-9]+$/.test(match[1]), `GA_ID is "${match[1]}" — analytics is off and Cookie settings is hidden`);
+  const cache = res.headers.get("cache-control") || "";
+  assert(/max-age=0|no-cache|must-revalidate/.test(cache), `cookie-consent.js is cached ("${cache}") — new deploys won't show up`);
+});
+
+await check("Visitors only see slots at least 48 h ahead", async () => {
+  const res = await get("/api/availability");
+  const body = await res.json();
+  const { minNoticeHours, days = [] } = body?.data || {};
+  assert(minNoticeHours === 48, `minNoticeHours is ${minNoticeHours} (check MIN_NOTICE_HOURS)`);
+  assert((res.headers.get("cache-control") || "").includes("no-store"), "availability must not be cached");
+  const first = days[0]?.slots?.[0];
+  if (first) {
+    const start = new Date(`${days[0].date}T${first.padStart(5, "0")}:00-03:00`);
+    const earliest = Date.now() + 48 * 60 * 60 * 1000 - 5 * 60 * 1000;
+    assert(start.getTime() >= earliest, `First slot ${days[0].date} ${first} is less than 48 h away`);
+  }
+});
+
+await check("Security headers are sent", async () => {
+  const res = await get("/");
+  const expected = {
+    "strict-transport-security": "max-age=",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "permissions-policy": "camera=()"
+  };
+  for (const [name, fragment] of Object.entries(expected)) {
+    const value = res.headers.get(name) || "";
+    assert(value.includes(fragment), `${name} is "${value}"`);
+  }
+  const csp =
+    res.headers.get("content-security-policy") ||
+    res.headers.get("content-security-policy-report-only") || "";
+  assert(csp.includes("frame-ancestors 'none'"), "Content-Security-Policy missing");
+});
+
+await check("Civic Friction Lab, sitemap, robots and /podcast respond", async () => {
+  const lab = await get("/lab/");
+  assert(lab.status === 200, `/lab/ returned ${lab.status}`);
+  assert((await lab.text()).includes("Civic Friction"), "/lab/ is not the Lab index");
+  const sitemap = await get("/sitemap.xml");
+  assert(sitemap.status === 200 && (await sitemap.text()).includes("<urlset"), `/sitemap.xml returned ${sitemap.status}`);
+  const robots = await get("/robots.txt");
+  assert(robots.status === 200 && (await robots.text()).includes("Sitemap:"), `/robots.txt returned ${robots.status}`);
+  const pod = await get("/podcast");
+  assert(pod.status === 302 && (pod.headers.get("location") || "").includes("utm_source=spotify"), `/podcast returned ${pod.status}`);
 });
 
 await check("No links point to pages.dev", async () => {

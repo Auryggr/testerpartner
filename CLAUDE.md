@@ -33,6 +33,21 @@ Responsable: Aurysmar Guerra. Idioma de trabajo con la responsable: español.
 5. Las reservas de prueba en staging son reales (Calendar, Airtable, email):
    no confirmes reservas salvo que la responsable lo pida.
 
+## Reglas de agenda
+
+- Los visitantes solo ven turnos que empiezan al menos `MIN_NOTICE_HOURS`
+  (48) después de ahora. `/api/booking` valida lo mismo.
+- Con la cookie `tp_qa=<QA_BYPASS_TOKEN>` (secreto de Cloudflare) se ve la
+  disponibilidad real. Nunca escribas el valor del token en código o commits.
+- `lib/qa-mode.js` decide el modo; `lib/scheduler.js` calcula los turnos.
+
+## Encabezados de seguridad
+
+`functions/_middleware.js` agrega HSTS, nosniff, X-Frame-Options,
+Referrer-Policy, Permissions-Policy y una CSP (por ahora en modo
+Report-Only). Si agregás un script, fuente o servicio externo nuevo,
+sumalo a la CSP.
+
 ## Integración con Laxis
 
 **Quién llama a los endpoints hoy:** el userscript de Tampermonkey

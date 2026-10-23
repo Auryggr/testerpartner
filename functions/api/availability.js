@@ -7,15 +7,35 @@ import {
   getAvailability
 } from "../../lib/scheduler.js";
 
+import {
+  minNoticeMinutes
+} from "../../lib/qa-mode.js";
+
 
 export async function onRequestGet(context) {
   try {
     const availability =
       await getAvailability(
-        context.env
+        context.env,
+        {
+          minNoticeMinutes:
+            minNoticeMinutes(
+              context.request,
+              context.env
+            )
+        }
       );
 
-    return ok(availability);
+    const response =
+      ok(availability);
+
+    // The answer depends on the QA cookie: never cache it.
+    response.headers.set(
+      "Cache-Control",
+      "private, no-store"
+    );
+
+    return response;
 
   } catch (err) {
     

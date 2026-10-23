@@ -17,6 +17,10 @@ import {
   triggerResearchSafe
 } from "../../lib/research-dispatch.js";
 
+import {
+  minNoticeMinutes
+} from "../../lib/qa-mode.js";
+
 
 /*
  * Version of the Privacy Policy the visitor accepted.
@@ -350,6 +354,36 @@ export async function onRequestPost(
         },
         {
           status: 400
+        }
+      );
+    }
+
+
+    /*
+     * Same minimum notice as /api/availability (48 h for visitors,
+     * none in QA mode), so it can't be skipped by calling the API directly.
+     */
+    const noticeMinutes =
+      minNoticeMinutes(
+        context.request,
+        context.env
+      );
+
+    if (
+      start <
+      addMinutes(
+        new Date(),
+        noticeMinutes
+      )
+    ) {
+      return Response.json(
+        {
+          success: false,
+          error:
+            "That time is no longer available. Please choose another slot."
+        },
+        {
+          status: 409
         }
       );
     }

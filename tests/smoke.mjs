@@ -142,6 +142,39 @@ await check("Google Analytics ID is configured (Cookie settings visible)", async
   assert(/^G-[A-Z0-9]+$/.test(match[1]), `GA_ID is "${match[1]}" — analytics is off and Cookie settings is hidden`);
 });
 
+await check("Visitors only see slots at least 48 h ahead", async () => {
+  const res = await get("/api/availability");
+  const body = await res.json();
+  const { minNoticeHours, days = [] } = body?.data || {};
+  assert(minNoticeHours === 48, `minNoticeHours is ${minNoticeHours} (check MIN_NOTICE_HOURS)`);
+  assert((res.headers.get("cache-control") || "").includes("no-store"), "availability must not be cached");
+  const first = days[0]?.slots?.[0];
+  if (first) {
+    const start = new Date(`${days[0].date}T${first.padStart(5, "0")}:00-03:00`);
+    const earliest = Date.now() + 48 * 60 * 60 * 1000 - 5 * 60 * 1000;
+    assert(start.getTime() >= earliest, `First slot ${days[0].date} ${first} is less than 48 h away`);
+  }
+});
+
+await check("Security headers are sent", async () => {
+  const res = await get("/");
+  const expected = {
+    "strict-transport-security": "max-age=",
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "permissions-policy": "camera=()"
+  };
+  for (const [name, fragment] of Object.entries(expected)) {
+    const value = res.headers.get(name) || "";
+    assert(value.includes(fragment), `${name} is "${value}"`);
+  }
+  const csp =
+    res.headers.get("content-security-policy") ||
+    res.headers.get("content-security-policy-report-only") || "";
+  assert(csp.includes("frame-ancestors 'none'"), "Content-Security-Policy missing");
+});
+
 await check("No links point to pages.dev", async () => {
   for (const path of ["/", "/privacy-policy/", "/terms/"]) {
     const html = await (await get(path)).text();

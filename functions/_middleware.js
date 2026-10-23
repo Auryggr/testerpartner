@@ -13,6 +13,46 @@
 
 const STAGING_HOST_SUFFIX = ".pages.dev";
 
+/*
+ * Security headers for every response (pages and API).
+ *
+ * Content-Security-Policy starts in Report-Only mode: the browser reports
+ * violations in the console but blocks nothing. After a week without
+ * violations, rename the header to "Content-Security-Policy" to enforce it.
+ */
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com",
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'"
+].join("; ");
+
+const SECURITY_HEADERS = {
+  "Strict-Transport-Security": "max-age=31536000",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+  "Cross-Origin-Opener-Policy": "same-origin",
+  "Content-Security-Policy-Report-Only": CSP
+};
+
+function withSecurityHeaders(response) {
+  const secured = new Response(response.body, response);
+
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+    secured.headers.set(name, value);
+  }
+
+  return secured;
+}
+
 function safeEqual(a, b) {
   // Constant-time comparison so the password can't be guessed by timing.
   const encoder = new TextEncoder();
@@ -29,14 +69,14 @@ function safeEqual(a, b) {
 }
 
 function unauthorized(message = "Authentication required.") {
-  return new Response(message, {
+  return withSecurityHeaders(new Response(message, {
     status: 401,
     headers: {
       "WWW-Authenticate": 'Basic realm="TesterPartner staging", charset="UTF-8"',
       "Cache-Control": "no-store",
       "X-Robots-Tag": "noindex, nofollow"
     }
-  });
+  }));
 }
 
 export async function onRequest(context) {
@@ -45,7 +85,7 @@ export async function onRequest(context) {
 
   // Production domain: serve normally.
   if (!hostname.endsWith(STAGING_HOST_SUFFIX)) {
-    return next();
+    return withSecurityHeaders(await next());
   }
 
   const expectedUser = env.STAGING_USER;
@@ -86,7 +126,7 @@ export async function onRequest(context) {
   }
 
   const response = await next();
-  const protectedResponse = new Response(response.body, response);
+  const protectedResponse = withSecurityHeaders(response);
   protectedResponse.headers.set("X-Robots-Tag", "noindex, nofollow");
   protectedResponse.headers.set("Cache-Control", "no-store");
 

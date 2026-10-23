@@ -5,7 +5,7 @@
      CONFIG
      ------------------------------------------------------------------ */
 
-  var GA_ID = ''; // e.g. 'G-XXXXXXXXXX'
+  var GA_ID = 'G-1N54NNMXGP'; // GA4 Measurement ID (public, not a secret)
 
   /*
    * true  (recommended): the first layer shows a discreet

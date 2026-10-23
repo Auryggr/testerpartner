@@ -62,6 +62,20 @@ async function check(name, fn) {
 
 console.log(`\nTesterPartner smoke tests → ${BASE_URL}\n`);
 
+if (IS_STAGING) {
+  await check("Staging credentials are available and accepted", async () => {
+    assert(
+      STAGING_USER && STAGING_PASSWORD,
+      "STAGING_USER and/or STAGING_PASSWORD are missing (GitHub: Settings → Secrets and variables → Actions)"
+    );
+    const res = await get("/");
+    assert(
+      res.status !== 401,
+      "Credentials were rejected: STAGING_USER / STAGING_PASSWORD in GitHub don't match the ones in Cloudflare (Preview)"
+    );
+  });
+}
+
 await check("Home loads with the booking form", async () => {
   const res = await get("/");
   if (res.status === 503 && (await res.clone().text()).includes("Staging access is not configured")) {
